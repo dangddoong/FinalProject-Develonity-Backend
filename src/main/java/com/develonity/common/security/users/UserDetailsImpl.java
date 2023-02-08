@@ -1,5 +1,7 @@
 package com.develonity.common.security.users;
 
+import com.develonity.user.entity.User;
+import com.develonity.user.entity.UserRole;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +24,7 @@ public class UserDetailsImpl implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    UserRoleEnum role = user.getRole();
+    UserRole role = user.getUserRole();
     String authority = role.getAuthority();
     SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
     Collection<GrantedAuthority> authorities = new ArrayList<>();
@@ -32,7 +34,7 @@ public class UserDetailsImpl implements UserDetails {
 
   @Override
   public String getPassword() {
-    return user.getLoginPassword();
+    return user.getPassword();
   }
 
   @Override
