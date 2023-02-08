@@ -1,5 +1,6 @@
 package com.develonity.common.security.jwt;
 
+import com.develonity.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -70,7 +71,7 @@ public class JwtUtil {
   }
 
   // 토큰 생성
-  public String createToken(String username, UserRoleEnum role) {
+  public String createToken(String username, UserRole role) {
     Date date = new Date();
     return BEARER_PREFIX +
         Jwts.builder()
