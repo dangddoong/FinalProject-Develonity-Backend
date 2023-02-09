@@ -42,6 +42,7 @@ public class CommentResponse {
         .content(comment.getContent())
         .commentLike(comment.getCommentLikes())
         .point(comment.getPoint())
+        .commentLike(comment.getCommentLikes())
         .createdAt(comment.getCreatedDate())
         .build();
   }
