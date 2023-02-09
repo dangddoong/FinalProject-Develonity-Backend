@@ -54,9 +54,9 @@ public class Comment extends TimeStamp {
   // 좋아요는 0부터 시작한다.
   @ColumnDefault("0")
   @Column(nullable = false)
-  Long commentlikes;
+  Long commentLikes;
 
-  // 하나의 댓글에 여러개의 좋아요를 추가할 수 있다?
+  // 하나의 댓글에 여러개의 좋아요를 추가할 수 있다
   @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
   private List<CommentLike> commentLikeList = new ArrayList<>();
 
@@ -70,10 +70,10 @@ public class Comment extends TimeStamp {
   }
 
   public void addLike() {
-    this.commentlikes += 1;
+    this.commentLikes += 1;
   }
 
   public void deleteLike() {
-    this.commentlikes -= 1;
+    this.commentLikes -= 1;
   }
 }

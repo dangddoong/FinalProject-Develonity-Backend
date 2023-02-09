@@ -19,7 +19,7 @@ public class CommentLikeController {
   private final CommentLikeService commentLikeService;
 
   // 좋아요 추가
-  @PostMapping("{commentId}/Like")
+  @PostMapping("{commentId}/Likes")
   public ResponseEntity addLike(@PathVariable Long commentId, @AuthenticationPrincipal
   UserDetailsImpl userDetails) {
     Boolean like = commentLikeService.addLike(commentId, userDetails.getUser());
@@ -33,7 +33,7 @@ public class CommentLikeController {
   }
 
   // 좋아요 취소
-  @PostMapping("{commentId}/Like")
+  @PostMapping("{commentId}/Likes")
   public ResponseEntity deleteLike(@PathVariable Long commentId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     Boolean like = commentLikeService.deleteLike(commentId, userDetails.getUser());

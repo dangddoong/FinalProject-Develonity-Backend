@@ -67,7 +67,7 @@ public class CommentController {
   }
 
   // 질문게시글 답변 삭제
-  @DeleteMapping("/api/omments")
+  @DeleteMapping("/api/comments")
   public ResponseEntity<String> deleteQuestionComment(
       @RequestParam("question-board-id") Long boardId,
       @RequestParam("question-comment-id") Long commentId,
