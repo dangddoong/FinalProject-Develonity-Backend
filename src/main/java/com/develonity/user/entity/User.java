@@ -1,6 +1,5 @@
 package com.develonity.user.entity;
 
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
@@ -10,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,14 +42,25 @@ public class User extends TimeStamp {
   @Column(nullable = false)
   @Embedded
   private Address address;
-  @Column(nullable = false)
-  private LocalDateTime withdrawnDate;
   private boolean withdrawal = false;
   private int giftPoint = 0;
   private int respectPoint = 0;
 
+  @Builder
+  public User(String loginId, String password, String realName, String nickName,
+      String profileImageUrl, String email, String phoneNumber, Address address) {
+    this.loginId = loginId;
+    this.password = password;
+    this.realName = realName;
+    this.nickName = nickName;
+    this.profileImageUrl = profileImageUrl;
+    this.email = email;
+    this.phoneNumber = phoneNumber;
+    this.address = address;
+  }
+
   @Embeddable
-  private class Address {
+  public static class Address {
 
     private String detailAddress;
     @Column(length = 5)
@@ -57,6 +68,5 @@ public class User extends TimeStamp {
 
     public Address() {
     }
-
   }
 }
