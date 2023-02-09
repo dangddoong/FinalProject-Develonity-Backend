@@ -13,13 +13,20 @@ public class UserDetailsImpl implements UserDetails {
   private final User user;
   private final String username;
 
-  public UserDetailsImpl(User user, String loginId) {
+  private final Long userId;
+
+  public UserDetailsImpl(User user, String loginId, Long userId) {
     this.user = user;
     this.username = loginId;
+    this.userId = userId;
   }
 
   public User getUser() {
     return user;
+  }
+
+  public Long getUserId() {
+    return userId;
   }
 
   @Override

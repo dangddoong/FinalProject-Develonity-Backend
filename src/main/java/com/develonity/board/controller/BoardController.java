@@ -1,8 +1,9 @@
 package com.develonity.board.controller;
 
+import com.develonity.board.dto.QuestionBoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
-import com.develonity.board.dto.QuestionBoardSearch;
+import com.develonity.board.service.BoardLikeService;
 import com.develonity.board.service.BoardService;
 import com.develonity.common.security.users.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,11 @@ public class BoardController {
 
   private final BoardService boardService;
 
+  private final BoardLikeService boardLikeService;
+
   //질문게시글 생성
   @PostMapping("/question-boards")
-  @ResponseStatus(HttpStatus.OK)
+  @ResponseStatus(HttpStatus.CREATED)
   public QuestionBoardResponse createQuestionBoard(@RequestBody QuestionBoardRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     return boardService.createBoard(request, userDetails.getUser());
@@ -63,9 +66,17 @@ public class BoardController {
   @GetMapping("/question-boards")
   public Page<QuestionBoardResponse> getQuestionBoardsPage(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
-      QuestionBoardSearch questionBoardSearch
+      QuestionBoardPage questionBoardPage
   ) {
-    return boardService.getQuetionBoardPage(userDetails.getUser(), questionBoardSearch);
+    return boardService.getQuetionBoardPage(userDetails.getUser(), questionBoardPage);
+  }
+
+  //좋아요 , 좋아요 취소
+  @PostMapping("/question-boards/{boardId}/likes")
+  @ResponseStatus(HttpStatus.OK)
+  public void changeBoardLike(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    boardLikeService.changeBoardLike(userDetails.getUserId(), boardId);
   }
 
 }

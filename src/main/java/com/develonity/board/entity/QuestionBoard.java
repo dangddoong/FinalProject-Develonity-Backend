@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,8 @@ public class QuestionBoard extends Board {
   @Enumerated(EnumType.STRING)
   private BoardStatus status = BoardStatus.NOT_ADOPTED;
 
+
+  @Builder
   public QuestionBoard(Long userId, String title, String content, Category category,
       String imageUrl, int prizePoint) {
     super(userId, title, content, category, imageUrl);
@@ -32,5 +35,8 @@ public class QuestionBoard extends Board {
     this.status = BoardStatus.ADOPTED;
   }
 
-
+  @Override
+  public boolean isWriter(Long id) {
+    return super.isWriter(id);
+  }
 }

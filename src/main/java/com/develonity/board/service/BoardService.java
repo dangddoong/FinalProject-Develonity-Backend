@@ -1,9 +1,8 @@
 package com.develonity.board.service;
 
+import com.develonity.board.dto.QuestionBoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
-import com.develonity.board.dto.QuestionBoardSearch;
-import com.develonity.board.entity.Board;
 import com.develonity.user.entity.User;
 import org.springframework.data.domain.Page;
 
@@ -15,10 +14,11 @@ public interface BoardService {
 
   void deleteBoard(Long boardId, User user);
 
-  boolean isAuthorized(User user, Board board);
+  boolean isExistBoard(Long boardId);
 
   Page<QuestionBoardResponse> getQuetionBoardPage(User user,
-      QuestionBoardSearch questionBoardSearch);
+      QuestionBoardPage questionBoardPage);
 
   QuestionBoardResponse getQuestionBoard(Long boardId, User user);
+
 }
