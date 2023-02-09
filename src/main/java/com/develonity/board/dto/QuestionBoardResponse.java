@@ -15,27 +15,28 @@ public class QuestionBoardResponse {
   private final Category category;
   private final String title;
   private final String content;
-  //  private final int postLike;
+  private final int boardLike;
   private final int prizePoint;
   private final BoardStatus status;
   private final String imageUrl;
   private final LocalDateTime createdAt;
 //  private final LocalDateTime modifiedAt;
+  //  private final List<CommentResponse> comments = new ArrayList<>();
 
-  public QuestionBoardResponse(QuestionBoard questionBoard, User user) {
+  public QuestionBoardResponse(QuestionBoard questionBoard, User user, int boardLike) {
     this.id = questionBoard.getId();
     this.nickname = user.getNickName();
     this.category = questionBoard.getCategory();
     this.title = questionBoard.getTitle();
     this.content = questionBoard.getContent();
-//    this.postLike = postlike.get;
+    this.boardLike = boardLike;
     this.prizePoint = questionBoard.getPrizePoint();
     this.status = questionBoard.getStatus();
     this.imageUrl = questionBoard.getImageUrl();
     this.createdAt = questionBoard.getCreatedDate();
-//    this.createdAt = questionBoard.get
 //    this.modifiedAt = questionBoard.get
+//  this.comments =
   }
-//  private final List<CommentResponseDto> comments = new ArrayList<>();
+
 
 }

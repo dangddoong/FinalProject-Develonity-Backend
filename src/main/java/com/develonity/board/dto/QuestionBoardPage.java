@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 
 @Getter
 @Setter
-public class QuestionBoardSearch {
+public class QuestionBoardPage {
 
   private String search;
   private Category category;
