@@ -1,7 +1,9 @@
 package com.develonity.common.security.config;
 
-import com.develonity.common.security.jwt.JwtAuthFilter;
-import com.develonity.common.security.jwt.JwtUtil;
+import com.develonity.common.jwt.JwtAuthFilter;
+import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.security.exceptionHandler.AccessDeniedHandlerImpl;
+import com.develonity.common.security.exceptionHandler.AuthenticationEntryPointImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,10 +32,9 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf().disable();
-
-    http.headers().frameOptions()
-        .disable(); // 해당 페이지를 <frame> 또는<iframe>, <object> 에서 렌더링할 수 있는지 여부
+    http.httpBasic().disable()
+        .csrf().disable()
+        .formLogin().disable();
 
     http.sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션이 필요하면 생성하도록 셋팅
@@ -46,6 +47,10 @@ public class SecurityConfig {
 //        .antMatchers("/api/users/**").hasRole("CUSTOMER")
 //        .antMatchers("/api/sellers/**").hasRole("SELLER")
         .anyRequest().authenticated()
+        .and()
+        .exceptionHandling().accessDeniedHandler(new AccessDeniedHandlerImpl())
+        .and()
+        .exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointImpl())
         .and()
         .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 

@@ -1,4 +1,4 @@
-package com.develonity.common.security.jwt;
+package com.develonity.common.jwt;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
