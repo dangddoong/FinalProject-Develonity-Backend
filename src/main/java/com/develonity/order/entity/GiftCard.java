@@ -17,7 +17,6 @@ public class GiftCard {
     @GeneratedValue
     @Column(name = "GIFTCARD_ID")
     private Long id;
-
     private String name;
     private String details;
     private String imageUrl;
@@ -39,7 +38,7 @@ public class GiftCard {
     public void removeStock(int quantity) {
         int restStock = this.stockQuantity - quantity;
         if (restStock < 0) {
-            throw new NotEnoughStockException("need more stock");
+            throw new NotEnoughStockException("재고가 부족합니다");
         }
         this.stockQuantity = restStock;
     }

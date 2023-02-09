@@ -1,6 +1,5 @@
 package com.develonity.order.entity;
 
-import com.develonity.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,8 +39,12 @@ public class Order {
     }
 
     //==생성 메서드==//
+    // 정적 팩터리 메서드를 사용함으로 써 이름을 가진 생성자처럼 객체를 생성할 수 있다.
     public static Order createOrder(Long userId, String realName, String phoneNumber, Long giftCardId, int purchasePrice){
         Order order = new Order(userId, realName, phoneNumber, giftCardId, purchasePrice);
+
+        //주문이 생성되면 User의 포인트 점수 차감
+
         return order;
     }
 
