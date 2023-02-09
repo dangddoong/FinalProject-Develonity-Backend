@@ -23,7 +23,7 @@ public class User extends TimeStamp {
   private Long id;
   @Column(nullable = false)
   @Enumerated(value = EnumType.STRING)
-  private UserRole userRole;
+  private UserRole userRole = UserRole.AMATEUR;
   @Column(nullable = false, unique = true)
   // name들이 너무 많아서 username보다 그냥 loginId라고 쓰는게 이해하기 좋지 않을까 생각했습니다.
   private String loginId;
@@ -57,6 +57,10 @@ public class User extends TimeStamp {
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.address = address;
+  }
+
+  public void withdraw() {
+    this.withdrawal = true;
   }
 
   @Embeddable
