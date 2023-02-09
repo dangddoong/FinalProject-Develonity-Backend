@@ -76,7 +76,7 @@ public class BoardController {
   @ResponseStatus(HttpStatus.OK)
   public void changeBoardLike(@PathVariable Long boardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    boardLikeService.changeBoardLike(userDetails.getUserId(), boardId);
+    boardLikeService.changeBoardLike(userDetails.getUser().getId(), boardId);
   }
 
 }

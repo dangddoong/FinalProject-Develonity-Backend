@@ -25,8 +25,6 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional
   public QuestionBoardResponse createBoard(QuestionBoardRequest request, User user) {
-//    QuestionBoard questionBoard = new QuestionBoard(user.getId(), request.getTitle(),
-//        request.getContent(), request.getCategory(), request.getImageUrl(), request.getPoint());
     QuestionBoard questionBoard = QuestionBoard.builder()
         .userId(user.getId())
         .title(request.getTitle())
@@ -67,6 +65,7 @@ public class BoardServiceImpl implements BoardService {
       /*throw new CustomException.NotAuthorityException()*/
     }
     boardRepository.deleteById(boardId);
+    boardLikeService.deleteLike(boardId);
   }
 
   // 질문 게시글 선택 조회
@@ -84,13 +83,13 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional(readOnly = true)
   public Page<QuestionBoardResponse> getQuetionBoardPage(User user,
-      QuestionBoardPage questionBoardSearch) {
+      QuestionBoardPage questionBoardPage) {
 
-    Page<QuestionBoard> questionBoardPage = boardRepository.findByCategoryAndTitleContaining(
-        questionBoardSearch.getSearch(), questionBoardSearch.toPageable(),
-        questionBoardSearch.getCategory());
+    Page<QuestionBoard> questionBoardPages = boardRepository.findByCategoryAndTitleContaining(
+        questionBoardPage.getCategory(), questionBoardPage.getTitle(),
+        questionBoardPage.toPageable());
 
-    return questionBoardPage.map(questionBoard -> new QuestionBoardResponse(questionBoard, user,
+    return questionBoardPages.map(questionBoard -> new QuestionBoardResponse(questionBoard, user,
         boardLikeService.countLike(questionBoard.getId())));
 
   }

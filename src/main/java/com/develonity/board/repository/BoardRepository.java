@@ -13,6 +13,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
   QuestionBoard findBoardById(Long id);
 
-  Page<QuestionBoard> findByCategoryAndTitleContaining(String search, Pageable pageable,
-      Category category);
+  Page<QuestionBoard> findByCategoryAndTitleContaining(Category category, String title,
+      Pageable pageable);
+
+
 }

@@ -6,4 +6,10 @@ public interface BoardLikeService {
 
   int countLike(Long boardId);
 
+  void deleteLike(Long boardId);
+
+//  void addBoardLike(Long userId, Long boardId);
+
+//  void cancelBoardLike(Long userId, Long boardId);
+
 }
