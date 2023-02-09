@@ -13,8 +13,16 @@ public interface CommentService {
   List<CommentResponse> getMyComments(int page, int size, Long userId,
       User user);
 
-  CommentResponse createQuestionComment(Long boardId, CommentRequest requestDto, User user);
+  void createQuestionComment(Long boardId, CommentRequest requestDto, User user);
 
-  CommentResponse updateQuestionComment(Long boardId, Long commentId, CommentRequest request,
+  void updateQuestionComment(Long boardId, Long commentId, CommentRequest request,
       User user);
+
+  void deleteQuestionComment(Long boardId, Long commentId, User user);
+
+  void createCommunityComment(Long boardId, CommentRequest request, User user);
+
+  void updateCommunityComment(Long boardId, Long commentId, CommentRequest request, User user);
+
+  void deleteCommunity(Long boardId, Long commentId, User user);
 }

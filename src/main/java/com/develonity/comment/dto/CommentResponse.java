@@ -11,17 +11,17 @@ import lombok.Getter;
 @Builder
 public class CommentResponse {
 
-  private Long id;
+  private final Long id;
 
-  private String username;
+  private final String username;
 
-  private String content;
+  private final String content;
 
-  private Long commentLike;
+  private final Long commentLike;
 
-  private int point;
+  private final int point;
 
-  private LocalDateTime createdAt;
+  private final LocalDateTime createdAt;
 
   private LocalDateTime modifiedAt;
 

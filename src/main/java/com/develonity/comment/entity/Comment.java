@@ -30,13 +30,13 @@ public class Comment extends TimeStamp {
   private Long Id;
 
   @Column(nullable = false)
-  public String username;
+  private String username;
 
   @Column(nullable = false)
-  public String content;
+  private String content;
 
   @Column(nullable = false)
-  public boolean adoptStatus;
+  private boolean adoptStatus;
 
   // point는 0부터 시작한다.
   @ColumnDefault("0")
@@ -63,5 +63,17 @@ public class Comment extends TimeStamp {
   public Comment(User user, CommentRequest requestDto) {
     this.user = user;
     this.content = requestDto.getContent();
+  }
+
+  public void update(String content) {
+    this.content = content;
+  }
+
+  public void addLike() {
+    this.commentlikes += 1;
+  }
+
+  public void deleteLike() {
+    this.commentlikes -= 1;
   }
 }
