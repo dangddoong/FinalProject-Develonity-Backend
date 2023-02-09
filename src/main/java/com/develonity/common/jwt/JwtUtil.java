@@ -1,4 +1,4 @@
-package com.develonity.common.security.jwt;
+package com.develonity.common.jwt;
 
 import com.develonity.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
@@ -13,14 +13,11 @@ import java.util.Base64;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -58,16 +55,6 @@ public class JwtUtil {
       return bearerToken.substring(7);
     }
     return null;
-  }
-
-  public void setAuthentication(String loginId, HttpServletRequest request) {
-    SecurityContext context = SecurityContextHolder.createEmptyContext();
-    Authentication authentication = createAuthentication(loginId);
-    context.setAuthentication(authentication);
-    SecurityContextHolder.setContext(context);
-    HttpSession session = request.getSession(true);
-    session.setAttribute("SECURITY_CONTEXT", context);
-    session.setMaxInactiveInterval(1800);
   }
 
   // 토큰 생성
