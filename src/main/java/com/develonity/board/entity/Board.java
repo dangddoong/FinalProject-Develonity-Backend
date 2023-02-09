@@ -1,8 +1,11 @@
 package com.develonity.board.entity;
 
+import com.develonity.user.entity.TimeStamp;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +24,7 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
-public class Board {
+public abstract class Board extends TimeStamp {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +36,7 @@ public class Board {
   private String content;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private Category category;
 
   @Column(nullable = false)
@@ -43,9 +47,24 @@ public class Board {
 //  @JoinColumn(name = "USER_ID", nullable = false, fetch = FetchType.LAZY)
 //  private User user;
 
-  public void editBoard(String title, String content) {
+  @Column
+  //일단 이렇게 넣어놓음
+  private Long userId;
+
+  public Board(Long userId, String title, String content, Category category,
+      String imageUrl) {
+    this.userId = userId;
     this.title = title;
     this.content = content;
+    this.category = category;
+    this.imageUrl = imageUrl;
+  }
+
+  public void updateBoard(String title, String content, Category category, String imageUrl) {
+    this.title = title;
+    this.content = content;
+    this.category = category;
+    this.imageUrl = imageUrl;
   }
 
 
