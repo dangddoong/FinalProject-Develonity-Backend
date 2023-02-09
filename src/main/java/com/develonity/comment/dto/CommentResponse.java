@@ -30,7 +30,7 @@ public class CommentResponse {
     this.id = comment.getId();
     this.username = comment.getUsername();
     this.content = comment.getContent();
-    this.commentLike = comment.getCommentlikes();
+    this.commentLike = comment.getCommentLikes();
     this.point = comment.getPoint();
     this.createdAt = comment.getCreatedDate();
   }
@@ -41,6 +41,7 @@ public class CommentResponse {
         .username(comment.getUsername())
         .content(comment.getContent())
         .point(comment.getPoint())
+        .commentLike(comment.getCommentLikes())
         .createdAt(comment.getCreatedDate())
         .build();
   }
