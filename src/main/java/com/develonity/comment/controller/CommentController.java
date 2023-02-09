@@ -77,32 +77,32 @@ public class CommentController {
   }
 
   // 잡담게시글 댓글 작성
-  @PostMapping("/api/comments")
-  public ResponseEntity<String> createCommunityComment(
-      @RequestParam("community-board-id") Long boardId,
-      @RequestBody CommentRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    commentService.createCommunityComment(boardId, request, userDetails.getUser());
-    return new ResponseEntity<>("잡담 댓글 작성 완료!", HttpStatus.CREATED);
-  }
-
-  // 잡담게시글 댓글 수정
-  @PutMapping("/api/comments")
-  public ResponseEntity<String> updateCommunityComment(
-      @RequestParam("community-board-id") Long boardId,
-      @RequestParam("community-comments-id") Long commentId, @RequestBody CommentRequest request,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    commentService.updateCommunityComment(boardId, commentId, request, userDetails.getUser());
-    return new ResponseEntity<>("잡담 댓글 수정 완료!", HttpStatus.OK);
-  }
-
-  // 잡담게시글 댓글 삭제
-  @DeleteMapping("/api/comments")
-  public ResponseEntity<String> deleteCommunityComment(
-      @RequestParam("community-board-id") Long boardId,
-      @RequestParam("community-comment-id") Long commentId,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    commentService.deleteCommunity(boardId, commentId, userDetails.getUser());
-    return new ResponseEntity<>("잡담 댓글 삭제 완료!", HttpStatus.OK);
-  }
+//  @PostMapping("/api/comments")
+//  public ResponseEntity<String> createCommunityComment(
+//      @RequestParam("community-board-id") Long boardId,
+//      @RequestBody CommentRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//    commentService.createCommunityComment(boardId, request, userDetails.getUser());
+//    return new ResponseEntity<>("잡담 댓글 작성 완료!", HttpStatus.CREATED);
+//  }
+//
+//  // 잡담게시글 댓글 수정
+//  @PutMapping("/api/comments")
+//  public ResponseEntity<String> updateCommunityComment(
+//      @RequestParam("community-board-id") Long boardId,
+//      @RequestParam("community-comments-id") Long commentId, @RequestBody CommentRequest request,
+//      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//    commentService.updateCommunityComment(boardId, commentId, request, userDetails.getUser());
+//    return new ResponseEntity<>("잡담 댓글 수정 완료!", HttpStatus.OK);
+//  }
+//
+//  // 잡담게시글 댓글 삭제
+//  @DeleteMapping("/api/comments")
+//  public ResponseEntity<String> deleteCommunityComment(
+//      @RequestParam("community-board-id") Long boardId,
+//      @RequestParam("community-comment-id") Long commentId,
+//      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//    commentService.deleteCommunity(boardId, commentId, userDetails.getUser());
+//    return new ResponseEntity<>("잡담 댓글 삭제 완료!", HttpStatus.OK);
+//  }
 
 }

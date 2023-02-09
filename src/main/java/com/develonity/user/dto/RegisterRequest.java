@@ -15,17 +15,17 @@ public class RegisterRequest {
 
   @Size(min = 6, max = 15)
   @Pattern(regexp = "^[a-z0-9]*$")
-  private String loginId;
+  private final String loginId;
   @Size(min = 6, max = 15)
   @Pattern(regexp = "^[a-zA-Z0-9]*$")
-  private String password;
-  private String realName;
+  private final String password;
+  private final String realName;
   @Size(min = 2, max = 10)
-  private String nickName;
-  private String profileImageUrl;
-  private String email;
-  private String phoneNumber;
-  private Address address;
+  private final String nickName;
+  private final String profileImageUrl;
+  private final String email;
+  private final String phoneNumber;
+  private final Address address;
 
   public User toEntity(String encodingPassword) {
     return User.builder()
