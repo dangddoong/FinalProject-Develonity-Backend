@@ -14,8 +14,6 @@ public interface BoardService {
 
   void deleteBoard(Long boardId, User user);
 
-  boolean isExistBoard(Long boardId);
-
   Page<QuestionBoardResponse> getQuetionBoardPage(User user,
       QuestionBoardPage questionBoardPage);
 
