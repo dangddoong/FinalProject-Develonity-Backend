@@ -50,6 +50,11 @@ public class BoardLikeServiceImpl implements BoardLikeService {
 
   }
 
+  @Override
+  public boolean isExistLikes(Long boardId) {
+    return boardLikeRepository.existsBoardById(boardId);
+  }
+
 
 }
 

@@ -38,6 +38,16 @@ public class BoardController {
     return boardService.createBoard(request, userDetails.getUser());
   }
 
+  //이미지 기능 공부 중..
+//  @PostMapping("/question-boards")
+//  @ResponseStatus(HttpStatus.CREATED)
+//  public QuestionBoardResponse createQuestionBoard(
+//      @RequestPart("images") List<MultipartFile> multiFileList,
+//      @RequestPart("request") QuestionBoardRequest request,
+//      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//    return boardService.createBoard(request, multiFileList, userDetails.getUser());
+//  }
+
   //질문게시글 수정
   @PatchMapping("/question-boards/{boardId}")
   public ResponseEntity<String> updateQuestionBoard(@PathVariable Long boardId,

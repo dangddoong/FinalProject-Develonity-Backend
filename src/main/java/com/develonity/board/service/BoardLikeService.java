@@ -8,6 +8,8 @@ public interface BoardLikeService {
 
   void deleteLike(Long boardId);
 
+  boolean isExistLikes(Long boardId);
+
 //  void addBoardLike(Long userId, Long boardId);
 
 //  void cancelBoardLike(Long userId, Long boardId);
