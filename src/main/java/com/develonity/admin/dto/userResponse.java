@@ -1,5 +1,7 @@
 package com.develonity.admin.dto;
 
+
+import com.develonity.comment.entity.Comment;
 import com.develonity.user.entity.User;
 import com.develonity.user.entity.UserRole;
 import lombok.AllArgsConstructor;
@@ -18,14 +20,13 @@ public class userResponse {
 
     private final String nickName;
 
-    private UserRole userRole;
+    private final UserRole userRole;
 
-    private UserResponse(User user) {
+    public UserResponse(User user) {
         this.loginid = user.getLoginId();
         this.realName = user.getRealName();
         this.nickName = user.getNickName();
         this.userRole = user.getUserRole();
-
     }
 }
 
