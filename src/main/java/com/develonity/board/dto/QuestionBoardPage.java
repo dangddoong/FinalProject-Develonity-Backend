@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 @Setter
 public class QuestionBoardPage {
 
-  private String search;
+  private String title;
   private Category category;
   private int page;
   private int size;

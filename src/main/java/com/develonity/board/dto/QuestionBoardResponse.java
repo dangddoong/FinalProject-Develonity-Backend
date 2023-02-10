@@ -20,8 +20,8 @@ public class QuestionBoardResponse {
   private final BoardStatus status;
   private final String imageUrl;
   private final LocalDateTime createdAt;
-//  private final LocalDateTime modifiedAt;
-  //  private final List<CommentResponse> comments = new ArrayList<>();
+  private final LocalDateTime lastModifiedAt;
+
 
   public QuestionBoardResponse(QuestionBoard questionBoard, User user, int boardLike) {
     this.id = questionBoard.getId();
@@ -34,8 +34,7 @@ public class QuestionBoardResponse {
     this.status = questionBoard.getStatus();
     this.imageUrl = questionBoard.getImageUrl();
     this.createdAt = questionBoard.getCreatedDate();
-//    this.modifiedAt = questionBoard.get
-//  this.comments =
+    this.lastModifiedAt = questionBoard.getLastModifiedDate();
   }
 
 
