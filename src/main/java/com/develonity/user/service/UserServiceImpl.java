@@ -47,8 +47,8 @@ public class UserServiceImpl implements UserService {
     }
     String accessToken = jwtUtil.createToken(user.getLoginId(), user.getUserRole());
     String refreshToken = UUID.randomUUID().toString();
-    // 원래는 refresh token 기간을 2주 줘야하지만, 테스트를 위해 잠시 1분으로 설정하였음.
-    redisDao.setValues(user.getLoginId(), refreshToken, Duration.ofMinutes(1));
+    // 원래는 refresh token 기간을 2주 줘야하지만, 테스트를 위해 잠시 2분으로 설정하였음.
+    redisDao.setValues(user.getLoginId(), refreshToken, Duration.ofMinutes(2));
     return new LoginResponse(accessToken, refreshToken);
   }
 
