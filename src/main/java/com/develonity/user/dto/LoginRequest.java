@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor(force = true)
 public class LoginRequest {
 
-
   private final String loginId;
 
   private final String password;

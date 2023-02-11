@@ -1,6 +1,5 @@
 package com.develonity.common.jwt;
 
-import io.jsonwebtoken.Claims;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,16 +20,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
-    try {
-      String token = jwtUtil.resolveToken(request);
-      if (token != null) {
-        Claims info = jwtUtil.getUserInfoFromToken(token);
-        Authentication authentication = jwtUtil.createAuthentication(info.getSubject());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    String accessToken = jwtUtil.resolveAccessToken(request);
+    if (accessToken != null) {
+      // accessToken에서 필요한 값(loginId, Role)과 토큰의 상태를 꺼냄
+      TokenInfo tokenInfo = jwtUtil.getInfoFromToken(accessToken);
+      if (tokenInfo.getJwtStatus() == JwtStatus.EXPIRED) {
+        String refreshToken = jwtUtil.resolveRefreshToken(request);
+        jwtUtil.validateRefreshToken(tokenInfo.getLoginId(), refreshToken);
+        accessToken = jwtUtil.createToken(tokenInfo.getLoginId(), tokenInfo.getUserRole());
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
       }
-    } catch (Exception e) {
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      Authentication authentication = jwtUtil.createAuthentication(tokenInfo.getLoginId());
+      SecurityContextHolder.getContext().setAuthentication(authentication);
     }
+
     filterChain.doFilter(request, response);
   }
 

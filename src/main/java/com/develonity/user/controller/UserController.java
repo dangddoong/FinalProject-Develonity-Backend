@@ -1,7 +1,9 @@
 package com.develonity.user.controller;
 
+import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.security.users.UserDetailsImpl;
 import com.develonity.user.dto.LoginRequest;
+import com.develonity.user.dto.LoginResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.service.UserService;
 import javax.servlet.http.HttpServletResponse;
@@ -33,12 +35,23 @@ public class UserController {
   @PostMapping("/login")
   public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest,
       HttpServletResponse httpServletResponse) {
-    userService.login(loginRequest, httpServletResponse);
+    LoginResponse loginResponse = userService.login(loginRequest);
+    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, loginResponse.getAccessToken());
+    httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, loginResponse.getRefreshToken());
     return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
   }
 
-//  @PostMapping("/logout")
-//  public ResponseEntity<String> logout
+  @PostMapping("/logout")
+  public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetailsImpl userDetails,
+      HttpServletResponse httpServletResponse) {
+    userService.logout(userDetails.getUsername());
+    
+    // response에 덮어씌우고자 하는 의도로 아래 두 라인을 작성하였음...
+    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, null);
+    httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, null);
+
+    return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
+  }
 
   @PatchMapping("/withdrawal")
   public ResponseEntity<String> withdrawal(@RequestParam String password,

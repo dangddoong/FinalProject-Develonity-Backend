@@ -1,11 +1,14 @@
 package com.develonity.user.service;
 
 import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.redis.RedisDao;
 import com.develonity.user.dto.LoginRequest;
+import com.develonity.user.dto.LoginResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
-import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+  private final RedisDao redisDao;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
@@ -32,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public void login(LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
+  public LoginResponse login(LoginRequest loginRequest) {
     User user = userRepository.findByLoginId(loginRequest.getLoginId())
         .orElseThrow(IllegalArgumentException::new);
     if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -41,8 +45,16 @@ public class UserServiceImpl implements UserService {
     if (user.isWithdrawal()) {
       throw new IllegalArgumentException("이미 탈퇴된 회원입니다.");
     }
-    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER,
-        jwtUtil.createToken(user.getLoginId(), user.getUserRole()));
+    String accessToken = jwtUtil.createToken(user.getLoginId(), user.getUserRole());
+    String refreshToken = UUID.randomUUID().toString();
+    // 원래는 refresh token 기간을 2주 줘야하지만, 테스트를 위해 잠시 1분으로 설정하였음.
+    redisDao.setValues(user.getLoginId(), refreshToken, Duration.ofMinutes(1));
+    return new LoginResponse(accessToken, refreshToken);
+  }
+
+  @Override
+  public void logout(String loginId) {
+    redisDao.deleteValues(loginId);
   }
 
   @Override
