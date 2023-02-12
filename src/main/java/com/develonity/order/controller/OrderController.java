@@ -17,7 +17,7 @@ public class OrderController {
 
     private final OrderServiceImpl orderService;
 
-    //기프티콘 구매(주문하기)
+    //기프트 카드 구매(주문하기)
     @PostMapping("/order")
     public Long orderGiftCard(@RequestBody OrderRequest orderRequest, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.order(orderRequest, userDetails.getUser().getId());

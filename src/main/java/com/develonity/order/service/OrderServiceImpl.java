@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService{
         Long giftCardId = orderRequest.getGiftCardId();
         int purchasePrice = orderRequest.getPurchasePrice();
 
-        GiftCard giftCard = giftCardRepository.findById(giftCardId).orElseThrow(() -> new IllegalArgumentException("해당 기프티카드가 존재하지 않습니다."));
+        GiftCard giftCard = giftCardRepository.findById(giftCardId).orElseThrow(() -> new IllegalArgumentException("해당 기프트카드가 존재하지 않습니다."));
         giftCard.removeStock(1);
         //여기서 포인트를 차감하는 메서드가 필요한지..?
 
