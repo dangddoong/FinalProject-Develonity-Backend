@@ -14,7 +14,7 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 @Builder
 // user전체 회원을 조회에 사용되는 dto (로그인id, 실명, 별명, 유저역할)
 public class userResponse {
-    private final String loginid;
+    private final String loginId;
 
     private final String realName;
 
@@ -22,8 +22,8 @@ public class userResponse {
 
     private final UserRole userRole;
 
-    public UserResponse(User user) {
-        this.loginid = user.getLoginId();
+    public userResponse(User user) {
+        this.loginId = user.getLoginId();
         this.realName = user.getRealName();
         this.nickName = user.getNickName();
         this.userRole = user.getUserRole();
