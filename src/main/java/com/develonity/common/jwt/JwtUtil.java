@@ -1,12 +1,11 @@
 package com.develonity.common.jwt;
 
+import com.develonity.common.redis.RedisDao;
 import com.develonity.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Base64;
@@ -28,11 +27,14 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class JwtUtil {
 
+  private final RedisDao redisDao;
   private final UserDetailsService userDetailsService;
-  public static final String AUTHORIZATION_HEADER = "Authorization"; // 헤더에 들어가는 키값
+  public static final String AUTHORIZATION_HEADER = "Authorization"; // access token 헤더에 들어가는 키값
+  public static final String REFRESH_HEADER = "Refresh";
   public static final String AUTHORIZATION_KEY = "auth"; // 사용자 권한 키값. 사용자 권한도 토큰안에 넣어주기 때문에 그때 사용하는 키값
   private static final String BEARER_PREFIX = "Bearer "; // Token 식별자
-  private static final long TOKEN_TIME = 60 * 60 * 1000L; // 토큰 만료시간. (60 * 1000L 이 1분)
+  private static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;  // 토큰 만료시간. (60 * 1000L 이 1분)
+  private static final long REFRESH_TOKEN_TIME = 2 * 7 * 24 * 60 * 60 * 1000L;
 
 
   @Value("${jwt.secret.key}")
@@ -49,7 +51,7 @@ public class JwtUtil {
   }
 
   // header 토큰을 가져오기
-  public String resolveToken(HttpServletRequest request) {
+  public String resolveAccessToken(HttpServletRequest request) {
     String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
       return bearerToken.substring(7);
@@ -57,36 +59,56 @@ public class JwtUtil {
     return null;
   }
 
+  public static String resolveRefreshToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader(REFRESH_HEADER);
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+      return bearerToken.substring(7);
+    }
+    return null;
+  }
+
   // 토큰 생성
-  public String createToken(String username, UserRole role) {
+  public String createAccessToken(String username, UserRole role) {
     Date date = new Date();
     return BEARER_PREFIX +
         Jwts.builder()
             .setSubject(username)
             .claim(AUTHORIZATION_KEY, role)
-            .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+            .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
+            .setIssuedAt(date)
+            .signWith(key, signatureAlgorithm)
+            .compact();
+  }
+
+  public String createRefreshToken(String username, UserRole role) {
+    Date date = new Date();
+    return BEARER_PREFIX +
+        Jwts.builder()
+            .setSubject(username)
+            .claim(AUTHORIZATION_KEY, role)
+            .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
             .setIssuedAt(date)
             .signWith(key, signatureAlgorithm)
             .compact();
   }
 
   // 토큰 검증
-  public boolean validateToken(String token) {
-    try {
-      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-      return true;
-    } catch (SecurityException | MalformedJwtException | UnsupportedJwtException |
-             IllegalArgumentException e) {
-      log.info("TokenException");
-    } catch (ExpiredJwtException e) {
-      log.info("Token Expired");
-    }
-    return false;
+  public void validateToken(String token) {
+    Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
   }
 
-  // 토큰에서 사용자 정보 가져오기
-  public Claims getUserInfoFromToken(String token) {
-    return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+  // 단일책임원칙에는 위배되지만 jwt 디코딩 비용이 비싸므로 한큐에 모든결 해결하고 싶은 마음에 부득불 원칙을 어겼습니다.
+  public TokenInfo getInfoFromToken(String token) {
+    try {
+      Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+          .getBody();
+      return new TokenInfo(claims.getSubject(), JwtStatus.ACCESS,
+          UserRole.valueOf(claims.get("auth").toString()));
+
+    } catch (ExpiredJwtException e) {
+      return new TokenInfo(e.getClaims().getSubject(), JwtStatus.EXPIRED,
+          UserRole.valueOf(e.getClaims().get("auth").toString()));
+    }
   }
 
   // 인증 객체 생성
@@ -95,5 +117,16 @@ public class JwtUtil {
     return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
   }
 
+  public Long getValidMilliSeconds(String refreshToken) {
+    Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken)
+        .getBody();
+    Long vaildSeconds = claims.getExpiration().getTime() - claims.getIssuedAt().getTime();
+    return vaildSeconds;
+  }
 
+  public void checkBlackList(String refreshToken) {
+    if (redisDao.existByKey(refreshToken)) {
+      throw new IllegalArgumentException("로그아웃 된 토큰입니다.");
+    }
+  }
 }

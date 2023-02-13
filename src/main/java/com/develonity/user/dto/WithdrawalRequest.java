@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-public class LoginRequest {
-
-  private final String loginId;
+public class WithdrawalRequest {
 
   private final String password;
 }

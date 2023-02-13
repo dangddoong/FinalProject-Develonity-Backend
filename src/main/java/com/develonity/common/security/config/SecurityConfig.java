@@ -2,8 +2,8 @@ package com.develonity.common.security.config;
 
 import com.develonity.common.jwt.JwtAuthFilter;
 import com.develonity.common.jwt.JwtUtil;
-import com.develonity.common.security.exceptionHandler.AccessDeniedHandlerImpl;
-import com.develonity.common.security.exceptionHandler.AuthenticationEntryPointImpl;
+import com.develonity.common.security.exceptionHandler.CustomAccessDeniedHandler;
+import com.develonity.common.security.exceptionHandler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -52,14 +52,14 @@ public class SecurityConfig {
     http.authorizeHttpRequests()
         .antMatchers("/api/register").permitAll()
         .antMatchers("/api/login").permitAll()
+        .antMatchers("/api/logout").permitAll()
 //        .antMatchers("/api/users/signout").permitAll()
 //        .antMatchers("/api/users/**").hasRole("CUSTOMER")
 //        .antMatchers("/api/sellers/**").hasRole("SELLER")
         .anyRequest().authenticated()
         .and()
-        .exceptionHandling().accessDeniedHandler(new AccessDeniedHandlerImpl())
-        .and()
-        .exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointImpl())
+        .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
+        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
         .and()
         .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
