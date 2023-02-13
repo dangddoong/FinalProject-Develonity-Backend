@@ -3,8 +3,6 @@ package com.develonity.admin.dto;
 import com.develonity.user.entity.User;
 import com.develonity.user.entity.UserRole;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 public class RegisterResponse {
     private final String loginId;

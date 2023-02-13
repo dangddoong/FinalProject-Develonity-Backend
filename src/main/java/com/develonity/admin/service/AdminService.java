@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface AdminService {
 
-    List<userResponse> findRegisterList(int page);
+    List<userResponse> findUsersList(int page);
 
-    List<RegisterResponse> findRegisterinfo();
+    List<RegisterResponse> findUsersInfo();
 
-    List<userResponse> findUsersRole();
+    Page<userResponse> getUsersAllByRole(int page, int size, boolean isAsc, String role);
 
     //List<CommentResponse>findRegisterComments(int page);
 
