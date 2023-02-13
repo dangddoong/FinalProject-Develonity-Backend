@@ -1,5 +1,6 @@
 package com.develonity.admin.controller;
 
+import com.develonity.admin.dto.RegisterResponse;
 import com.develonity.admin.dto.userResponse;
 import com.develonity.admin.service.AdminService;
 import com.develonity.comment.dto.CommentResponse;
@@ -7,7 +8,6 @@ import com.develonity.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,14 +31,17 @@ public class AdminController {
     @GetMapping("/users/{id}")
     public List<RegisterResponse> findUsersinfo(){return adminService.findUsersinfo();}
 
+    // 회원 role(일반,전문가,관리자) 분리하여 조회
+    @GetMapping("/users/{UserRole}")
+    public List<userResponse> findUsersRole(){return adminService.findUsersRole();}
+
     // 어드민이 유저의 전체댓글 조회(admin입장에서 필요하다고 생각)
-    @GetMapping ("/users/{id}/comments")
-    public List<CommentResponse> findRegisterComments(){return adminService.findRegisterComments();}
+    //@GetMapping ("/users/{id}/comments")
+    //public List<CommentResponse> findRegisterComments(){return adminService.findRegisterComments();}
 
-
-    // 어드민 유저 전체 댓글 삭제....
-    //@DeleteMapping("/register/{id}/comments/delete")
-    //public List<CommentResponse> deleteRegisterComments(){return adminService.deleteRegisterComments();}
+    // 어드민이 유저의 전체게시물 조회(admin입장에서 필요하다고 생각)
+    // @GetMapping("/users/{id}/boards")
+    //public List<Board>
 
 
     //order목록, 상품목록 추가 (관련 로직 설정 필요)

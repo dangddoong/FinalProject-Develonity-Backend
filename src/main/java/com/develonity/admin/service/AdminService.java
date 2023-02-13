@@ -1,5 +1,6 @@
 package com.develonity.admin.service;
 
+import com.develonity.admin.dto.RegisterResponse;
 import com.develonity.admin.dto.userResponse;
 import com.develonity.comment.dto.CommentResponse;
 
@@ -11,6 +12,8 @@ public interface AdminService {
 
     List<RegisterResponse> findRegisterinfo();
 
-    List<CommentResponse>findRegisterComments(int page);
+    List<userResponse> findUsersRole();
+
+    //List<CommentResponse>findRegisterComments(int page);
 
 }
