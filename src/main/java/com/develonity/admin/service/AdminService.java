@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface AdminService {
 
-    List<userResponse> findUsersList(int page);
+    List<userResponse> getUsersList(int page);
 
-    List<RegisterResponse> findUsersInfo();
+    List<RegisterResponse> getUsersInfo();
 
     Page<userResponse> getUsersAllByRole(int page, int size, boolean isAsc, String role);
 

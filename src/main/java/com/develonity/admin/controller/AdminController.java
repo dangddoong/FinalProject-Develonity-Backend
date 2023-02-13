@@ -28,11 +28,11 @@ public class AdminController {
 
     // 전체회원 조회(아이디, 실명, 닉네임, 롤) -  dTO를 User에서
     @GetMapping("/users")
-    public List<userResponse> findUsersList(){return adminService.findUserList();}
+    public List<userResponse> getUsersList(){return adminService.findUserList();}
 
     // 개인회원 조회(아이디, 실명, 닉네임, 비밀번호) 회원가입내역 전체조회로 Dto
     @GetMapping("/users/{id}")
-    public List<RegisterResponse> findUsersInfo(){return adminService.findUsersinfo();}
+    public List<RegisterResponse> getUsersInfo(){return adminService.findUsersinfo();}
 
     // 회원 role(일반,전문가,관리자) 분리하여 조회
     @GetMapping("/users/{UserRole}")

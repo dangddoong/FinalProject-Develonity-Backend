@@ -27,7 +27,7 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     @Transactional
-    public List<userResponse> findUsersList(int page) throws IllegalArgumentException {
+    public List<userResponse> getUsersList(int page) throws IllegalArgumentException {
     Pageable pageable = PageRequest.of(page-1,10, Sort.Direction.DESC, "id");
     <User> users = userRepository.findByLoginId(id);
     List<userResponse> totalusers = users.stream().map(userResponse::new).collect(Collectors.toList());
