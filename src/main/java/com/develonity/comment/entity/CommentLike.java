@@ -1,11 +1,10 @@
 package com.develonity.comment.entity;
 
-import com.develonity.user.entity.User;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,17 +15,17 @@ public class CommentLike {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long Id;
+  private Long id;
 
-  @ManyToOne
-  private User user;
+  @JoinColumn(name = "USER_ID")
+  private Long userId;
 
-  @ManyToOne
-  private Comment comment;
+  @JoinColumn(name = "COMMENT_ID")
+  private Long commentId;
 
-  public CommentLike(User user, Comment comment) {
-    this.user = user;
-    this.comment = comment;
+  public CommentLike(Long userId, Long commentId) {
+    this.userId = userId;
+    this.commentId = commentId;
   }
-
 }
+
