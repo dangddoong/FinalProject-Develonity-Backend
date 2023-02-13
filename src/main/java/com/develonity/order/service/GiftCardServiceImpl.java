@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +27,7 @@ public class GiftCardServiceImpl implements GiftCardService{
             throw new IllegalArgumentException("이미 등록된 기프트카드 입니다.");
         }
 
-        GiftCard giftCard = new GiftCard(giftCardRegister.getName(), giftCardRegister.getDetails(), giftCardRegister.getImageUrl(), giftCardRegister.getPrice(), giftCardRegister.getStockQuantity());
+        GiftCard giftCard = new GiftCard(giftCardRegister.getCategory(), giftCardRegister.getName(), giftCardRegister.getDetails(), giftCardRegister.getImageUrl(), giftCardRegister.getPrice(), giftCardRegister.getStockQuantity());
         giftCardRepository.save(giftCard);
 
         return giftCard.getId();
@@ -39,11 +38,10 @@ public class GiftCardServiceImpl implements GiftCardService{
     public List<GiftCardResponse> retrieveGiftCardList() {
         List<GiftCard> giftCardList = giftCardRepository.findAll();
 
-        if(giftCardList == null || giftCardList.isEmpty())
-            throw new IllegalArgumentException("주문 내역이 존재하지 않습니다.");
+        if(giftCardList.isEmpty())
+            throw new IllegalArgumentException("기프트카드가 존재하지 않습니다.");
 
-        List<GiftCardResponse> giftCardResponseList = giftCardList.stream().map(x -> new GiftCardResponse(x)).collect(Collectors.toList());
-        return giftCardResponseList;
+        return giftCardList.stream().map(GiftCardResponse::new).collect(Collectors.toList());
     }
 
     @Override
@@ -72,8 +70,11 @@ public class GiftCardServiceImpl implements GiftCardService{
     @Override
     @Transactional
     public Long deleteGiftCard(Long giftCardId) {
-        GiftCard giftCard = giftCardRepository.findById(giftCardId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기프트 카드입니다."));
-        giftCardRepository.delete(giftCard);
+        boolean isExistGiftCard = giftCardRepository.existsById(giftCardId);
+        if(!isExistGiftCard) {
+            throw new IllegalArgumentException("존재하지 않는 기프트카드 입니다.");
+        }
+        giftCardRepository.deleteById(giftCardId);
         return giftCardId;
     }
 
