@@ -6,6 +6,7 @@ import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.LoginResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.service.UserService;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,10 +43,10 @@ public class UserController {
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetailsImpl userDetails,
+  public ResponseEntity<String> logout(HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse) {
-    userService.logout(userDetails.getUsername());
-    
+    userService.logout(JwtUtil.resolveRefreshToken(httpServletRequest));
+
     // response에 덮어씌우고자 하는 의도로 아래 두 라인을 작성하였음...
     httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, null);
     httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, null);

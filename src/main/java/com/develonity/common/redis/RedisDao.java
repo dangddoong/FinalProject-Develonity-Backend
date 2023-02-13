@@ -29,6 +29,10 @@ public class RedisDao {
     return values.get(key);
   }
 
+  public boolean existByKey(String key) {
+    return redisTemplate.hasKey(key);
+  }
+
   public void deleteValues(String key) {
     redisTemplate.delete(key);
   }

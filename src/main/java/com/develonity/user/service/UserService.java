@@ -12,5 +12,5 @@ public interface UserService {
 
   void withdrawal(String loginId, String password);
 
-  void logout(String loginId);
+  void logout(String refreshToken);
 }

@@ -58,11 +58,10 @@ public class SecurityConfig {
 //        .antMatchers("/api/sellers/**").hasRole("SELLER")
         .anyRequest().authenticated()
         .and()
+        .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling().accessDeniedHandler(new AccessDeniedHandlerImpl())
         .and()
-        .exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointImpl())
-        .and()
-        .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        .exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointImpl());
 
     return http.build();
   }

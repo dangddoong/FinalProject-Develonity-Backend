@@ -1,14 +1,14 @@
 package com.develonity.common.jwt;
 
 import com.develonity.user.entity.UserRole;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
+@AllArgsConstructor
 public class TokenInfo {
 
-  private final String loginId;
-  private final JwtStatus jwtStatus;
-  private final UserRole userRole;
+  private String loginId;
+  private JwtStatus jwtStatus;
+  private UserRole userRole;
 }

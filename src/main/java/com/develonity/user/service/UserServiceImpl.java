@@ -8,7 +8,6 @@ import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
 import java.time.Duration;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,16 +44,15 @@ public class UserServiceImpl implements UserService {
     if (user.isWithdrawal()) {
       throw new IllegalArgumentException("이미 탈퇴된 회원입니다.");
     }
-    String accessToken = jwtUtil.createToken(user.getLoginId(), user.getUserRole());
-    String refreshToken = UUID.randomUUID().toString();
-    // 원래는 refresh token 기간을 2주 줘야하지만, 테스트를 위해 잠시 2분으로 설정하였음.
-    redisDao.setValues(user.getLoginId(), refreshToken, Duration.ofMinutes(2));
+    String accessToken = jwtUtil.createAccessToken(user.getLoginId(), user.getUserRole());
+    String refreshToken = jwtUtil.createRefreshToken(user.getLoginId(), user.getUserRole());
     return new LoginResponse(accessToken, refreshToken);
   }
 
   @Override
-  public void logout(String loginId) {
-    redisDao.deleteValues(loginId);
+  public void logout(String refreshToken) {
+    Long validMilliSeconds = jwtUtil.getVaildSeconds(refreshToken);
+    redisDao.setValues(refreshToken, "", Duration.ofMillis(validMilliSeconds));
   }
 
   @Override
