@@ -1,5 +1,6 @@
 package com.develonity.comment.service;
 
+import com.develonity.comment.entity.CommentLike;
 import com.develonity.comment.repository.CommentLikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,22 @@ public class CommentLikeServiceImpl implements CommentLikeService {
   @Transactional
   public void cancelLike(Long commentId) {
     commentLikeRepository.deleteById(commentId);
+  }
+
+  @Override
+  @Transactional
+  public void changeCommentLike(Long commentId, Long userId) {
+    if (commentLikeRepository.existsCommentLikeByCommentIdAndUserId(commentId, userId)) {
+      CommentLike commentLike = commentLikeRepository.findByCommentIdAndUserId(commentId, userId);
+      commentLikeRepository.delete(commentLike);
+    } else {
+      CommentLike commentLike = new CommentLike(userId, commentId);
+      commentLikeRepository.save(commentLike);
+    }
+  }
+
+  @Override
+  public boolean isExistLikes(Long commentId) {
+    return commentLikeRepository.existsCommentById(commentId);
   }
 }

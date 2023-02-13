@@ -47,11 +47,12 @@ public class CommentController {
   // 질문게시글 답변 작성
   @PostMapping("/api/comments/question/{questionBoardId}")
   @ResponseStatus(HttpStatus.CREATED)
-  public CommentResponse createQuestionComment(
+  public ResponseEntity<String> createQuestionComment(
       @PathVariable Long questionBoardId,
       @RequestBody
       CommentRequest requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return commentService.createQuestionComment(questionBoardId, requestDto, userDetails.getUser());
+    commentService.createQuestionComment(questionBoardId, requestDto, userDetails.getUser());
+    return new ResponseEntity<>("답변 작성 완료!", HttpStatus.CREATED);
   }
 
   // 질문게시글 답변 수정

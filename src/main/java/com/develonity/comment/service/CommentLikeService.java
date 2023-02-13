@@ -5,4 +5,8 @@ public interface CommentLikeService {
   int addLike(Long commentId);
 
   void cancelLike(Long commentId);
+
+  void changeCommentLike(Long commentId, Long userId);
+
+  boolean isExistLikes(Long commentId);
 }

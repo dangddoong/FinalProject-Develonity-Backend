@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
   // 질문게시글 답변 작성
   @Override
   @Transactional
-  public CommentResponse createQuestionComment(Long questionBoardId, CommentRequest requestDto,
+  public void createQuestionComment(Long questionBoardId, CommentRequest requestDto,
       User user) {
     // 게시물이 있는지 확인
 //    Board board = boardRepository.findById(boardid).orElseThrow(
@@ -72,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 생성
     Comment comment = new Comment(user, requestDto);
     commentRepository.save(comment);
-    return new CommentResponse(comment, commentLikeService.addLike(comment.getId()));
+    new CommentResponse(comment, commentLikeService.addLike(comment.getId()));
   }
 
   // 질문 게시글 수정
@@ -100,13 +100,15 @@ public class CommentServiceImpl implements CommentService {
   @Override
   @Transactional
   public void deleteQuestionComment(Long commentId, User user) {
-
     // 댓글이 있는지 확인
     Comment comment = getComment(commentId);
-
     // 권한 확인
     // 댓글 작성자와 수정하려는 유저 닉네임이 같지 않으면 익셉션 출력
     checkUser(user, comment);
+    
+    if (commentLikeService.isExistLikes(commentId)) {
+      commentLikeService.cancelLike(commentId);
+    }
     // 댓글 작성자면 댓글 삭제
     commentRepository.delete(comment);
 

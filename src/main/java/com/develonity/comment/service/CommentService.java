@@ -13,7 +13,7 @@ public interface CommentService {
   Page<CommentResponse> getMyComments(CommentList commentList, Long userId,
       User user);
 
-  CommentResponse createQuestionComment(Long questionBoardId, CommentRequest requestDto, User user);
+  void createQuestionComment(Long questionBoardId, CommentRequest requestDto, User user);
 
   void updateQuestionComment(Long questionBoardId, Long commentId, CommentRequest request,
       User user);
