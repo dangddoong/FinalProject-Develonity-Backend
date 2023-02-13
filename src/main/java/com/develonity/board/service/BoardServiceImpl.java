@@ -4,7 +4,7 @@ import com.develonity.board.dto.QuestionBoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.entity.QuestionBoard;
-import com.develonity.board.repository.BoardRepository;
+import com.develonity.board.repository.QuestionBoardRepository;
 import com.develonity.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class BoardServiceImpl implements BoardService {
 
-  private final BoardRepository boardRepository;
+  private final QuestionBoardRepository questionBoardRepository;
 
   private final BoardLikeService boardLikeService;
 
@@ -34,7 +34,7 @@ public class BoardServiceImpl implements BoardService {
         .prizePoint(request.getPoint())
         .build();
 
-    boardRepository.save(questionBoard);
+    questionBoardRepository.save(questionBoard);
     //userService.deductPoint(request.getPrizePoint); -> 유저서비스에서 질문자가 걸어놓은 포인트 차감되는 메소드 필요. 메소드 명은 알아서
     return new QuestionBoardResponse(questionBoard, user,
         boardLikeService.countLike(questionBoard.getId()));
@@ -44,7 +44,7 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional
   public void updateBoard(Long boardId, QuestionBoardRequest request, User user) {
-    QuestionBoard questionBoard = (QuestionBoard) boardRepository.findById(boardId)
+    QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
         .orElseThrow(/*CustomException.NotFoundException::new*/);
 
     if (!questionBoard.isWriter(questionBoard.getId())) {
@@ -52,20 +52,23 @@ public class BoardServiceImpl implements BoardService {
     }
     questionBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory(),
         request.getImageUrl());
-    boardRepository.save(questionBoard);
+    questionBoardRepository.save(questionBoard);
   }
 
   //질문 게시글 삭제
   @Override
   @Transactional
   public void deleteBoard(Long boardId, User user) {
-    QuestionBoard questionBoard = (QuestionBoard) boardRepository.findById(boardId)
+    QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
         .orElseThrow(/*CustomException.NotFoundException::new*/);
     if (!questionBoard.isWriter(questionBoard.getId())) {
       /*throw new CustomException.NotAuthorityException()*/
     }
-    boardRepository.deleteById(boardId);
-    boardLikeService.deleteLike(boardId);
+    if (boardLikeService.isExistLikes(boardId)) {
+      boardLikeService.deleteLike(boardId);
+    }
+    questionBoardRepository.deleteById(boardId);
+
   }
 
   // 질문 게시글 선택 조회
@@ -73,7 +76,7 @@ public class BoardServiceImpl implements BoardService {
   @Transactional(readOnly = true)
   public QuestionBoardResponse getQuestionBoard(Long boardId, User user) {
 
-    QuestionBoard questionBoard = boardRepository.findBoardById(boardId);
+    QuestionBoard questionBoard = questionBoardRepository.findBoardById(boardId);
     return new QuestionBoardResponse(questionBoard, user,
         boardLikeService.countLike(questionBoard.getId()));
   }
@@ -85,19 +88,18 @@ public class BoardServiceImpl implements BoardService {
   public Page<QuestionBoardResponse> getQuetionBoardPage(User user,
       QuestionBoardPage questionBoardPage) {
 
-    Page<QuestionBoard> questionBoardPages = boardRepository.findByCategoryAndTitleContaining(
+//    Page<QuestionBoard> questionBoardPages = boardRepository.findByTitleContaining(
+//        /*questionBoardPage.getCategory(),*/ questionBoardPage.getTitle(),
+//        questionBoardPage.toPageable());
+//
+
+    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByCategoryAndTitleContaining(
         questionBoardPage.getCategory(), questionBoardPage.getTitle(),
         questionBoardPage.toPageable());
 
     return questionBoardPages.map(questionBoard -> new QuestionBoardResponse(questionBoard, user,
         boardLikeService.countLike(questionBoard.getId())));
 
-  }
-
-  //보드 존재하는지 확인하는 메소드. 댓글에서 사용하시면 될 것 같습니다.
-  @Override
-  public boolean isExistBoard(Long boardId) {
-    return boardRepository.existsBoardById(boardId);
   }
 
 }

@@ -15,9 +15,16 @@ public class QuestionBoardPage {
   private Category category;
   private int page;
   private int size;
+  private Boolean isAsc;
+
 
   public Pageable toPageable() {
-    Sort sort = Sort.by(Sort.Direction.DESC, "id");
-    return PageRequest.of(page - 1, size, sort);
+    page -= 1;
+    page = Math.max(page, 0);
+    Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+//    Sort sort = Sort.by(Sort.Direction.DESC, "id");
+    Sort sort = Sort.by(direction, "id");
+
+    return PageRequest.of(page, size, sort);
   }
 }
