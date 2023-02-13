@@ -23,8 +23,8 @@ public class GiftCardServiceImpl implements GiftCardService{
     public Long registerGiftCard(GiftCardRegister giftCardRegister) {
 
         // 기프트카드 중복 확인
-        Optional<GiftCard> found = giftCardRepository.findByName(giftCardRegister.getName());
-        if (found.isPresent()) {
+        boolean isExistGiftCard = giftCardRepository.existsByName(giftCardRegister.getName());
+        if (isExistGiftCard) {
             throw new IllegalArgumentException("이미 등록된 기프트카드 입니다.");
         }
 
@@ -38,6 +38,10 @@ public class GiftCardServiceImpl implements GiftCardService{
     @Transactional(readOnly = true)
     public List<GiftCardResponse> retrieveGiftCardList() {
         List<GiftCard> giftCardList = giftCardRepository.findAll();
+
+        if(giftCardList == null || giftCardList.isEmpty())
+            throw new IllegalArgumentException("주문 내역이 존재하지 않습니다.");
+
         List<GiftCardResponse> giftCardResponseList = giftCardList.stream().map(x -> new GiftCardResponse(x)).collect(Collectors.toList());
         return giftCardResponseList;
     }
@@ -56,6 +60,10 @@ public class GiftCardServiceImpl implements GiftCardService{
         GiftCard foundGiftCard = giftCardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기프트카드 입니다. 등록이 필요합니다."));
 
+        if(foundGiftCard.getName().equals(giftCardRegister.getName())){
+            throw new IllegalArgumentException("동일한 이름의 기프트카드가 이미 존재합니다");
+        }
+
         foundGiftCard.update(giftCardRegister.getName(), giftCardRegister.getDetails(), giftCardRegister.getImageUrl(), giftCardRegister.getPrice(), giftCardRegister.getStockQuantity());
 
         return foundGiftCard.getId();
@@ -65,7 +73,7 @@ public class GiftCardServiceImpl implements GiftCardService{
     @Transactional
     public Long deleteGiftCard(Long giftCardId) {
         GiftCard giftCard = giftCardRepository.findById(giftCardId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기프트 카드입니다."));
-        giftCardRepository.deleteById(giftCardId);
+        giftCardRepository.delete(giftCard);
         return giftCardId;
     }
 

@@ -8,5 +8,4 @@ public class OrderRequest {
     private String realName;
     private String phoneNumber;
     private Long giftCardId;
-    private int purchasePrice;
 }

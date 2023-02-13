@@ -22,11 +22,11 @@ public class Order {
 
     private String phoneNumber;
     private Long giftCardId;
-    private int purchasePrice; //구매 가격
+    private int purchasePrice; //구매 가격 //이거는 기프트카드 레포에서 가져와서 값 넣어주기
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderstatus; //결제 완료가 되어야 주문이 생기는 거니까 초기 status 는 무조건 PAYMENT_COMPLETED가 아닐까..
+    private OrderStatus orderstatus;
 
     public Order(Long userId, String realName, String phoneNumber, Long giftCardId, int purchasePrice) {
         this.userId = userId;
@@ -46,6 +46,12 @@ public class Order {
         //주문이 생성되면 User의 포인트 점수 차감
 
         return order;
+    }
+
+    public void checkUser(Order order, Long userId) {
+        if (order.getUserId() != userId) {
+            throw new IllegalArgumentException("유저 불일치");
+        }
     }
 
 }

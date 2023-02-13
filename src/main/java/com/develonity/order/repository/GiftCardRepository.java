@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface GiftCardRepository extends JpaRepository<GiftCard, Long> {
     Optional<GiftCard> findByName(String name);
+
+    boolean existsByName(String name);
 }
