@@ -9,7 +9,7 @@ public interface OrderService {
 
     Long order(OrderRequest orderRequest, Long userId);
     List<OrderResponse> getMyOrders(Long userId);
-    OrderResponse getMyOrder(Long orderId/*, Long userId*/);
+    OrderResponse getMyOrder(Long orderId, Long userId);
     int getTotalPurchasePrice(Long userId);
 
 }

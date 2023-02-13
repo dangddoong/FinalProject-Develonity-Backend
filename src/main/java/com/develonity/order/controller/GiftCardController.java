@@ -13,12 +13,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-//@PreAuthorize("hasAnyRole('ROLE_ADMIN')") //어드민만 접근 가능
+//@PreAuthorize("hasAnyRole('ROLE_ADMIN')") //어드민만 접근 가능, 기프트카드 조회, 단건 조회는 일반유저도 접근 가능
 public class GiftCardController {
     private final GiftCardServiceImpl giftCardService;
 
     //기프트 카드 등록
-    @PostMapping("/gift-cards/register")
+    @PostMapping("/gift-cards")
     public Long registerGiftCard(@RequestBody GiftCardRegister giftCardRegister) {
         return giftCardService.registerGiftCard(giftCardRegister);
     }
