@@ -22,12 +22,19 @@ public class GiftCardServiceImpl implements GiftCardService{
     public Long registerGiftCard(GiftCardRegister giftCardRegister) {
 
         // 기프트카드 중복 확인
-        boolean isExistGiftCard = giftCardRepository.existsByName(giftCardRegister.getName());
-        if (isExistGiftCard) {
+        if (giftCardRepository.existsByName(giftCardRegister.getName())) {
             throw new IllegalArgumentException("이미 등록된 기프트카드 입니다.");
         }
 
-        GiftCard giftCard = new GiftCard(giftCardRegister.getCategory(), giftCardRegister.getName(), giftCardRegister.getDetails(), giftCardRegister.getImageUrl(), giftCardRegister.getPrice(), giftCardRegister.getStockQuantity());
+        GiftCard giftCard = GiftCard.builder()
+                .category(giftCardRegister.getCategory())
+                .name(giftCardRegister.getName())
+                .details(giftCardRegister.getDetails())
+                .imageUrl(giftCardRegister.getImageUrl())
+                .price(giftCardRegister.getPrice())
+                .stockQuantity(giftCardRegister.getStockQuantity())
+                .build();
+
         giftCardRepository.save(giftCard);
 
         return giftCard.getId();
@@ -70,8 +77,8 @@ public class GiftCardServiceImpl implements GiftCardService{
     @Override
     @Transactional
     public Long deleteGiftCard(Long giftCardId) {
-        boolean isExistGiftCard = giftCardRepository.existsById(giftCardId);
-        if(!isExistGiftCard) {
+
+        if(!giftCardRepository.existsById(giftCardId)) {
             throw new IllegalArgumentException("존재하지 않는 기프트카드 입니다.");
         }
         giftCardRepository.deleteById(giftCardId);
