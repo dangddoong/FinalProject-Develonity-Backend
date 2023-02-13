@@ -1,6 +1,7 @@
 package com.develonity.order.entity;
 
 import com.develonity.common.exception.NotEnoughStockException;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
@@ -25,6 +26,7 @@ public class GiftCard {
     private int price;
     private int stockQuantity; // 동시성 문제를 막기 위한 수량 설정(?)
 
+    @Builder
     public GiftCard(GiftCardCategory category, String name, String details, String imageUrl, int price, int stockQuantity) {
         this.category = category;
         this.name = name;
