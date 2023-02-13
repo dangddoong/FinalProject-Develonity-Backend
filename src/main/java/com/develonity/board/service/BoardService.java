@@ -10,6 +10,9 @@ public interface BoardService {
 
   QuestionBoardResponse createBoard(QuestionBoardRequest request, User user);
 
+//  QuestionBoardResponse createBoard(QuestionBoardRequest request,
+//      List<MultipartFile> multipartFiles, User user) throws IOException;
+
   void updateBoard(Long boardId, QuestionBoardRequest request, User user);
 
   void deleteBoard(Long boardId, User user);

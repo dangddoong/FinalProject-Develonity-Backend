@@ -28,9 +28,11 @@ public class BoardController {
 
   private final BoardService boardService;
 
+//  private final AwsS3Service awsS3Service;
+
   private final BoardLikeService boardLikeService;
 
-  //질문게시글 생성
+  //  질문게시글 생성
   @PostMapping("/question-boards")
   @ResponseStatus(HttpStatus.CREATED)
   public QuestionBoardResponse createQuestionBoard(@RequestBody QuestionBoardRequest request,
@@ -38,14 +40,21 @@ public class BoardController {
     return boardService.createBoard(request, userDetails.getUser());
   }
 
-  //이미지 기능 공부 중..
+//  질문게시글 생성(+이미지)
 //  @PostMapping("/question-boards")
 //  @ResponseStatus(HttpStatus.CREATED)
 //  public QuestionBoardResponse createQuestionBoard(
-//      @RequestPart("images") List<MultipartFile> multiFileList,
+//      @RequestPart("images") List<MultipartFile> multipartFiles,
 //      @RequestPart("request") QuestionBoardRequest request,
-//      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//    return boardService.createBoard(request, multiFileList, userDetails.getUser());
+//      @AuthenticationPrincipal UserDetailsImpl userDetails)
+//      throws IllegalAccessException, IOException {
+//
+//    if (multipartFiles == null) {
+//      throw new IllegalAccessException();
+//    }
+//
+//    return boardService.createBoard(request, multipartFiles, userDetails.getUser());
+//
 //  }
 
   //질문게시글 수정
@@ -88,5 +97,4 @@ public class BoardController {
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     boardLikeService.changeBoardLike(userDetails.getUser().getId(), boardId);
   }
-
 }

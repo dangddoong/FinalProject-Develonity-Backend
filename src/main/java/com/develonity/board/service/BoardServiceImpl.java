@@ -5,6 +5,8 @@ import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.QuestionBoardRepository;
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,10 @@ public class BoardServiceImpl implements BoardService {
   private final QuestionBoardRepository questionBoardRepository;
 
   private final BoardLikeService boardLikeService;
+//
+//  private final BoardImageRepository boardImageRepository;
+//
+//  private final AwsS3Service awsS3Service;
 
 //  private final UserService userService;
 
@@ -30,7 +36,6 @@ public class BoardServiceImpl implements BoardService {
         .title(request.getTitle())
         .content(request.getContent())
         .category(request.getCategory())
-        .imageUrl(request.getImageUrl())
         .prizePoint(request.getPoint())
         .build();
 
@@ -40,6 +45,32 @@ public class BoardServiceImpl implements BoardService {
         boardLikeService.countLike(questionBoard.getId()));
   }
 
+  //질문 게시글 생성(+이미지)
+//  @Override
+//  @Transactional
+//  public QuestionBoardResponse createBoard(QuestionBoardRequest request,
+//      List<MultipartFile> multipartFiles,
+//      User user) throws IOException {
+//    List<String> imagePaths = awsS3Service.upload(multipartFiles);
+//    QuestionBoard questionBoard = QuestionBoard.builder()
+//        .userId(user.getId())
+//        .title(request.getTitle())
+//        .content(request.getContent())
+//        .category(request.getCategory())
+//        .prizePoint(request.getPoint())
+//        .build();
+//
+//    for (String imagePath : imagePaths) {
+//      BoardImage boardImage = new BoardImage(imagePath, questionBoard);
+//      boardImageRepository.save(boardImage);
+//    }
+//
+//    questionBoardRepository.save(questionBoard);
+//    //userService.deductPoint(request.getPrizePoint); -> 유저서비스에서 질문자가 걸어놓은 포인트 차감되는 메소드 필요. 메소드 명은 알아서
+//    return new QuestionBoardResponse(questionBoard, user,
+//        boardLikeService.countLike(questionBoard.getId()));
+//  }
+
   //질문 게시글 수정
   @Override
   @Transactional
@@ -48,10 +79,9 @@ public class BoardServiceImpl implements BoardService {
         .orElseThrow(/*CustomException.NotFoundException::new*/);
 
     if (!questionBoard.isWriter(questionBoard.getId())) {
-      /*throw new CustomException.NotAuthorityException()*/
+      throw new CustomException(ExceptionStatus.AUTHENTICATED_EXCEPTION);
     }
-    questionBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory(),
-        request.getImageUrl());
+    questionBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory());
     questionBoardRepository.save(questionBoard);
   }
 
@@ -77,8 +107,10 @@ public class BoardServiceImpl implements BoardService {
   public QuestionBoardResponse getQuestionBoard(Long boardId, User user) {
 
     QuestionBoard questionBoard = questionBoardRepository.findBoardById(boardId);
+    /*islike메소드 트루인지 포스인지 확인하고*/
+
     return new QuestionBoardResponse(questionBoard, user,
-        boardLikeService.countLike(questionBoard.getId()));
+        boardLikeService.countLike(questionBoard.getId())/*, 트루포스*/);
   }
 
 
