@@ -33,6 +33,9 @@ dependencies {
     implementation "com.h2database:h2"
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//    implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws', version: '2.2.6.RELEASE'
+//    implementation group: 'com.amazonaws', name: 'aws-java-sdk-bundle', version: '1.12.405'
+
 }
 
 tasks.named('test') {

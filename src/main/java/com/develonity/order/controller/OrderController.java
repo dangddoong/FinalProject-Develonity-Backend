@@ -17,7 +17,7 @@ public class OrderController {
 
     private final OrderServiceImpl orderService;
 
-    //기프티콘 구매(주문하기)
+    //기프트 카드 구매(주문하기)
     @PostMapping("/order")
     public Long orderGiftCard(@RequestBody OrderRequest orderRequest, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return orderService.order(orderRequest, userDetails.getUser().getId());
@@ -31,8 +31,8 @@ public class OrderController {
 
     //유저 주문 상세 내역 조회
     @GetMapping("/user/orders/{orderId}")
-    public OrderResponse getMyOrder(@PathVariable Long orderId /*, @AuthenticationPrincipal UserDetailsImpl userDetails*/) {
-        return orderService.getMyOrder(orderId/*, userDetails.getUser().getId()*/);
+    public OrderResponse getMyOrder(@PathVariable Long orderId , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return orderService.getMyOrder(orderId, userDetails.getUser().getId());
     }
 
 }

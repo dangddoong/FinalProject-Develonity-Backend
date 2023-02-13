@@ -1,6 +1,8 @@
 package com.develonity.board.entity;
 
 import com.develonity.user.entity.TimeStamp;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -12,10 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 
@@ -40,9 +42,8 @@ public abstract class Board extends TimeStamp {
   @Enumerated(EnumType.STRING)
   private Category category;
 
-  @Column(nullable = false)
-  @ColumnDefault("'default.jpg'")
-  private String imageUrl;
+  @Transient
+  private final List<BoardImage> boardImageList = new ArrayList<>();
 
 //  @ManyToOne
 //  @JoinColumn(name = "USER_ID", nullable = false, fetch = FetchType.LAZY)
@@ -52,20 +53,17 @@ public abstract class Board extends TimeStamp {
   //일단 이렇게 넣어놓음
   private Long userId;
 
-  public Board(Long userId, String title, String content, Category category,
-      String imageUrl) {
+  public Board(Long userId, String title, String content, Category category) {
     this.userId = userId;
     this.title = title;
     this.content = content;
     this.category = category;
-    this.imageUrl = imageUrl;
   }
 
-  public void updateBoard(String title, String content, Category category, String imageUrl) {
+  public void updateBoard(String title, String content, Category category) {
     this.title = title;
     this.content = content;
     this.category = category;
-    this.imageUrl = imageUrl;
   }
 
   boolean isWriter(Long id) {

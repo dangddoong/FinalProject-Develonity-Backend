@@ -1,29 +1,49 @@
 package com.develonity.order.entity;
 
-import com.develonity.common.exception.NotEnoughStockException;
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@DynamicUpdate
 public class GiftCard {
-    // 기프트 카드도 카테고리가 필요할까..?
-    // 카카오톡 선물하기 처럼 카페, 아이스크림, 등등등 ?
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "GIFTCARD_ID")
     private Long id;
+    @Enumerated(EnumType.STRING)
+    private GiftCardCategory category;
     private String name;
     private String details;
     private String imageUrl;
     private int price;
-    private String giftCardOrderNumber;
-
     private int stockQuantity; // 동시성 문제를 막기 위한 수량 설정(?)
+
+    @Builder
+    public GiftCard(GiftCardCategory category, String name, String details, String imageUrl, int price, int stockQuantity) {
+        this.category = category;
+        this.name = name;
+        this.details = details;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
+
+    public void update(String name, String details, String imageUrl, int price, int stockQuantity) {
+        this.name = name;
+        this.details = details;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
 
     /**
      * stock 증가
@@ -38,7 +58,7 @@ public class GiftCard {
     public void removeStock(int quantity) {
         int restStock = this.stockQuantity - quantity;
         if (restStock < 0) {
-            throw new NotEnoughStockException("재고가 부족합니다");
+            throw new CustomException(ExceptionStatus.QUANTITY_IS_LACKING);
         }
         this.stockQuantity = restStock;
     }

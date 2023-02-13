@@ -25,8 +25,8 @@ public class QuestionBoard extends Board {
 
   @Builder
   public QuestionBoard(Long userId, String title, String content, Category category,
-      String imageUrl, int prizePoint) {
-    super(userId, title, content, category, imageUrl);
+      int prizePoint) {
+    super(userId, title, content, category);
     this.prizePoint = prizePoint;
   }
 
