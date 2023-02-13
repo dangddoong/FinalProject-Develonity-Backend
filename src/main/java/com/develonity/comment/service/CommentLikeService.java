@@ -1,10 +1,12 @@
 package com.develonity.comment.service;
 
-import com.develonity.user.entity.User;
-
 public interface CommentLikeService {
 
-  Boolean addLike(Long commentId, User user);
+  int addLike(Long commentId);
 
-  Boolean deleteLike(Long commentId, User user);
+  void cancelLike(Long commentId);
+
+  void changeCommentLike(Long commentId, Long userId);
+
+  boolean isExistLikes(Long commentId);
 }
