@@ -1,5 +1,7 @@
 package com.develonity.order.entity;
 
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,7 +60,7 @@ public class Order {
 
     public void checkUser(Order order, Long userId) {
         if (order.getUserId() != userId) {
-            throw new IllegalArgumentException("유저 불일치");
+            throw new CustomException(ExceptionStatus.AUTHENTICATED_EXCEPTION);
         }
     }
 

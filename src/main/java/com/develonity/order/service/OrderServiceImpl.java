@@ -1,5 +1,7 @@
 package com.develonity.order.service;
 
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.order.dto.OrderRequest;
 import com.develonity.order.dto.OrderResponse;
 import com.develonity.order.entity.GiftCard;
@@ -32,7 +34,7 @@ public class OrderServiceImpl implements OrderService{
         String phoneNumber = orderRequest.getPhoneNumber();
         Long giftCardId = orderRequest.getGiftCardId();
 
-        GiftCard giftCard = giftCardRepository.findById(giftCardId).orElseThrow(() -> new IllegalArgumentException("해당 기프트카드가 존재하지 않습니다."));
+        GiftCard giftCard = giftCardRepository.findById(giftCardId).orElseThrow(() -> new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST));
         giftCard.removeStock(1);
         //여기서 포인트를 차감하는 메서드가 필요한지..?
 
@@ -53,7 +55,7 @@ public class OrderServiceImpl implements OrderService{
         List<Order> orders = orderRepository.findAllByUserId(userId);
 
         if(orders == null || orders.isEmpty())
-            throw new IllegalArgumentException("주문 내역이 존재하지 않습니다.");
+            throw new CustomException(ExceptionStatus.ORDER_IS_NOT_EXIST);
 
         return orders.stream().map(OrderResponse::new).collect(Collectors.toList());
     }
@@ -63,7 +65,7 @@ public class OrderServiceImpl implements OrderService{
      */
     @Override
     public OrderResponse getMyOrder(Long orderId, Long userId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("주문 내역이 존재하지 않습니다."));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(ExceptionStatus.ORDER_IS_NOT_EXIST));
         order.checkUser(order, userId);
         return new OrderResponse(order);
     }

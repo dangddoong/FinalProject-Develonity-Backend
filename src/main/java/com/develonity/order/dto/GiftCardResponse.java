@@ -5,12 +5,14 @@ import lombok.Getter;
 
 @Getter
 public class GiftCardResponse {
+    private Long id;
     private String name;
     private String details;
     private String imageUrl;
     private int price;
 
     public GiftCardResponse(GiftCard giftCard) {
+        this.id = giftCard.getId();
         this.name = giftCard.getName();
         this.details = giftCard.getDetails();
         this.imageUrl = giftCard.getImageUrl();

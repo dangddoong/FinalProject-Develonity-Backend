@@ -1,6 +1,7 @@
 package com.develonity.order.entity;
 
-import com.develonity.common.exception.NotEnoughStockException;
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,7 +58,7 @@ public class GiftCard {
     public void removeStock(int quantity) {
         int restStock = this.stockQuantity - quantity;
         if (restStock < 0) {
-            throw new NotEnoughStockException("재고가 부족합니다");
+            throw new CustomException(ExceptionStatus.QUANTITY_IS_LACKING);
         }
         this.stockQuantity = restStock;
     }
