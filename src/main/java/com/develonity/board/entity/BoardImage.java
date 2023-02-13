@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,25 +20,18 @@ public class BoardImage extends TimeStamp {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
   @ManyToOne
   @JoinColumn(name = "BOARD_ID")
   private Board board;
-
   @Column(nullable = false)
-  private String originFileName;
+  private String imagePath;
 
-  @Column(nullable = false)
-  private String filePath;
 
-  private Long fileSize;
-
-  @Builder
-  public BoardImage(String originFileName, String filePath, Long fileSize) {
-    this.originFileName = originFileName;
-    this.filePath = filePath;
-    this.fileSize = fileSize;
+  public BoardImage(String filePath, Board board) {
+    this.imagePath = filePath;
+    this.board = board;
   }
+
 
   public void addBoard(Board board) {
     this.board = board;

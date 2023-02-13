@@ -18,9 +18,10 @@ public class QuestionBoardResponse {
   private final int boardLike;
   private final int prizePoint;
   private final BoardStatus status;
-  private final String imageUrl;
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
+
+//  boolean
 
 
   public QuestionBoardResponse(QuestionBoard questionBoard, User user, int boardLike) {
@@ -32,9 +33,10 @@ public class QuestionBoardResponse {
     this.boardLike = boardLike;
     this.prizePoint = questionBoard.getPrizePoint();
     this.status = questionBoard.getStatus();
-    this.imageUrl = questionBoard.getImageUrl();
     this.createdAt = questionBoard.getCreatedDate();
     this.lastModifiedAt = questionBoard.getLastModifiedDate();
+
+    
   }
 
 
