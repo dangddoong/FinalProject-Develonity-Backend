@@ -1,5 +1,11 @@
 package com.develonity.common.exception;
 
-public class CustomException {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
+@Getter
+public class CustomException extends RuntimeException {
+
+  private final ExceptionStatus exceptionStatus;
 }
