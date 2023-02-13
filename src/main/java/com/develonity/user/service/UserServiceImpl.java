@@ -38,6 +38,9 @@ public class UserServiceImpl implements UserService {
   public LoginResponse login(LoginRequest loginRequest) {
     User user = userRepository.findByLoginId(loginRequest.getLoginId())
         .orElseThrow(IllegalArgumentException::new);
+    if (user.isWithdrawal()) {
+      throw new IllegalArgumentException("탈퇴한 회원입니다.");
+    }
     if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
       throw new IllegalArgumentException("비밀번호 불일치");
     }
@@ -50,20 +53,22 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public void logout(String refreshToken) {
-    Long validMilliSeconds = jwtUtil.getVaildSeconds(refreshToken);
+    Long validMilliSeconds = jwtUtil.getValidMilliSeconds(refreshToken);
     redisDao.setValues(refreshToken, "", Duration.ofMillis(validMilliSeconds));
   }
 
   @Override
   @Transactional
-  public void withdrawal(String loginId, String password) {
+  public void withdrawal(String refreshToken, String loginId, String password) {
     User user = userRepository.findByLoginId(loginId)
         .orElseThrow(IllegalArgumentException::new);
     if (!passwordEncoder.matches(password, user.getPassword())) {
       throw new IllegalArgumentException("비밀번호 불일치");
     }
     user.withdraw();
+    logout(refreshToken);
   }
 
 }

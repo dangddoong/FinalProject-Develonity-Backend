@@ -12,11 +12,9 @@ import java.util.Base64;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,9 +33,8 @@ public class JwtUtil {
   public static final String REFRESH_HEADER = "Refresh";
   public static final String AUTHORIZATION_KEY = "auth"; // 사용자 권한 키값. 사용자 권한도 토큰안에 넣어주기 때문에 그때 사용하는 키값
   private static final String BEARER_PREFIX = "Bearer "; // Token 식별자
-  private static final long ACCESS_TOKEN_TIME = 30 * 1000L;  // 토큰 만료시간. (60 * 1000L 이 1분)
-  // refreshToken 테스트용으로 30초로 설정
-  private static final long REFRESH_TOKEN_TIME = 2 * 60 * 1000L;  // 토큰 만료시간. (60 * 1000L 이 1분)
+  private static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;  // 토큰 만료시간. (60 * 1000L 이 1분)
+  private static final long REFRESH_TOKEN_TIME = 2 * 7 * 24 * 60 * 60 * 1000L;
 
 
   @Value("${jwt.secret.key}")
@@ -96,12 +93,8 @@ public class JwtUtil {
   }
 
   // 토큰 검증
-  public void validateToken(String token, HttpServletResponse response) {
-//    try {
+  public void validateToken(String token) {
     Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-//    } catch (Exception e) {
-//      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//    }
   }
 
   // 단일책임원칙에는 위배되지만 jwt 디코딩 비용이 비싸므로 한큐에 모든결 해결하고 싶은 마음에 부득불 원칙을 어겼습니다.
@@ -115,8 +108,6 @@ public class JwtUtil {
     } catch (ExpiredJwtException e) {
       return new TokenInfo(e.getClaims().getSubject(), JwtStatus.EXPIRED,
           UserRole.valueOf(e.getClaims().get("auth").toString()));
-    } catch (Exception e) {
-      throw new AccessDeniedException("token error");
     }
   }
 
@@ -126,15 +117,7 @@ public class JwtUtil {
     return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
   }
 
-
-  public void validateRefreshToken(String loginId, String refreshToken) {
-    String redisRefreshToken = redisDao.getValues(loginId).toString();
-    if (!redisRefreshToken.equals(refreshToken)) {
-      throw new IllegalArgumentException("Refresh Token Inconsistency");
-    }
-  }
-
-  public Long getVaildSeconds(String refreshToken) {
+  public Long getValidMilliSeconds(String refreshToken) {
     Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken)
         .getBody();
     Long vaildSeconds = claims.getExpiration().getTime() - claims.getIssuedAt().getTime();

@@ -10,7 +10,7 @@ public interface UserService {
 
   LoginResponse login(LoginRequest loginRequest);
 
-  void withdrawal(String loginId, String password);
+  void withdrawal(String refreshToken, String loginId, String password);
 
   void logout(String refreshToken);
 }
