@@ -51,10 +51,11 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public List<OrderResponse> getMyOrders(Long userId) {
         List<Order> orders = orderRepository.findAllByUserId(userId);
+
         if(orders == null || orders.isEmpty())
             throw new IllegalArgumentException("주문 내역이 존재하지 않습니다.");
-        List<OrderResponse> myOrders = orders.stream().map(OrderResponse::new).collect(Collectors.toList());
-        return myOrders;
+
+        return orders.stream().map(OrderResponse::new).collect(Collectors.toList());
     }
 
     /**
