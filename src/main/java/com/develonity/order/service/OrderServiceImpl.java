@@ -4,11 +4,13 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.order.dto.OrderRequest;
 import com.develonity.order.dto.OrderResponse;
+import com.develonity.order.dto.PageDTO;
 import com.develonity.order.entity.GiftCard;
 import com.develonity.order.entity.Order;
 import com.develonity.order.repository.GiftCardRepository;
 import com.develonity.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +60,14 @@ public class OrderServiceImpl implements OrderService{
             throw new CustomException(ExceptionStatus.ORDER_IS_NOT_EXIST);
 
         return orders.stream().map(OrderResponse::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<OrderResponse> getMyOrdersByPaging(Long userId, PageDTO pageDTO) {
+
+        Page<Order> orderList = orderRepository.findAllByUserId(userId, pageDTO.toPageable());
+
+        return new OrderResponse().toDtoList(orderList);
     }
 
     /**
