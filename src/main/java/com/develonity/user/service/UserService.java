@@ -2,6 +2,7 @@ package com.develonity.user.service;
 
 import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.LoginResponse;
+import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
 
 public interface UserService {
@@ -13,4 +14,6 @@ public interface UserService {
   void withdrawal(String refreshToken, String loginId, String password);
 
   void logout(String refreshToken);
+
+  ProfileResponse getProfile(Long userId);
 }

@@ -48,7 +48,8 @@ public class User extends TimeStamp {
 
   @Builder
   public User(String loginId, String password, String realName, String nickName,
-      String profileImageUrl, String email, String phoneNumber, Address address) {
+      String profileImageUrl, String email, String phoneNumber, String detailAddress,
+      String zipcode) {
     this.loginId = loginId;
     this.password = password;
     this.realName = realName;
@@ -56,7 +57,7 @@ public class User extends TimeStamp {
     this.profileImageUrl = profileImageUrl;
     this.email = email;
     this.phoneNumber = phoneNumber;
-    this.address = address;
+    this.address = new Address(detailAddress, zipcode);
   }
 
   public void withdraw() {
@@ -71,6 +72,11 @@ public class User extends TimeStamp {
     private String zipcode;
 
     public Address() {
+    }
+
+    public Address(String detailAddress, String zipcode) {
+      this.detailAddress = detailAddress;
+      this.zipcode = zipcode;
     }
   }
 }

@@ -1,7 +1,6 @@
 package com.develonity.user.dto;
 
 import com.develonity.user.entity.User;
-import com.develonity.user.entity.User.Address;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.Getter;
@@ -25,7 +24,9 @@ public class RegisterRequest {
   private final String profileImageUrl;
   private final String email;
   private final String phoneNumber;
-  private final Address address;
+  private final String detailAddress;
+  @Size(min = 5, max = 5)
+  private final String zipcode;
 
   public User toEntity(String encodingPassword) {
     return User.builder()
@@ -36,7 +37,8 @@ public class RegisterRequest {
         .profileImageUrl(this.profileImageUrl)
         .email(this.email)
         .phoneNumber(this.phoneNumber)
-        .address(this.address)
+        .detailAddress(this.detailAddress)
+        .zipcode(this.zipcode)
         .build();
   }
 
