@@ -5,6 +5,8 @@ import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.repository.CommentRepository;
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,14 +25,14 @@ public class CommentServiceImpl implements CommentService {
   // 댓글이 있는지 확인하는 기능
   private Comment getComment(Long commentId) {
     return commentRepository.findById(commentId).orElseThrow(
-        () -> new IllegalArgumentException("댓글이 없습니다.")
+        () -> new CustomException(ExceptionStatus.COMMENT_IS_NOT_EXIST)
     );
   }
 
   // 작성자와 현재 유저가 같은지 확인하는 기능
   private void checkUser(User user, Comment comment) {
     if (comment.getNickName() != user.getNickName()) {
-      throw new IllegalStateException("댓글 작성자가 아닙니다.");
+      throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
     }
   }
 
@@ -50,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
   public Page<CommentResponse> getMyComments(CommentList commentList, Long userId, User user) {
 
     if (userId != user.getId()) {
-      throw new IllegalStateException("권한이 없습니다");
+      throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
     }
 
     Page<Comment> myCommentList = commentRepository.findAllByNickName(commentList.toPageable(),
@@ -105,7 +107,7 @@ public class CommentServiceImpl implements CommentService {
     // 권한 확인
     // 댓글 작성자와 수정하려는 유저 닉네임이 같지 않으면 익셉션 출력
     checkUser(user, comment);
-    
+
     if (commentLikeService.isExistLikes(commentId)) {
       commentLikeService.cancelLike(commentId);
     }

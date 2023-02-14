@@ -9,11 +9,13 @@ public enum ExceptionStatus {
   // 대문자로 작성해주세요.
   AUTHENTICATED_EXCEPTION(401, " 인증 실패에 따른 예외가 발생했습니다. "),
   PASSWORDS_DO_NOT_MATCH(401, "비밀번호가 일치 하지 않습니다."),
+  COMMENT_USER_NOT_MATCH(401, "댓글 작성자가 아닙니다."),
 
   USER_IS_NOT_EXIST(404, "사용자가 존재 하지 않습니다."),
   ORDER_IS_NOT_EXIST(404, " 주문내역이 존재하지 않습니다. "),
   PAGINATION_IS_NOT_EXIST(404, "요청하신 페이지 내역이 존재하지 않습니다."),
   GIFTCARD_IS_NOT_EXIST(404, "기프트카드가 존재하지 않습니다."),
+  COMMENT_IS_NOT_EXIST(404, "댓글이 존재하지 않습니다."),
 
   USERID_IS_EXIST(409, " 이미 등록된 아이디입니다. "),
   POINTS_IS_LACKING(409, "포인트가 부족합니다."),
