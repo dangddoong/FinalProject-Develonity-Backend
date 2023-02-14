@@ -4,6 +4,7 @@ import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.security.users.UserDetailsImpl;
 import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.LoginResponse;
+import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.dto.WithdrawalRequest;
 import com.develonity.user.service.UserService;
@@ -14,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,13 +70,18 @@ public class UserController {
     return new ResponseEntity<>("회원탈퇴 성공", HttpStatus.OK);
   }
 
-//  // 내 프로필조회
-//  @GetMapping("user/me/profile")
-//  public
-//
-//  //  타인 프로필조회
-//  @GetMapping("users/{id}/profile")
-//
+  // 내 프로필조회
+  @GetMapping("/users/me/profile")
+  public ProfileResponse getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    return userService.getProfile(userDetails.getUserId());
+  }
+
+  //  타인 프로필조회
+  @GetMapping("/users/{userId}/profile")
+  public ProfileResponse getUserProfile(@PathVariable Long userId) {
+    return userService.getProfile(userId);
+  }
+
 //  //프로필 정보 수정 (닉네임, 프로필사진)
 //  @PutMapping("user/me/profile")
 //

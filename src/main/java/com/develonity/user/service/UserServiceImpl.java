@@ -4,6 +4,7 @@ import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.redis.RedisDao;
 import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.LoginResponse;
+import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
@@ -71,4 +72,9 @@ public class UserServiceImpl implements UserService {
     logout(refreshToken);
   }
 
+  @Override
+  public ProfileResponse getProfile(Long userId) {
+    User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
+    return new ProfileResponse(user.getProfileImageUrl(), user.getNickName());
+  }
 }
