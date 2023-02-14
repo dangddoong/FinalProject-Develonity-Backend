@@ -75,12 +75,8 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional
   public void updateBoard(Long boardId, QuestionBoardRequest request, User user) {
-    QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
-        .orElseThrow(/*CustomException.NotFoundException::new*/);
-
-    if (!questionBoard.isWriter(questionBoard.getId())) {
-      throw new CustomException(ExceptionStatus.AUTHENTICATED_EXCEPTION);
-    }
+    QuestionBoard questionBoard = getQuestionBoard(boardId);
+    checkUser(questionBoard, user.getId());
     questionBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory());
     questionBoardRepository.save(questionBoard);
   }
@@ -89,11 +85,8 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional
   public void deleteBoard(Long boardId, User user) {
-    QuestionBoard questionBoard = questionBoardRepository.findById(boardId)
-        .orElseThrow(/*CustomException.NotFoundException::new*/);
-    if (!questionBoard.isWriter(questionBoard.getId())) {
-      /*throw new CustomException.NotAuthorityException()*/
-    }
+    QuestionBoard questionBoard = getQuestionBoard(boardId);
+    checkUser(questionBoard, user.getId());
     if (boardLikeService.isExistLikes(boardId)) {
       boardLikeService.deleteLike(boardId);
     }
@@ -105,8 +98,8 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional(readOnly = true)
   public QuestionBoardResponse getQuestionBoard(Long boardId, User user) {
-
-    QuestionBoard questionBoard = questionBoardRepository.findBoardById(boardId);
+  
+    QuestionBoard questionBoard = getQuestionBoard(boardId);
     /*islike메소드 트루인지 포스인지 확인하고*/
 
     return new QuestionBoardResponse(questionBoard, user,
@@ -134,4 +127,14 @@ public class BoardServiceImpl implements BoardService {
 
   }
 
+  private QuestionBoard getQuestionBoard(Long boardId) {
+    return questionBoardRepository.findById(boardId)
+        .orElseThrow(() -> new CustomException(ExceptionStatus.BOARD_IS_NOT_EXIST));
+  }
+
+  private void checkUser(QuestionBoard questionBoard, Long userId) {
+    if (!questionBoard.isWriter(userId)) {
+      throw new CustomException(ExceptionStatus.BOARD_USER_NOT_MATCH);
+    }
+  }
 }

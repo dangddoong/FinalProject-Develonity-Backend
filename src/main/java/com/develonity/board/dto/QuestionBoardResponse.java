@@ -21,7 +21,7 @@ public class QuestionBoardResponse {
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
 
-//  boolean
+  private boolean isLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
 
   public QuestionBoardResponse(QuestionBoard questionBoard, User user, int boardLike) {
@@ -36,7 +36,7 @@ public class QuestionBoardResponse {
     this.createdAt = questionBoard.getCreatedDate();
     this.lastModifiedAt = questionBoard.getLastModifiedDate();
 
-    
+
   }
 
 
