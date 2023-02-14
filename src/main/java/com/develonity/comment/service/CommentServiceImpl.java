@@ -31,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
 
   // 작성자와 현재 유저가 같은지 확인하는 기능
   private void checkUser(User user, Comment comment) {
-    if (comment.getNickName() != user.getNickName()) {
+    if (comment.getNickName() != user.getNickname()) {
       throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
     }
   }
@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     Page<Comment> myCommentList = commentRepository.findAllByNickName(commentList.toPageable(),
-        user.getNickName());
+        user.getNickname());
     return myCommentList.map(
         comment1 -> new CommentResponse(comment1, commentLikeService.addLike(comment1.getId())));
   }

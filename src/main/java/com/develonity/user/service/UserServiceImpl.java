@@ -45,9 +45,7 @@ public class UserServiceImpl implements UserService {
     if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
       throw new IllegalArgumentException("비밀번호 불일치");
     }
-    if (user.isWithdrawal()) {
-      throw new IllegalArgumentException("이미 탈퇴된 회원입니다.");
-    }
+
     String accessToken = jwtUtil.createAccessToken(user.getLoginId(), user.getUserRole());
     String refreshToken = jwtUtil.createRefreshToken(user.getLoginId(), user.getUserRole());
     return new LoginResponse(accessToken, refreshToken);
@@ -75,6 +73,6 @@ public class UserServiceImpl implements UserService {
   @Override
   public ProfileResponse getProfile(Long userId) {
     User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
-    return new ProfileResponse(user.getProfileImageUrl(), user.getNickName());
+    return new ProfileResponse(user.getProfileImageUrl(), user.getNickname());
   }
 }

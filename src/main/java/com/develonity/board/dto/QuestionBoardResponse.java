@@ -26,7 +26,7 @@ public class QuestionBoardResponse {
 
   public QuestionBoardResponse(QuestionBoard questionBoard, User user, int boardLike) {
     this.id = questionBoard.getId();
-    this.nickname = user.getNickName();
+    this.nickname = user.getNickname();
     this.category = questionBoard.getCategory();
     this.title = questionBoard.getTitle();
     this.content = questionBoard.getContent();
@@ -36,7 +36,7 @@ public class QuestionBoardResponse {
     this.createdAt = questionBoard.getCreatedDate();
     this.lastModifiedAt = questionBoard.getLastModifiedDate();
 
-    
+
   }
 
 

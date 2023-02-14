@@ -82,14 +82,15 @@ public class UserController {
     return userService.getProfile(userId);
   }
 
-//  //프로필 정보 수정 (닉네임, 프로필사진)
-//  @PutMapping("user/me/profile")
+  //내 프로필 정보 수정 (닉네임, 프로필사진)
+//  @PatchMapping("/users/me/profile")
+//  public
 //
 //  // 개인정보 조회 (이름, 비밀번호, 이메일, 핸드폰번호, 주소)
-//  @GetMapping("user/me/personal-information")
+//  @GetMapping("/users/me/personal-information")
 //
 //  // 개인정보 수정 (이름, 비밀번호, 이메일, 핸드폰번호, 주소)
-//  @PutMapping("user/me/personal-information")
+//  @PutMapping("/users/me/personal-information")
 
   // ----아래부터는 애매한 부분 ---
   //게시글 스크랩 저장 ?-? (이거는 애매함)
