@@ -24,6 +24,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       String accessToken = jwtUtil.resolveAccessToken(request);
       String a = request.getRequestURI();
       if (accessToken != null) {
+        // 이쯤에서 어드민 토큰 꺼내고 검증하는 로직이 있어야 할 것 같음(아래 로직 안타고 바로 .doFilter로 넘어가도록?)
         // accessToken에서 필요한 값(loginId, Role)과 토큰의 상태를 꺼냄
         TokenInfo accessTokenInfo = jwtUtil.getInfoFromToken(accessToken);
         if (accessTokenInfo.getJwtStatus() == JwtStatus.EXPIRED) {
