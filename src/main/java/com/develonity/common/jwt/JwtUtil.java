@@ -31,6 +31,7 @@ public class JwtUtil {
   private final UserDetailsService userDetailsService;
   public static final String AUTHORIZATION_HEADER = "Authorization"; // access token 헤더에 들어가는 키값
   public static final String REFRESH_HEADER = "Refresh";
+  public static final String ADMIN_HEADER = "Admin";
   public static final String AUTHORIZATION_KEY = "auth"; // 사용자 권한 키값. 사용자 권한도 토큰안에 넣어주기 때문에 그때 사용하는 키값
   private static final String BEARER_PREFIX = "Bearer "; // Token 식별자
   private static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;  // 토큰 만료시간. (60 * 1000L 이 1분)
@@ -61,6 +62,14 @@ public class JwtUtil {
 
   public static String resolveRefreshToken(HttpServletRequest request) {
     String bearerToken = request.getHeader(REFRESH_HEADER);
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+      return bearerToken.substring(7);
+    }
+    return null;
+  }
+
+  public String resolveAdminToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader(ADMIN_HEADER);
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
       return bearerToken.substring(7);
     }
@@ -98,7 +107,7 @@ public class JwtUtil {
   }
 
   // 단일책임원칙에는 위배되지만 jwt 디코딩 비용이 비싸므로 한큐에 모든결 해결하고 싶은 마음에 부득불 원칙을 어겼습니다.
-  public TokenInfo getInfoFromToken(String token) {
+  public TokenInfo getInfoFromTokenIfValidOrExpired(String token) {
     try {
       Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
           .getBody();
@@ -129,4 +138,6 @@ public class JwtUtil {
       throw new IllegalArgumentException("로그아웃 된 토큰입니다.");
     }
   }
+
+
 }
