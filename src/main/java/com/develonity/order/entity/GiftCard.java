@@ -21,6 +21,7 @@ public class GiftCard {
     @Column(name = "GIFTCARD_ID")
     private Long id;
     @Enumerated(EnumType.STRING)
+    @Column(name="category", nullable = false)
     private GiftCardCategory category;
     private String name;
     private String details;

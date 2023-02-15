@@ -6,12 +6,10 @@ import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
 import com.develonity.order.dto.PageDTO;
 import com.develonity.order.entity.GiftCard;
+import com.develonity.order.entity.GiftCardCategory;
 import com.develonity.order.repository.GiftCardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +57,17 @@ public class GiftCardServiceImpl implements GiftCardService{
     }
 
     @Override
+    public List<GiftCardResponse> getCategorizedGiftCardList(GiftCardCategory category) {
+        List<GiftCard> giftCardList = giftCardRepository.findAllByCategory(category);
+
+
+        if(giftCardList.isEmpty())
+            throw new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST);
+
+        return giftCardList.stream().map(GiftCardResponse::new).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<GiftCardResponse> getGiftCardListByPaging(PageDTO pageDTO) {
 
@@ -66,6 +75,7 @@ public class GiftCardServiceImpl implements GiftCardService{
 
         return new GiftCardResponse().toDtoList(giftCardList);
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -100,16 +110,5 @@ public class GiftCardServiceImpl implements GiftCardService{
         giftCardRepository.deleteById(giftCardId);
         return giftCardId;
     }
-
-    public static Pageable getPageable(int page, int size, boolean isAsc, String sortBy) {
-        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, sortBy);
-        if (page < 0) {
-            page = 1;
-        }
-        Pageable pageRequest = PageRequest.of(page - 1, size, sort);
-        return pageRequest;
-    }
-
 
 }

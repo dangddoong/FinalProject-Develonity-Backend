@@ -3,6 +3,7 @@ package com.develonity.order.controller;
 import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
 import com.develonity.order.dto.PageDTO;
+import com.develonity.order.entity.GiftCardCategory;
 import com.develonity.order.service.GiftCardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,11 @@ public class GiftCardController {
         return giftCardService.getGiftCardList();
     }
 
+    //카테고리 별 기프트 카드 조회
+    @GetMapping("/gift-cards/category/{category}")
+    public List<GiftCardResponse> getCategorizedGiftCardList(@PathVariable GiftCardCategory category) {
+        return giftCardService.getCategorizedGiftCardList(category);
+    }
 
     //기프트 카드 전체 조회(페이징)
     @GetMapping("/gift-cards/paging") //테스트를 위한 API, 추후 수정 예정
