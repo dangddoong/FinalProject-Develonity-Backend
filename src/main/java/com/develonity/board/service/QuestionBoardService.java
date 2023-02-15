@@ -28,4 +28,6 @@ public interface QuestionBoardService {
   void checkUser(QuestionBoard questionBoard, Long userId);
 
   int countLike(Long boardId);
+
+  boolean isExistBoard(Long boardId);
 }

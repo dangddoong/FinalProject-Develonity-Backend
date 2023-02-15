@@ -126,17 +126,25 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   }
 
+  @Override
   public QuestionBoard getQuestionBoardAndCheck(Long boardId) {
     return questionBoardRepository.findById(boardId)
         .orElseThrow(() -> new CustomException(ExceptionStatus.BOARD_IS_NOT_EXIST));
   }
 
+  @Override
   public void checkUser(QuestionBoard questionBoard, Long userId) {
     if (!questionBoard.isWriter(userId)) {
       throw new CustomException(ExceptionStatus.BOARD_USER_NOT_MATCH);
     }
   }
 
+  @Override
+  public boolean isExistBoard(Long boardId) {
+    return questionBoardRepository.existsBoardById(boardId);
+  }
+
+  @Override
   public int countLike(Long boardId) {
     return boardLikeService.countLike(boardId);
   }

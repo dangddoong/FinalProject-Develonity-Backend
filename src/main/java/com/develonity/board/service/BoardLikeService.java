@@ -2,8 +2,6 @@ package com.develonity.board.service;
 
 public interface BoardLikeService {
 
-  void changeBoardLike(Long userId, Long boardId);
-
   int countLike(Long boardId);
 
   void deleteLike(Long boardId);
@@ -12,8 +10,11 @@ public interface BoardLikeService {
 
   boolean isLike(Long boardId, Long userId);
 
-//  void addBoardLike(Long userId, Long boardId);
+  void addBoardLike(Long userId, Long boardId);
 
-//  void cancelBoardLike(Long userId, Long boardId);
+  void cancelBoardLike(Long userId, Long boardId);
+
+  boolean isExistLikesBoardIdAndUserId(Long boardId, Long userId);
+
 
 }
