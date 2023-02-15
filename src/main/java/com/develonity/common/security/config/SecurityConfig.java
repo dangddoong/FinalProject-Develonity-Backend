@@ -1,7 +1,8 @@
 package com.develonity.common.security.config;
 
-import com.develonity.common.jwt.JwtAuthFilter;
+import com.develonity.common.jwt.AdminAuthFilter;
 import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.jwt.UserAuthFilter;
 import com.develonity.common.security.exceptionHandler.CustomAccessDeniedHandler;
 import com.develonity.common.security.exceptionHandler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,8 @@ public class SecurityConfig {
         .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
         .and()
-        .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(new UserAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(new AdminAuthFilter(jwtUtil), UserAuthFilter.class);
 
     return http.build();
   }

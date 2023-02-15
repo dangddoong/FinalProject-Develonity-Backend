@@ -24,7 +24,7 @@ public class AdminAuthService {
     if (!passwordEncoder.matches(loginRequest.getPassword(), admin.getPassword())) {
       throw new IllegalArgumentException("비밀번호 불일치");
     }
-    return jwtUtil.createAccessToken(admin.getLoginId(), admin.getRole());
+    return jwtUtil.createAdminToken(admin.getLoginId(), admin.getRole());
   }
 
   @Transactional

@@ -1,7 +1,7 @@
 package com.develonity.common.security.users;
 
 import com.develonity.admin.entity.Admin;
-import com.develonity.user.entity.UserRole;
+import com.develonity.admin.entity.AdminRole;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +22,7 @@ public class AdminDetails implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    UserRole role = admin.getRole();
+    AdminRole role = admin.getRole();
     String authority = role.getAuthority();
     SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
     Collection<GrantedAuthority> authorities = new ArrayList<>();

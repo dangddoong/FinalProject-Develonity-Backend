@@ -1,6 +1,5 @@
 package com.develonity.admin.entity;
 
-import com.develonity.user.entity.UserRole;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,7 +22,7 @@ public class Admin {
 
   @Column(nullable = false)
   @Enumerated(value = EnumType.STRING)
-  private UserRole role = UserRole.ADMIN;
+  private AdminRole role = AdminRole.ADMIN;
   @Column(nullable = false, unique = true)
   private String loginId;
   @Column(nullable = false)

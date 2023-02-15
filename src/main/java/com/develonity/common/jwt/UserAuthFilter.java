@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class UserAuthFilter extends OncePerRequestFilter {
 
   private final JwtUtil jwtUtil;
 
@@ -22,10 +22,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       FilterChain filterChain) throws ServletException, IOException {
     try {
       String accessToken = jwtUtil.resolveAccessToken(request);
-      String adminToken = jwtUtil.resolveAdminToken(request);
-      if (adminToken != null) {
-        accessToken = adminToken;
-      }
       if (accessToken != null) {
         // accessToken에서 필요한 값(loginId, Role)과 토큰의 상태를 꺼냄
         TokenInfo accessTokenInfo = jwtUtil.getInfoFromTokenIfValidOrExpired(accessToken);
@@ -33,7 +29,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
           String refreshToken = JwtUtil.resolveRefreshToken(request);
           jwtUtil.checkBlackList(refreshToken);
           jwtUtil.validateToken(refreshToken);
-          if (!request.getRequestURI().equals("/api/logout")) {
+          if (!request.getRequestURI().equals("/api/logout")
+              || !request.getRequestURI().equals("/api/withdrawal")) {
             accessToken = jwtUtil.createAccessToken(accessTokenInfo.getLoginId(),
                 accessTokenInfo.getUserRole());
             response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
@@ -41,7 +38,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
           }
         }
-        Authentication authentication = jwtUtil.createAuthentication(accessTokenInfo.getLoginId());
+        Authentication authentication = jwtUtil.createAuthentication(accessTokenInfo.getLoginId(),
+            "userDetailsServiceImpl");
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception e) {

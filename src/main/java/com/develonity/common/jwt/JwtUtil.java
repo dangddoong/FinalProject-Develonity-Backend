@@ -1,5 +1,6 @@
 package com.develonity.common.jwt;
 
+import com.develonity.admin.entity.AdminRole;
 import com.develonity.common.redis.RedisDao;
 import com.develonity.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
@@ -10,6 +11,7 @@ import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ import org.springframework.util.StringUtils;
 public class JwtUtil {
 
   private final RedisDao redisDao;
-  private final UserDetailsService userDetailsService;
+  private final Map<String, UserDetailsService> userDetailsServiceMap;
   public static final String AUTHORIZATION_HEADER = "Authorization"; // access token 헤더에 들어가는 키값
   public static final String REFRESH_HEADER = "Refresh";
   public static final String ADMIN_HEADER = "Admin";
@@ -89,6 +91,18 @@ public class JwtUtil {
             .compact();
   }
 
+  public String createAdminToken(String username, AdminRole role) {
+    Date date = new Date();
+    return BEARER_PREFIX +
+        Jwts.builder()
+            .setSubject(username)
+            .claim(AUTHORIZATION_KEY, role)
+            .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
+            .setIssuedAt(date)
+            .signWith(key, signatureAlgorithm)
+            .compact();
+  }
+
   public String createRefreshToken(String username, UserRole role) {
     Date date = new Date();
     return BEARER_PREFIX +
@@ -120,8 +134,14 @@ public class JwtUtil {
     }
   }
 
+  public String getUsernameFromTokenIfValid(String token) {
+    return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody()
+        .getSubject();
+  }
+
   // 인증 객체 생성
-  public Authentication createAuthentication(String username) {
+  public Authentication createAuthentication(String username, String userDetailsServiceKey) {
+    UserDetailsService userDetailsService = userDetailsServiceMap.get(userDetailsServiceKey);
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
     return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
   }
