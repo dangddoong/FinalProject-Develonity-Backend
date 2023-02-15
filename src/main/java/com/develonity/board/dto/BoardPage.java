@@ -9,15 +9,14 @@ import org.springframework.data.domain.Sort;
 
 @Getter
 @Setter
-public class QuestionBoardPage {
+public class BoardPage {
 
   private String title;
-
   private String content;
   private SubCategory subCategory;
   private int page;
-  private int size;
-  private Boolean isAsc;
+  private int size = 5;
+  private Boolean isAsc = false;
 
 
   public Pageable toPageable() {

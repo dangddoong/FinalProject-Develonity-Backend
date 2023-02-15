@@ -18,7 +18,6 @@ public class QuestionBoardResponse {
   private final Long id;
   private final String nickname;
   private final Category category;
-
   private final SubCategory subCategory;
   private final String title;
   private final String content;

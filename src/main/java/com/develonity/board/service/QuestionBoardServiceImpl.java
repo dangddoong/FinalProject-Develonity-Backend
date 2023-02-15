@@ -1,6 +1,6 @@
 package com.develonity.board.service;
 
-import com.develonity.board.dto.QuestionBoardPage;
+import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.entity.QuestionBoard;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class BoardServiceImpl implements BoardService {
+public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   private final QuestionBoardRepository questionBoardRepository;
 
@@ -74,7 +74,7 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional
   public void updateBoard(Long boardId, QuestionBoardRequest request, User user) {
-    QuestionBoard questionBoard = getQuestionBoard(boardId);
+    QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     checkUser(questionBoard, user.getId());
     questionBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory());
     questionBoardRepository.save(questionBoard);
@@ -84,7 +84,7 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional
   public void deleteBoard(Long boardId, User user) {
-    QuestionBoard questionBoard = getQuestionBoard(boardId);
+    QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     checkUser(questionBoard, user.getId());
     if (boardLikeService.isExistLikes(boardId)) {
       boardLikeService.deleteLike(boardId);
@@ -98,7 +98,7 @@ public class BoardServiceImpl implements BoardService {
   @Transactional(readOnly = true)
   public QuestionBoardResponse getQuestionBoard(Long boardId, User user) {
 
-    QuestionBoard questionBoard = getQuestionBoard(boardId);
+    QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     /*islike메소드 트루인지 포스인지 확인하고*/
     boolean isLike = boardLikeService.isLike(boardId, user.getId());
     return new QuestionBoardResponse(questionBoard, user, countLike(boardId), isLike);
@@ -109,7 +109,7 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional(readOnly = true)
   public Page<QuestionBoardResponse> getQuetionBoardPage(User user,
-      QuestionBoardPage questionBoardPage) {
+      BoardPage questionBoardPage) {
 
 //    Page<QuestionBoard> questionBoardPages = boardRepository.findByTitleContaining(
 //        /*questionBoardPage.getCategory(),*/ questionBoardPage.getTitle(),
@@ -126,18 +126,18 @@ public class BoardServiceImpl implements BoardService {
 
   }
 
-  private QuestionBoard getQuestionBoard(Long boardId) {
+  public QuestionBoard getQuestionBoardAndCheck(Long boardId) {
     return questionBoardRepository.findById(boardId)
         .orElseThrow(() -> new CustomException(ExceptionStatus.BOARD_IS_NOT_EXIST));
   }
 
-  private void checkUser(QuestionBoard questionBoard, Long userId) {
+  public void checkUser(QuestionBoard questionBoard, Long userId) {
     if (!questionBoard.isWriter(userId)) {
       throw new CustomException(ExceptionStatus.BOARD_USER_NOT_MATCH);
     }
   }
 
-  private int countLike(Long boardId) {
+  public int countLike(Long boardId) {
     return boardLikeService.countLike(boardId);
   }
 

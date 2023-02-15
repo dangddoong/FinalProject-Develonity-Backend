@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("QuestionBoard")
 public class QuestionBoard extends Board {
 
-  @Column(nullable = false)
+  @Column
   private int prizePoint;
-  @Column(nullable = false)
+  @Column
   @Enumerated(EnumType.STRING)
   private BoardStatus status = BoardStatus.NOT_ADOPTED;
-  @Column(nullable = false)
+  @Column
   @Enumerated(EnumType.STRING)
   private SubCategory subCategory;
 
