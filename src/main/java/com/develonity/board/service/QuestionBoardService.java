@@ -1,14 +1,15 @@
 package com.develonity.board.service;
 
-import com.develonity.board.dto.QuestionBoardPage;
+import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.entity.QuestionBoard;
 import com.develonity.user.entity.User;
 import org.springframework.data.domain.Page;
 
-public interface BoardService {
+public interface QuestionBoardService {
 
-  QuestionBoardResponse createBoard(QuestionBoardRequest request, User user);
+  void createBoard(QuestionBoardRequest request, User user);
 
 //  QuestionBoardResponse createBoard(QuestionBoardRequest request,
 //      List<MultipartFile> multipartFiles, User user) throws IOException;
@@ -18,8 +19,13 @@ public interface BoardService {
   void deleteBoard(Long boardId, User user);
 
   Page<QuestionBoardResponse> getQuetionBoardPage(User user,
-      QuestionBoardPage questionBoardPage);
+      BoardPage questionBoardPage);
 
   QuestionBoardResponse getQuestionBoard(Long boardId, User user);
 
+  QuestionBoard getQuestionBoardAndCheck(Long boardId);
+
+  void checkUser(QuestionBoard questionBoard, Long userId);
+
+  int countLike(Long boardId);
 }

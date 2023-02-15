@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @NoArgsConstructor(force = true)
 @RequiredArgsConstructor
-public class QuestionBoardRequest {
+public class CommunityBoardRequest {
 
   private final String title;
   private final String content;

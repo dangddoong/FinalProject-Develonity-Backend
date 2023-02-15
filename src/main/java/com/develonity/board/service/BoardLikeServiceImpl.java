@@ -55,6 +55,9 @@ public class BoardLikeServiceImpl implements BoardLikeService {
     return boardLikeRepository.existsBoardById(boardId);
   }
 
+  public boolean isLike(Long boardId, Long userId) {
+    return boardLikeRepository.existsBoardLikeByBoardIdAndUserId(boardId, userId);
+  }
 
 }
 
