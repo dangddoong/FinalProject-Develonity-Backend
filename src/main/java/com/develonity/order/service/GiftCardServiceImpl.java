@@ -4,9 +4,14 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
+import com.develonity.order.dto.PageDTO;
 import com.develonity.order.entity.GiftCard;
 import com.develonity.order.repository.GiftCardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +49,7 @@ public class GiftCardServiceImpl implements GiftCardService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<GiftCardResponse> retrieveGiftCardList() {
+    public List<GiftCardResponse> getGiftCardList() {
         List<GiftCard> giftCardList = giftCardRepository.findAll();
 
         if(giftCardList.isEmpty())
@@ -55,7 +60,16 @@ public class GiftCardServiceImpl implements GiftCardService{
 
     @Override
     @Transactional(readOnly = true)
-    public GiftCardResponse retrieveGiftCard(Long giftCardId) {
+    public Page<GiftCardResponse> getGiftCardListByPaging(PageDTO pageDTO) {
+
+        Page<GiftCard> giftCardList = giftCardRepository.findAll(pageDTO.toPageable());
+
+        return new GiftCardResponse().toDtoList(giftCardList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public GiftCardResponse getGiftCard(Long giftCardId) {
         GiftCard giftCard = giftCardRepository.findById(giftCardId).orElseThrow(() -> new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST));
         return new GiftCardResponse(giftCard);
     }
@@ -86,5 +100,16 @@ public class GiftCardServiceImpl implements GiftCardService{
         giftCardRepository.deleteById(giftCardId);
         return giftCardId;
     }
+
+    public static Pageable getPageable(int page, int size, boolean isAsc, String sortBy) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        if (page < 0) {
+            page = 1;
+        }
+        Pageable pageRequest = PageRequest.of(page - 1, size, sort);
+        return pageRequest;
+    }
+
 
 }
