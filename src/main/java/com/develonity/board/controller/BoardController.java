@@ -34,12 +34,12 @@ public class BoardController {
 
   //  질문게시글 생성
   @PostMapping("/question-boards")
-  @ResponseStatus(HttpStatus.CREATED)
-  public QuestionBoardResponse createQuestionBoard(@RequestBody QuestionBoardRequest request,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return boardService.createBoard(request, userDetails.getUser());
-  }
 
+  public ResponseEntity<String> createQuestionBoard(@RequestBody QuestionBoardRequest request,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    boardService.createBoard(request, userDetails.getUser());
+    return new ResponseEntity<>("질문 게시글이 생성되었습니다", HttpStatus.CREATED);
+  }
 //  질문게시글 생성(+이미지)
 //  @PostMapping("/question-boards")
 //  @ResponseStatus(HttpStatus.CREATED)

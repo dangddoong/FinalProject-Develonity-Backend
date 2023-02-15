@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 
 public interface BoardService {
 
-  QuestionBoardResponse createBoard(QuestionBoardRequest request, User user);
+  void createBoard(QuestionBoardRequest request, User user);
 
 //  QuestionBoardResponse createBoard(QuestionBoardRequest request,
 //      List<MultipartFile> multipartFiles, User user) throws IOException;

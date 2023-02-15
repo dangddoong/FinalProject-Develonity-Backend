@@ -21,13 +21,17 @@ public class QuestionBoard extends Board {
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private BoardStatus status = BoardStatus.NOT_ADOPTED;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private SubCategory subCategory;
 
 
   @Builder
   public QuestionBoard(Long userId, String title, String content, Category category,
-      int prizePoint) {
+      int prizePoint, SubCategory subCategory) {
     super(userId, title, content, category);
     this.prizePoint = prizePoint;
+    this.subCategory = subCategory;
   }
 
 

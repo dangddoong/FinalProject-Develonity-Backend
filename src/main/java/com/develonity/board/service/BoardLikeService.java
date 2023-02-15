@@ -10,6 +10,8 @@ public interface BoardLikeService {
 
   boolean isExistLikes(Long boardId);
 
+  boolean isLike(Long boardId, Long userId);
+
 //  void addBoardLike(Long userId, Long boardId);
 
 //  void cancelBoardLike(Long userId, Long boardId);

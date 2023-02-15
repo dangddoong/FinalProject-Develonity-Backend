@@ -1,6 +1,6 @@
 package com.develonity.board.dto;
 
-import com.develonity.board.entity.Category;
+import com.develonity.board.entity.SubCategory;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 public class QuestionBoardPage {
 
   private String title;
-  private Category category;
+
+  private String content;
+  private SubCategory subCategory;
   private int page;
   private int size;
   private Boolean isAsc;

@@ -30,19 +30,18 @@ public class BoardServiceImpl implements BoardService {
   //질문 게시글 생성
   @Override
   @Transactional
-  public QuestionBoardResponse createBoard(QuestionBoardRequest request, User user) {
+  public void createBoard(QuestionBoardRequest request, User user) {
     QuestionBoard questionBoard = QuestionBoard.builder()
         .userId(user.getId())
         .title(request.getTitle())
         .content(request.getContent())
         .category(request.getCategory())
         .prizePoint(request.getPoint())
+        .subCategory(request.getSubCategory())
         .build();
 
     questionBoardRepository.save(questionBoard);
     //userService.deductPoint(request.getPrizePoint); -> 유저서비스에서 질문자가 걸어놓은 포인트 차감되는 메소드 필요. 메소드 명은 알아서
-    return new QuestionBoardResponse(questionBoard, user,
-        boardLikeService.countLike(questionBoard.getId()));
   }
 
   //질문 게시글 생성(+이미지)
@@ -98,12 +97,11 @@ public class BoardServiceImpl implements BoardService {
   @Override
   @Transactional(readOnly = true)
   public QuestionBoardResponse getQuestionBoard(Long boardId, User user) {
-  
+
     QuestionBoard questionBoard = getQuestionBoard(boardId);
     /*islike메소드 트루인지 포스인지 확인하고*/
-
-    return new QuestionBoardResponse(questionBoard, user,
-        boardLikeService.countLike(questionBoard.getId())/*, 트루포스*/);
+    boolean isLike = boardLikeService.isLike(boardId, user.getId());
+    return new QuestionBoardResponse(questionBoard, user, countLike(boardId), isLike);
   }
 
 
@@ -118,12 +116,13 @@ public class BoardServiceImpl implements BoardService {
 //        questionBoardPage.toPageable());
 //
 
-    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByCategoryAndTitleContaining(
-        questionBoardPage.getCategory(), questionBoardPage.getTitle(),
+    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findBySubCategoryAndTitleContainingOrContentContaining(
+        questionBoardPage.getSubCategory(), questionBoardPage.getTitle(),
+        questionBoardPage.getContent(),
         questionBoardPage.toPageable());
 
-    return questionBoardPages.map(questionBoard -> new QuestionBoardResponse(questionBoard, user,
-        boardLikeService.countLike(questionBoard.getId())));
+    return questionBoardPages.map(
+        questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard, user));
 
   }
 
@@ -137,4 +136,9 @@ public class BoardServiceImpl implements BoardService {
       throw new CustomException(ExceptionStatus.BOARD_USER_NOT_MATCH);
     }
   }
+
+  private int countLike(Long boardId) {
+    return boardLikeService.countLike(boardId);
+  }
+
 }
