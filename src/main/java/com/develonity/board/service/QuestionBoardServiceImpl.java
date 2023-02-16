@@ -109,6 +109,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
       boardLikeService.deleteLike(boardId);
     }
 //    deleteBoardImages(boardId);
+//    commentService.deleteCommentByBoardId(boardId);
     questionBoardRepository.deleteById(boardId);
   }
 
@@ -148,7 +149,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   //답변 채택하기
   @Override
   @Transactional
-  public void adoptAnswer(Long boardId, Long commentId, Long userId) {
+  public void adoptComment(Long boardId, Long commentId, Long userId) {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     System.out.println(commentId);
     checkUser(questionBoard, userId);
