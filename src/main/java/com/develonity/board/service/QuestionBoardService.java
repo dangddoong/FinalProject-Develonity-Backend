@@ -35,6 +35,11 @@ public interface QuestionBoardService {
 
   boolean isExistBoard(Long boardId);
 
+  void adoptAnswer(Long boardId, Long commentId, Long userId);
+
+  String getNickname(Long userId);
+
+  String getNicknameByQuestionBoard(QuestionBoard questionBoard);
 //  void upload(List<MultipartFile> multipartFiles, QuestionBoard questionBoard) throws IOException;
 //
 //  void deleteBoardImages(Long boardId);

@@ -3,9 +3,12 @@ package com.develonity.board.service;
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.entity.BoardStatus;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
+import com.develonity.comment.entity.Comment;
+import com.develonity.comment.service.CommentService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
@@ -24,6 +27,8 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   private final BoardLikeService boardLikeService;
 
   private final BoardImageRepository boardImageRepository;
+
+  private final CommentService commentService;
 
 //  private final AwsS3Service awsS3Service;
 
@@ -114,8 +119,12 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   public QuestionBoardResponse getQuestionBoard(Long boardId, User user) {
 
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
+
+    Long userId = questionBoard.getUserId();
+
+    String nickname = getNickname(userId);
     boolean isLike = boardLikeService.isLike(boardId, user.getId());
-    return new QuestionBoardResponse(questionBoard, user, countLike(boardId), isLike);
+    return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), isLike);
   }
 
 
@@ -131,8 +140,33 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
         questionBoardPage.toPageable());
 
     return questionBoardPages.map(
-        questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard, user));
+        questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
+            getNicknameByQuestionBoard(questionBoard)));
 
+  }
+
+  //답변 채택하기
+  @Override
+  @Transactional
+  public void adoptAnswer(Long boardId, Long commentId, Long userId) {
+    QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
+    System.out.println(commentId);
+    checkUser(questionBoard, userId);
+    Comment comment = commentService.getComment(commentId);
+    if (questionBoard.getStatus().equals(BoardStatus.ADOPTED)) {
+      throw new CustomException(ExceptionStatus.ALREADY_ADOPTED);
+    }
+
+    comment.changeStatus();
+    questionBoard.changeStatus();
+
+//    userService.addPoint(questionBoard.getPrizePoint()); 유저서비스에 유저 포인트 추가해주는 메소드 만들기
+  }
+
+
+  @Override
+  public int countLike(Long boardId) {
+    return boardLikeService.countLike(boardId);
   }
 
   //게시글 가져오기 + 있는지 확인
@@ -155,8 +189,13 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   }
 
   @Override
-  public int countLike(Long boardId) {
-    return boardLikeService.countLike(boardId);
+  public String getNickname(Long userId) {
+    return userService.getProfile(userId).getNickName();
+  }
+
+  @Override
+  public String getNicknameByQuestionBoard(QuestionBoard questionBoard) {
+    return userService.getProfile(questionBoard.getUserId()).getNickName();
   }
 
 //  @Override

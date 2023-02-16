@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -51,6 +53,10 @@ public class Comment extends TimeStamp {
   @JoinColumn(name = "BOARD_ID")
   private Long boardId;
 
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private CommentStatus commentStatus = CommentStatus.NOT_ADOPTED;
+
 
   @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
   public List<ReplyComment> getReplyCommentList = new ArrayList<>();
@@ -67,6 +73,10 @@ public class Comment extends TimeStamp {
 
   public void update(String content) {
     this.content = content;
+  }
+
+  public void changeStatus() {
+    this.commentStatus = CommentStatus.ADOPTED;
   }
 
 

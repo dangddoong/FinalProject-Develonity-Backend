@@ -3,6 +3,7 @@ package com.develonity.comment.service;
 import com.develonity.comment.dto.CommentList;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
+import com.develonity.comment.entity.Comment;
 import com.develonity.user.entity.User;
 import org.springframework.data.domain.Page;
 
@@ -26,4 +27,7 @@ public interface CommentService {
       User user);
 
   void deleteCommunity(Long commentId, User user);
+
+  Comment getComment(Long commentId);
+
 }

@@ -9,6 +9,7 @@ import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
+import com.develonity.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   private final BoardLikeService boardLikeService;
   private final BoardImageRepository boardImageRepository;
+
+  private final UserService userService;
 
 //  private final AwsS3Service awsS3Service;
 
@@ -53,6 +56,26 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 //        .build();
 //
 //    upload(multipartFiles, communityBoard);
+  //  @Override
+//  public void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard)
+//      throws IOException {
+//
+//    List<String> uploadImagePaths = new ArrayList<>();
+//    int checkNumber = 0;
+//    for (MultipartFile multipartFile : multipartFiles) {
+//      if (!multipartFile.isEmpty()) {
+//        checkNumber = 1;
+//      }
+//    }
+//    if (checkNumber == 1) {
+//      uploadImagePaths = awsS3Service.upload(multipartFiles);
+//    }
+//
+//    for (String imagePath : uploadImagePaths) {
+//      BoardImage boardImage = new BoardImage(imagePath, communityBoard);
+//      boardImageRepository.save(boardImage);
+//    }
+//  }
 //    communityBoardRepository.save(communityBoard);
 //  }
 
@@ -110,7 +133,8 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
         communityBoardPage.toPageable());
 
     return communityBoardPages.map(
-        communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard, user));
+        communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
+            getNicknameByCommunityBoard(communityBoard)));
   }
 
   //잡담 게시글 선택 조회
@@ -119,7 +143,9 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   public CommunityBoardResponse getCommunityBoard(Long boardId, User user) {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     boolean isLike = boardLikeService.isLike(boardId, user.getId());
-    return new CommunityBoardResponse(communityBoard, user, countLike(boardId), isLike);
+    Long userId = communityBoard.getUserId();
+    String nickname = getNickname(userId);
+    return new CommunityBoardResponse(communityBoard, nickname, countLike(boardId), isLike);
   }
 
   @Override
@@ -143,6 +169,16 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   @Override
   public boolean isExistBoard(Long boardId) {
     return communityBoardRepository.existsBoardById(boardId);
+  }
+
+  @Override
+  public String getNickname(Long userId) {
+    return userService.getProfile(userId).getNickName();
+  }
+
+  @Override
+  public String getNicknameByCommunityBoard(CommunityBoard communityBoard) {
+    return userService.getProfile(communityBoard.getUserId()).getNickName();
   }
 
 //  @Override

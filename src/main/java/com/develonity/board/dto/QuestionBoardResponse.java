@@ -4,7 +4,6 @@ import com.develonity.board.entity.BoardStatus;
 import com.develonity.board.entity.Category;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.entity.SubCategory;
-import com.develonity.user.entity.User;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,10 +29,10 @@ public class QuestionBoardResponse {
   private Boolean isLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
 
-  public QuestionBoardResponse(QuestionBoard questionBoard, User user, int boardLike,
+  public QuestionBoardResponse(QuestionBoard questionBoard, String nickname, int boardLike,
       Boolean isLike) {
     this.id = questionBoard.getId();
-    this.nickname = user.getNickName();
+    this.nickname = nickname;
     this.category = questionBoard.getCategory();
     this.subCategory = questionBoard.getSubCategory();
     this.title = questionBoard.getTitle();
@@ -49,10 +48,10 @@ public class QuestionBoardResponse {
   }
 
   public static QuestionBoardResponse toQuestionBoardResponse(QuestionBoard questionBoard,
-      User user) {
+      String nickname) {
     return QuestionBoardResponse.builder()
         .id(questionBoard.getId())
-        .nickname(user.getNickName())
+        .nickname(nickname)
         .category(questionBoard.getCategory())
         .subCategory(questionBoard.getSubCategory())
         .title(questionBoard.getTitle())

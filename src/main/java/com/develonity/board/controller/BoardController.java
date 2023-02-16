@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -203,5 +204,13 @@ public class BoardController {
     return new ResponseEntity<>("좋아요 취소!", HttpStatus.OK);
   }
 
-
+  //답변 채택 기능
+  @PostMapping("/question-boards/{boardId}")
+  public ResponseEntity<String> adoptAnswer(@PathVariable Long boardId,
+      @RequestParam Long commentId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    System.out.println(commentId);
+    questionBoardService.adoptAnswer(boardId, commentId, userDetails.getUser().getId());
+    return new ResponseEntity<>("답변 채택 완료!", HttpStatus.OK);
+  }
 }
