@@ -11,6 +11,7 @@ public enum ExceptionStatus {
   PASSWORDS_DO_NOT_MATCH(401, "비밀번호가 일치 하지 않습니다."),
   COMMENT_USER_NOT_MATCH(401, "댓글 작성자가 아닙니다."),
   BOARD_USER_NOT_MATCH(401, "게시글 작성자가 아닙니다."),
+  REPLY_COMMENT_USER_NOT_MATCH(401, "대댓글 작성자가 아닙니다."),
 
   USER_IS_NOT_EXIST(404, "사용자가 존재 하지 않습니다."),
   ORDER_IS_NOT_EXIST(404, " 주문내역이 존재하지 않습니다. "),
@@ -23,7 +24,8 @@ public enum ExceptionStatus {
   QUANTITY_IS_LACKING(409, "재고가 부족합니다."),
   GIFTCARD_IS_EXIST(409, "이미 등록된 기프트카드 입니다."),
   LIKE_IS_EXIST(409, "이미 좋아요를 누른 게시글입니다."),
-  LIKE_IS_NOT_EXIST(409, "좋아요가 존재하지 않습니다.");
+  LIKE_IS_NOT_EXIST(409, "좋아요가 존재하지 않습니다."),
+  REPLY_COMMENT_IS_NOT_EXIST(404, "대댓글이 존재하지 않습니다.");
 
 
   private final int statusCode;
