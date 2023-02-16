@@ -6,6 +6,7 @@ import com.develonity.board.dto.CommunityBoardResponse;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
+import com.develonity.comment.service.CommentService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
@@ -25,6 +26,8 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   private final BoardImageRepository boardImageRepository;
 
   private final UserService userService;
+
+  private final CommentService commentService;
 
 //  private final AwsS3Service awsS3Service;
 
@@ -118,7 +121,10 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
       boardLikeService.deleteLike(boardId);
     }
 //    deleteBoardImages(boardId);
+//    commentService.deleteCommentByBoardId(boardId);
     communityBoardRepository.deleteById(boardId);
+
+
   }
 
   //잡담 게시글 전체 조회
