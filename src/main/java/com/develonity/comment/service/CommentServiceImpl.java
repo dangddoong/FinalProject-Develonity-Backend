@@ -23,7 +23,8 @@ public class CommentServiceImpl implements CommentService {
 
 
   // 댓글이 있는지 확인하는 기능
-  private Comment getComment(Long commentId) {
+  @Override
+  public Comment getComment(Long commentId) {
     return commentRepository.findById(commentId).orElseThrow(
         () -> new CustomException(ExceptionStatus.COMMENT_IS_NOT_EXIST)
     );

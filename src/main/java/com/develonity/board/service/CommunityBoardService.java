@@ -34,6 +34,10 @@ public interface CommunityBoardService {
 
   boolean isExistBoard(Long boardId);
 
+  String getNickname(Long userId);
+
+  String getNicknameByCommunityBoard(CommunityBoard communityBoard);
+
 //  void deleteBoardImages(Long boardId);
 //
 //  void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard) throws IOException;

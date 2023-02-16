@@ -2,7 +2,6 @@ package com.develonity.board.dto;
 
 import com.develonity.board.entity.Category;
 import com.develonity.board.entity.CommunityBoard;
-import com.develonity.user.entity.User;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,10 +24,10 @@ public class CommunityBoardResponse {
   private Boolean isLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
 
-  public CommunityBoardResponse(CommunityBoard communityBoard, User user, int boardLike,
+  public CommunityBoardResponse(CommunityBoard communityBoard, String nickname, int boardLike,
       Boolean isLike) {
     this.id = communityBoard.getId();
-    this.nickname = user.getNickName();
+    this.nickname = nickname;
     this.category = communityBoard.getCategory();
     this.title = communityBoard.getTitle();
     this.content = communityBoard.getContent();
@@ -41,10 +40,10 @@ public class CommunityBoardResponse {
   }
 
   public static CommunityBoardResponse toCommunityBoardResponse(CommunityBoard communityBoard,
-      User user) {
+      String nickname) {
     return CommunityBoardResponse.builder()
         .id(communityBoard.getId())
-        .nickname(user.getNickName())
+        .nickname(nickname)
         .category(communityBoard.getCategory())
         .title(communityBoard.getTitle())
         .content(communityBoard.getContent())
