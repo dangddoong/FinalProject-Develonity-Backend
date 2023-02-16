@@ -1,9 +1,11 @@
 package com.develonity.comment.entity;
 
-import com.develonity.board.entity.Board;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.user.entity.TimeStamp;
 import com.develonity.user.entity.User;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,12 +14,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Comment extends TimeStamp {
 
@@ -43,17 +47,23 @@ public class Comment extends TimeStamp {
   @JoinColumn(name = "USER_ID")
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  //  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "BOARD_ID")
-  private Board board;
+  private Long boardId;
 
 
-  public Comment(User user, CommentRequest requestDto) {
+  @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  public List<ReplyComment> getReplyCommentList = new ArrayList<>();
+
+
+  public Comment(User user, CommentRequest requestDto, Long questionBoardId) {
     this.nickName = user.getNickName();
     this.content = requestDto.getContent();
     this.point = user.getGiftPoint();
     this.user = user;
+    this.boardId = questionBoardId;
   }
+
 
   public void update(String content) {
     this.content = content;

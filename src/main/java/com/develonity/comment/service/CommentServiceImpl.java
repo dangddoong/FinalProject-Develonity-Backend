@@ -66,13 +66,9 @@ public class CommentServiceImpl implements CommentService {
   @Transactional
   public void createQuestionComment(Long questionBoardId, CommentRequest requestDto,
       User user) {
-    // 게시물이 있는지 확인
-//    Board board = boardRepository.findById(boardid).orElseThrow(
-//        () -> new IllegalArgumentException("게시물이 없습니다.")
-//    );
 
     // 댓글 생성
-    Comment comment = new Comment(user, requestDto);
+    Comment comment = new Comment(user, requestDto, questionBoardId);
     commentRepository.save(comment);
     new CommentResponse(comment, commentLikeService.addLike(comment.getId()));
   }
@@ -125,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
 //    Board board = boardService.getBoard(boardId);
 
     // 게시글이 있으면 댓글 작성
-    Comment comment = new Comment(user, request);
+    Comment comment = new Comment(user, request, communityBoardId);
     commentRepository.save(comment);
     new CommentResponse(comment, commentLikeService.addLike(comment.getId()));
   }
