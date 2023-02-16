@@ -15,5 +15,5 @@ public interface GiftCardRepository extends JpaRepository<GiftCard, Long> {
 
     Page<GiftCard> findAll(Pageable pageable);
 
-    List<GiftCard> findAllByCategory(GiftCardCategory category);
+    Page<GiftCard> findAllByCategory(GiftCardCategory category, Pageable pageable);
 }
