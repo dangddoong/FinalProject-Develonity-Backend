@@ -10,11 +10,11 @@ import com.develonity.order.entity.GiftCardCategory;
 import com.develonity.order.repository.GiftCardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,32 +47,23 @@ public class GiftCardServiceImpl implements GiftCardService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<GiftCardResponse> getGiftCardList() {
-        List<GiftCard> giftCardList = giftCardRepository.findAll();
-
-        if(giftCardList.isEmpty())
-            throw new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST);
-
-        return giftCardList.stream().map(GiftCardResponse::new).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<GiftCardResponse> getCategorizedGiftCardList(Long categoryId) {
-        GiftCardCategory category = GiftCardCategory.valueOfCategoryId(categoryId);
-
-        List<GiftCard> giftCardList = giftCardRepository.findAllByCategory(category);
-
-        if(giftCardList.isEmpty())
-            throw new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST);
-
-        return giftCardList.stream().map(GiftCardResponse::new).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<GiftCardResponse> getGiftCardListByPaging(PageDTO pageDTO) {
+    public Page<GiftCardResponse> getGiftCardList(PageDTO pageDTO) {
 
         Page<GiftCard> giftCardList = giftCardRepository.findAll(pageDTO.toPageable());
+
+        return new GiftCardResponse().toDtoList(giftCardList);
+    }
+
+    @Override // 카테고리 별 기프트카드 페이징 해서 가져오기
+    @Transactional(readOnly = true)
+    public Page<GiftCardResponse> getCategorizedGiftCardList(Long categoryId, PageDTO pageDTO) {
+        GiftCardCategory category = GiftCardCategory.valueOfCategoryId(categoryId);
+        Pageable pageable = pageDTO.toPageable();
+
+        Page<GiftCard> giftCardList = giftCardRepository.findAllByCategory(category, pageable);
+
+        if(giftCardList.isEmpty())
+            throw new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST);
 
         return new GiftCardResponse().toDtoList(giftCardList);
     }
