@@ -30,10 +30,10 @@ public class GiftCardController {
         return giftCardService.getGiftCardList();
     }
 
-    //카테고리 별 기프트 카드 조회
-    @GetMapping("/gift-cards/category/{category}")
-    public List<GiftCardResponse> getCategorizedGiftCardList(@PathVariable GiftCardCategory category) {
-        return giftCardService.getCategorizedGiftCardList(category);
+    //카테고리 별 기프트 카드 조회 (Enum 의 Long 값을 넣어줄 때)
+    @GetMapping("/gift-cards/categories/{categoryId}")
+    public List<GiftCardResponse> getCategorizedGiftCardList(@PathVariable Long categoryId) {
+        return giftCardService.getCategorizedGiftCardList(categoryId);
     }
 
     //기프트 카드 전체 조회(페이징)

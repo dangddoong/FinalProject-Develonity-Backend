@@ -3,6 +3,7 @@ package com.develonity.order.service;
 import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
 import com.develonity.order.dto.PageDTO;
+import com.develonity.order.entity.GiftCardCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,4 +28,8 @@ public interface GiftCardService {
 
     @Transactional
     Long deleteGiftCard(Long giftCardId);
+
+    @Transactional
+    List<GiftCardResponse> getCategorizedGiftCardList(Long categoryId);
+
 }

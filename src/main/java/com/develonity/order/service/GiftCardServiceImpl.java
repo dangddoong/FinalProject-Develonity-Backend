@@ -57,9 +57,10 @@ public class GiftCardServiceImpl implements GiftCardService{
     }
 
     @Override
-    public List<GiftCardResponse> getCategorizedGiftCardList(GiftCardCategory category) {
-        List<GiftCard> giftCardList = giftCardRepository.findAllByCategory(category);
+    public List<GiftCardResponse> getCategorizedGiftCardList(Long categoryId) {
+        GiftCardCategory category = GiftCardCategory.valueOfCategoryId(categoryId);
 
+        List<GiftCard> giftCardList = giftCardRepository.findAllByCategory(category);
 
         if(giftCardList.isEmpty())
             throw new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST);
@@ -75,7 +76,6 @@ public class GiftCardServiceImpl implements GiftCardService{
 
         return new GiftCardResponse().toDtoList(giftCardList);
     }
-
 
     @Override
     @Transactional(readOnly = true)
