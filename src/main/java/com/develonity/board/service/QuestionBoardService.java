@@ -11,10 +11,14 @@ public interface QuestionBoardService {
 
   void createBoard(QuestionBoardRequest request, User user);
 
-//  QuestionBoardResponse createBoard(QuestionBoardRequest request,
+//  void createBoard(QuestionBoardRequest request,
 //      List<MultipartFile> multipartFiles, User user) throws IOException;
 
   void updateBoard(Long boardId, QuestionBoardRequest request, User user);
+
+//  void updateBoard(Long boardId, List<MultipartFile> multipartFiles, QuestionBoardRequest request,
+//      User user) throws IOException;
+
 
   void deleteBoard(Long boardId, User user);
 
@@ -30,4 +34,10 @@ public interface QuestionBoardService {
   int countLike(Long boardId);
 
   boolean isExistBoard(Long boardId);
+
+//  void upload(List<MultipartFile> multipartFiles, QuestionBoard questionBoard) throws IOException;
+//
+//  void deleteBoardImages(Long boardId);
+
+
 }

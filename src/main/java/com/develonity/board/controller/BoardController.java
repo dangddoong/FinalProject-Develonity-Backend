@@ -49,21 +49,16 @@ public class BoardController {
 //  질문게시글 생성(+이미지)
 //  @PostMapping("/question-boards")
 //  @ResponseStatus(HttpStatus.CREATED)
-//  public QuestionBoardResponse createQuestionBoard(
+//  public ResponseEntity<String> createQuestionBoard(
 //      @RequestPart("images") List<MultipartFile> multipartFiles,
 //      @RequestPart("request") QuestionBoardRequest request,
-//      @AuthenticationPrincipal UserDetailsImpl userDetails)
-//      throws IllegalAccessException, IOException {
+//      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 //
-//    if (multipartFiles == null) {
-//      throw new IllegalAccessException();
-//    }
-//
-//    return boardService.createBoard(request, multipartFiles, userDetails.getUser());
-//
+//    questionBoardService.createBoard(request, multipartFiles, userDetails.getUser());
+//    return new ResponseEntity<>("질문 게시글이 생성되었습니다", HttpStatus.CREATED);
 //  }
 
-  //  잡담게시글 생성
+  //    잡담게시글 생성
   @PostMapping("/community-boards")
 
   public ResponseEntity<String> createCommunityBoard(@RequestBody CommunityBoardRequest request,
@@ -71,6 +66,17 @@ public class BoardController {
     communityBoardService.createCommunityBoard(request, userDetails.getUser());
     return new ResponseEntity<>("잡담 게시글이 생성되었습니다", HttpStatus.CREATED);
   }
+  // 잡담 게시글 생성(+이미지)
+//  @PostMapping("/community-boards")
+//  @ResponseStatus(HttpStatus.CREATED)
+//  public ResponseEntity<String> createCommunityBoard(
+//      @RequestPart("images") List<MultipartFile> multipartFiles,
+//      @RequestPart("request") CommunityBoardRequest request,
+//      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+//
+//    communityBoardService.createCommunityBoard(request, multipartFiles, userDetails.getUser());
+//    return new ResponseEntity<>("잡담 게시글이 생성되었습니다", HttpStatus.CREATED);
+//  }
 
   //질문게시글 수정
   @PatchMapping("/question-boards/{boardId}")
@@ -80,6 +86,15 @@ public class BoardController {
     questionBoardService.updateBoard(boardId, request, userDetails.getUser());
     return new ResponseEntity<>("질문 게시글이 수정되었습니다.", HttpStatus.OK);
   }
+  //질문게시글 수정(+이미지)
+//  @PatchMapping("/question-boards/{boardId}")
+//  public ResponseEntity<String> updateQuestionBoard(@PathVariable Long boardId,
+//      @RequestPart("images") List<MultipartFile> multipartFiles,
+//      @RequestPart("request") QuestionBoardRequest request,
+//      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+//    questionBoardService.updateBoard(boardId, multipartFiles, request, userDetails.getUser());
+//    return new ResponseEntity<>("질문 게시글이 수정되었습니다.", HttpStatus.OK);
+//  }
 
   //잡담게시글 수정
   @PatchMapping("/community-boards/{boardId}")
@@ -89,6 +104,16 @@ public class BoardController {
     communityBoardService.updateCommunityBoard(boardId, request, userDetails.getUser());
     return new ResponseEntity<>("잡담 게시글이 수정되었습니다.", HttpStatus.OK);
   }
+  //잡담 게시글 수정 (+이미지)
+//  @PatchMapping("/community-boards/{boardId}")
+//  public ResponseEntity<String> updateCommunityBoard(@PathVariable Long boardId,
+//      @RequestPart("images") List<MultipartFile> multipartFiles,
+//      @RequestPart("request") CommunityBoardRequest request,
+//      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+//    communityBoardService.updateCommunityBoard(boardId, multipartFiles, request,
+//        userDetails.getUser());
+//    return new ResponseEntity<>("잡담 게시글이 수정되었습니다.", HttpStatus.OK);
+//  }
 
   //질문게시글 삭제
   @DeleteMapping("/question-boards/{boardId}")
@@ -177,4 +202,6 @@ public class BoardController {
     boardLikeService.cancelBoardLike(userDetails.getUser().getId(), boardId);
     return new ResponseEntity<>("좋아요 취소!", HttpStatus.OK);
   }
+
+
 }

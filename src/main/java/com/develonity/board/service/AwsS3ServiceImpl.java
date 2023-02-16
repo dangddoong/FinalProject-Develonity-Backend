@@ -1,6 +1,7 @@
 //package com.develonity.board.service;
 //
 //
+//import com.amazonaws.AmazonServiceException;
 //import com.amazonaws.services.s3.AmazonS3;
 //import com.amazonaws.services.s3.model.CannedAccessControlList;
 //import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -21,7 +22,6 @@
 //
 //
 //  private final AmazonS3 s3Client;
-//
 //  @Value("${cloud.aws.credentials.accessKey}")
 //  private String accessKey;
 //
@@ -64,6 +64,18 @@
 //    return imgPaths;
 //  }
 //
+//  public void deleteFile(String imagePathLong) {
+//    try {
+//      String imagePath = imagePathLong.substring(54);
+//      s3Client.deleteObject(
+//          new com.amazonaws.services.s3.model.DeleteObjectRequest(bucket, imagePath));
+//    } catch (
+//        AmazonServiceException e) {
+//      e.printStackTrace();
+//    }
+//  }
+//
+//
 //  public String createFileName(String fileName) throws IOException {
 //    return UUID.randomUUID().toString().concat(getFileExtension(fileName));
 //  }
@@ -86,5 +98,5 @@
 //    return fileName.substring(fileName.lastIndexOf("."));
 //  }
 //}
-//
-//
+
+

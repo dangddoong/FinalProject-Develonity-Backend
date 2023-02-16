@@ -10,8 +10,14 @@ import org.springframework.data.domain.Page;
 public interface CommunityBoardService {
 
   void createCommunityBoard(CommunityBoardRequest request, User user);
+//  void createCommunityBoard(CommunityBoardRequest request,
+//      List<MultipartFile> multipartFiles,
+//      User user) throws IOException;
 
   void updateCommunityBoard(Long boardId, CommunityBoardRequest request, User user);
+
+//  void updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,
+//      CommunityBoardRequest request, User user) throws IOException;
 
   void deleteCommunityBoard(Long boardId, User user);
 
@@ -27,4 +33,9 @@ public interface CommunityBoardService {
   int countLike(Long boardId);
 
   boolean isExistBoard(Long boardId);
+
+//  void deleteBoardImages(Long boardId);
+//
+//  void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard) throws IOException;
+
 }
