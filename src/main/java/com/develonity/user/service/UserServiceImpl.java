@@ -107,10 +107,11 @@ public class UserServiceImpl implements UserService {
   }
 
   private boolean isSameRefreshTokenInRedis(String loginId, String refreshToken) {
-    Object a = redisDao.getValues(loginId);
-    String b = a.toString();
-    return redisDao.getValues(loginId).toString().equals(refreshToken);
+    Object redisRefreshToken = redisDao.getValues(loginId);
+    if (redisRefreshToken != null) {
+      return redisRefreshToken.toString().equals(refreshToken);
+    }
+    return false;
   }
-
 
 }
