@@ -65,6 +65,7 @@ public class User extends TimeStamp {
   }
 
   @Embeddable
+  @Getter
   public static class Address {
 
     private String detailAddress;

@@ -62,7 +62,7 @@ public class Comment extends TimeStamp {
   public List<ReplyComment> getReplyCommentList = new ArrayList<>();
 
   public Comment(User user, CommentRequest requestDto, Long questionBoardId) {
-    this.nickName = user.getNickName();
+    this.nickName = user.getNickname();
     this.content = requestDto.getContent();
     this.point = user.getGiftPoint();
     this.user = user;

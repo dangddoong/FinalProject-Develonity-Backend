@@ -59,26 +59,6 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 //        .build();
 //
 //    upload(multipartFiles, communityBoard);
-  //  @Override
-//  public void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard)
-//      throws IOException {
-//
-//    List<String> uploadImagePaths = new ArrayList<>();
-//    int checkNumber = 0;
-//    for (MultipartFile multipartFile : multipartFiles) {
-//      if (!multipartFile.isEmpty()) {
-//        checkNumber = 1;
-//      }
-//    }
-//    if (checkNumber == 1) {
-//      uploadImagePaths = awsS3Service.upload(multipartFiles);
-//    }
-//
-//    for (String imagePath : uploadImagePaths) {
-//      BoardImage boardImage = new BoardImage(imagePath, communityBoard);
-//      boardImageRepository.save(boardImage);
-//    }
-//  }
 //    communityBoardRepository.save(communityBoard);
 //  }
 
@@ -179,12 +159,12 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   @Override
   public String getNickname(Long userId) {
-    return userService.getProfile(userId).getNickName();
+    return userService.getProfile(userId).getNickname();
   }
 
   @Override
   public String getNicknameByCommunityBoard(CommunityBoard communityBoard) {
-    return userService.getProfile(communityBoard.getUserId()).getNickName();
+    return userService.getProfile(communityBoard.getUserId()).getNickname();
   }
 
 //  @Override
