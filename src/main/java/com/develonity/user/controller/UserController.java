@@ -6,6 +6,7 @@ import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.LoginResponse;
 import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
+import com.develonity.user.dto.ReissueResponse;
 import com.develonity.user.dto.WithdrawalRequest;
 import com.develonity.user.service.UserService;
 import javax.servlet.http.HttpServletRequest;
@@ -37,37 +38,33 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest,
+  public LoginResponse login(@RequestBody LoginRequest loginRequest,
       HttpServletResponse httpServletResponse) {
     LoginResponse loginResponse = userService.login(loginRequest);
+    // 44라인은 일단 포스트맨 테스트의 용이성을 위해 넣어두었습니다. 추후 프론트 구현 이후에는 삭제 예정입니다.
     httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, loginResponse.getAccessToken());
-    httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, loginResponse.getRefreshToken());
-    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+    return loginResponse;
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<String> logout(HttpServletRequest httpServletRequest,
-      HttpServletResponse httpServletResponse) {
+  public ResponseEntity<String> logout(HttpServletRequest httpServletRequest) {
     userService.logout(JwtUtil.resolveRefreshToken(httpServletRequest));
-
-    // response에 덮어씌우고자 하는 의도로 아래 두 라인을 작성하였음...
-    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, "clear");
-    httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, "clear");
-
     return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
   }
 
   @PatchMapping("/withdrawal")
   public ResponseEntity<String> withdrawal(@RequestBody WithdrawalRequest withdrawalRequest,
-      HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+      HttpServletRequest httpServletRequest, @AuthenticationPrincipal UserDetailsImpl userDetails) {
     String refreshToken = JwtUtil.resolveRefreshToken(httpServletRequest);
     userService.withdrawal(refreshToken, userDetails.getUsername(),
         withdrawalRequest.getPassword());
-    // response에 덮어씌우고자 하는 의도로 아래 두 라인을 작성하였음...
-    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, "clear");
-    httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, "clear");
     return new ResponseEntity<>("회원탈퇴 성공", HttpStatus.OK);
+  }
+
+  @PostMapping("/reissue")
+  public ReissueResponse reissue(HttpServletRequest httpServletRequest) {
+    String refreshToken = JwtUtil.resolveRefreshToken(httpServletRequest);
+    return userService.reissue(refreshToken);
   }
 
   // 내 프로필조회

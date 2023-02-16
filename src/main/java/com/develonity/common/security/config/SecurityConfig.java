@@ -55,6 +55,7 @@ public class SecurityConfig {
         .antMatchers("/api/login").permitAll()
         .antMatchers("/api/admins/login").permitAll()
         .antMatchers("/api/logout").permitAll()
+        .antMatchers("/api/reissue").permitAll()
 //        .antMatchers("/api/users/signout").permitAll()
 //        .antMatchers("/api/users/**").hasRole("CUSTOMER")
 //        .antMatchers("/api/sellers/**").hasRole("SELLER")

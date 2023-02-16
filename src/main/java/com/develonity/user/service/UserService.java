@@ -4,6 +4,7 @@ import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.LoginResponse;
 import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
+import com.develonity.user.dto.ReissueResponse;
 
 public interface UserService {
 
@@ -16,4 +17,6 @@ public interface UserService {
   void logout(String refreshToken);
 
   ProfileResponse getProfile(Long userId);
+
+  ReissueResponse reissue(String refreshToken);
 }
