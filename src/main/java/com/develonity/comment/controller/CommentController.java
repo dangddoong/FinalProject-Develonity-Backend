@@ -1,9 +1,13 @@
 package com.develonity.comment.controller;
 
+import com.develonity.board.entity.QuestionBoard;
+import com.develonity.board.service.QuestionBoardService;
 import com.develonity.comment.dto.CommentList;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
 import com.develonity.comment.service.CommentService;
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.security.users.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
   private final CommentService commentService;
+
+  private final QuestionBoardService questionBoardService;
 
   // 댓글 전체 조회
   @GetMapping("/api/comments")
@@ -74,6 +81,23 @@ public class CommentController {
     commentService.deleteQuestionComment(commentId, userDetails.getUser());
     return new ResponseEntity<>("답변 삭제 완료!", HttpStatus.OK);
   }
+
+  //질문게시글 답변 채택
+  @PostMapping("/api/comments/{commentId}/adoption")
+  public ResponseEntity<String> adoptComment(@PathVariable Long commentId,
+      @RequestParam Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+    QuestionBoard questionBoard = questionBoardService.getQuestionBoardAndCheck(boardId);
+    questionBoardService.checkUser(questionBoard, userDetails.getUser().getId());
+    if (questionBoard.isAlreadyAdopted()) {
+      throw new CustomException(ExceptionStatus.ALREADY_ADOPTED);
+    }
+    questionBoard.changeStatus();
+    commentService.adoptComment(commentId, userDetails.getUser().getId());
+    return new ResponseEntity<>("답변 채택 완료!", HttpStatus.OK);
+  }
+
 
   // 잡담게시글 댓글 작성
   @PostMapping("/api/comments/community/{communityBoardId}")

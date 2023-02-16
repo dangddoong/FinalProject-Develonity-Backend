@@ -43,4 +43,8 @@ public class QuestionBoard extends Board {
   public boolean isWriter(Long id) {
     return super.isWriter(id);
   }
+
+  public boolean isAlreadyAdopted() {
+    return this.getStatus().equals(BoardStatus.ADOPTED);
+  }
 }

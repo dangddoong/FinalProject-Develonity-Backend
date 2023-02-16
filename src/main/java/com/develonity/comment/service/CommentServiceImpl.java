@@ -114,6 +114,16 @@ public class CommentServiceImpl implements CommentService {
 
   }
 
+  //답변 채택 기능
+  @Override
+  @Transactional
+  public void adoptComment(Long commentId, Long userId) {
+    Comment comment = getComment(commentId);
+    comment.changeStatus();
+    //    userService.addPoint(questionBoard.getPrizePoint()); 유저서비스에 유저 포인트 추가해주는 메소드 만들기
+
+  }
+
   // 잡담게시글 댓글 작성
   @Override
   @Transactional
