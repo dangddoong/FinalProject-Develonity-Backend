@@ -21,7 +21,9 @@ public enum ExceptionStatus {
   USERID_IS_EXIST(409, " 이미 등록된 아이디입니다. "),
   POINTS_IS_LACKING(409, "포인트가 부족합니다."),
   QUANTITY_IS_LACKING(409, "재고가 부족합니다."),
-  GIFTCARD_IS_EXIST(409, "이미 등록된 기프트카드 입니다.");
+  GIFTCARD_IS_EXIST(409, "이미 등록된 기프트카드 입니다."),
+  LIKE_IS_EXIST(409, "이미 좋아요를 누른 게시글입니다."),
+  LIKE_IS_NOT_EXIST(409, "좋아요가 존재하지 않습니다.");
 
 
   private final int statusCode;

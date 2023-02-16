@@ -8,6 +8,8 @@ import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.service.BoardLikeService;
 import com.develonity.board.service.CommunityBoardService;
 import com.develonity.board.service.QuestionBoardService;
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.security.users.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -137,11 +138,43 @@ public class BoardController {
     return communityBoardService.getCommunityBoardPage(userDetails.getUser(), communityBoardPage);
   }
 
-  //질문 게시글 좋아요 , 좋아요 취소
+  //질문 게시글 좋아요
   @PostMapping("/question-boards/{boardId}/likes")
-  @ResponseStatus(HttpStatus.OK)
-  public void changeBoardLike(@PathVariable Long boardId,
+  public ResponseEntity<String> addQuestionBoardLike(@PathVariable Long boardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    boardLikeService.changeBoardLike(userDetails.getUser().getId(), boardId);
+
+    if (!questionBoardService.isExistBoard(boardId)) {
+      throw new CustomException(ExceptionStatus.BOARD_IS_NOT_EXIST);
+    }
+    boardLikeService.addBoardLike(userDetails.getUser().getId(), boardId);
+    return new ResponseEntity<>("좋아요 추가!", HttpStatus.CREATED);
+  }
+
+
+  //질문 게시글 좋아요 취소
+  @DeleteMapping("/question-boards/{boardId}/unlikes")
+  public ResponseEntity<String> cancelQuestionBoardLike(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    boardLikeService.cancelBoardLike(userDetails.getUser().getId(), boardId);
+    return new ResponseEntity<>("좋아요 취소!", HttpStatus.OK);
+  }
+
+  //잡담 게시글 좋아요
+  @PostMapping("/community-boards/{boardId}/likes")
+  public ResponseEntity<String> addCommunityBoardLike(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    if (!communityBoardService.isExistBoard(boardId)) {
+      throw new CustomException(ExceptionStatus.BOARD_IS_NOT_EXIST);
+    }
+    boardLikeService.addBoardLike(userDetails.getUser().getId(), boardId);
+    return new ResponseEntity<>("좋아요 추가!", HttpStatus.CREATED);
+  }
+
+  //잡담 게시글 좋아요 취소
+  @DeleteMapping("/community-boards/{boardId}/unlikes")
+  public ResponseEntity<String> cancelCommunityBoardLike(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    boardLikeService.cancelBoardLike(userDetails.getUser().getId(), boardId);
+    return new ResponseEntity<>("좋아요 취소!", HttpStatus.OK);
   }
 }

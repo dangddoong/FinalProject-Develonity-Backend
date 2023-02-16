@@ -25,4 +25,6 @@ public interface CommunityBoardService {
   CommunityBoard getCommunityBoardAndCheck(Long boardId);
 
   int countLike(Long boardId);
+
+  boolean isExistBoard(Long boardId);
 }

@@ -88,4 +88,9 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   public int countLike(Long boardId) {
     return boardLikeService.countLike(boardId);
   }
+
+  @Override
+  public boolean isExistBoard(Long boardId) {
+    return communityBoardRepository.existsBoardById(boardId);
+  }
 }

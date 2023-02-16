@@ -2,12 +2,13 @@ package com.develonity.board.dto;
 
 import com.develonity.board.entity.Category;
 import com.develonity.board.entity.SubCategory;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor(force = true)
+@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 public class QuestionBoardRequest {
 

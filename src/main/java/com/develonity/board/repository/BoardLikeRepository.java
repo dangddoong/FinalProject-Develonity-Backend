@@ -7,7 +7,7 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
 
   boolean existsBoardLikeByBoardIdAndUserId(Long boardId, Long userId);
 
-  boolean existsBoardById(Long boardId);
+  boolean existsBoardLikeById(Long boardId);
 
   BoardLike findByBoardIdAndUserId(Long boardId, Long userId);
 
