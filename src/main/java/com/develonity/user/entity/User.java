@@ -32,7 +32,7 @@ public class User extends TimeStamp {
   @Column(nullable = false)
   private String realName;
   @Column(nullable = false, unique = true)
-  private String nickName;
+  private String nickname;
   @Column(nullable = false)
   private String profileImageUrl;
   @Column(nullable = false, unique = true)
@@ -47,13 +47,13 @@ public class User extends TimeStamp {
   private int respectPoint = 0;
 
   @Builder
-  public User(String loginId, String password, String realName, String nickName,
+  public User(String loginId, String password, String realName, String nickname,
       String profileImageUrl, String email, String phoneNumber, String detailAddress,
       String zipcode) {
     this.loginId = loginId;
     this.password = password;
     this.realName = realName;
-    this.nickName = nickName;
+    this.nickname = nickname;
     this.profileImageUrl = profileImageUrl;
     this.email = email;
     this.phoneNumber = phoneNumber;

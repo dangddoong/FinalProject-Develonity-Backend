@@ -43,8 +43,6 @@ public class QuestionBoardResponse {
     this.createdAt = questionBoard.getCreatedDate();
     this.lastModifiedAt = questionBoard.getLastModifiedDate();
     this.isLike = isLike;
-
-
   }
 
   public static QuestionBoardResponse toQuestionBoardResponse(QuestionBoard questionBoard,

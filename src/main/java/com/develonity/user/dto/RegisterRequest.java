@@ -20,7 +20,7 @@ public class RegisterRequest {
   private final String password;
   private final String realName;
   @Size(min = 2, max = 10)
-  private final String nickName;
+  private final String nickname;
   private final String profileImageUrl;
   private final String email;
   private final String phoneNumber;
@@ -33,7 +33,7 @@ public class RegisterRequest {
         .loginId(this.loginId)
         .password(encodingPassword)
         .realName(this.realName)
-        .nickName(this.nickName)
+        .nickname(this.nickname)
         .profileImageUrl(this.profileImageUrl)
         .email(this.email)
         .phoneNumber(this.phoneNumber)

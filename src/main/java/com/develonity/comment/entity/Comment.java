@@ -61,7 +61,6 @@ public class Comment extends TimeStamp {
   @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
   public List<ReplyComment> getReplyCommentList = new ArrayList<>();
 
-
   public Comment(User user, CommentRequest requestDto, Long questionBoardId) {
     this.nickName = user.getNickName();
     this.content = requestDto.getContent();
