@@ -5,6 +5,7 @@ import com.develonity.common.exception.ExceptionStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class GiftCard {
     @Column(name = "GIFTCARD_ID")
     private Long id;
     @Enumerated(EnumType.STRING)
+    @Column(name="category", nullable = false)
     private GiftCardCategory category;
     private String name;
     private String details;

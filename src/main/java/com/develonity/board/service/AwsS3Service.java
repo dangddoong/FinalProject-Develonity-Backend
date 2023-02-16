@@ -12,4 +12,6 @@
 //
 //  String getFileExtension(String fileName) throws IOException;
 //
+//  void deleteFile(String imagePath);
+//
 //}
