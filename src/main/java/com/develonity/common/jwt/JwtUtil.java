@@ -36,8 +36,8 @@ public class JwtUtil {
   public static final String ADMIN_HEADER = "Admin";
   public static final String AUTHORIZATION_KEY = "auth"; // 사용자 권한 키값. 사용자 권한도 토큰안에 넣어주기 때문에 그때 사용하는 키값
   private static final String BEARER_PREFIX = "Bearer "; // Token 식별자
-  private static final long ACCESS_TOKEN_TIME = 30 * 1000L;  // 토큰 만료시간. (60 * 1000L 이 1분)
-  private static final long REFRESH_TOKEN_TIME = 2 * 7 * 24 * 60 * 60 * 1000L;
+  private static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;  // 토큰 만료시간. (60 * 1000L 이 1분)
+  public static final long REFRESH_TOKEN_TIME = 2 * 7 * 24 * 60 * 60 * 1000L;
 
 
   @Value("${jwt.secret.key}")
@@ -134,7 +134,7 @@ public class JwtUtil {
     }
   }
 
-  public String getUsernameFromTokenIfValid(String token) {
+  public String getLoginIdFromTokenIfValid(String token) {
     return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody()
         .getSubject();
   }
