@@ -35,7 +35,7 @@ public class ReplyComment extends TimeStamp {
 
   public ReplyComment(User user, ReplyCommentRequest request, Comment comment) {
     this.content = request.getContent();
-    this.nickName = user.getNickName();
+    this.nickName = user.getNickname();
     this.comment = comment;
     this.userId = user.getId();
     comment.getReplyCommentList.add(this);

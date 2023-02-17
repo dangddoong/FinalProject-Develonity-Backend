@@ -21,16 +21,17 @@ public class UserResponse {
   private final String nickName;
 
   private final UserRole userRole;
-    @Builder
-    public UserResponse(User user) {
-        this.id = user.getId();
-        this.loginId = user.getLoginId();
-        this.realName = user.getRealName();
-        this.nickName = user.getNickName();
-        this.userRole = user.getUserRole();
-    }
 
-
+  @Builder
+  public UserResponse(User user) {
+    this.id = user.getId();
+    this.loginId = user.getLoginId();
+    this.realName = user.getRealName();
+    this.nickName = user.getNickname();
+    this.userRole = user.getUserRole();
   }
+
+
+}
 
 

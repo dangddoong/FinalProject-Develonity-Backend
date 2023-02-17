@@ -36,7 +36,7 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
 
   // 댓글 작성자 확인
   private void checkUser(User user, ReplyComment replyComment) {
-    if (user.getNickName() != replyComment.getNickName()) {
+    if (user.getNickname() != replyComment.getNickName()) {
       throw new CustomException(ExceptionStatus.REPLY_COMMENT_USER_NOT_MATCH);
     }
   }

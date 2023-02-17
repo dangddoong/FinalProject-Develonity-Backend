@@ -122,7 +122,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
 
     Long userId = questionBoard.getUserId();
-
     String nickname = getNickname(userId);
     boolean isLike = boardLikeService.isLike(boardId, user.getId());
     return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), isLike);
@@ -151,7 +150,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   @Transactional
   public void adoptComment(Long boardId, Long commentId, Long userId) {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
-    System.out.println(commentId);
     checkUser(questionBoard, userId);
     Comment comment = commentService.getComment(commentId);
     if (questionBoard.getStatus().equals(BoardStatus.ADOPTED)) {
@@ -191,12 +189,12 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   @Override
   public String getNickname(Long userId) {
-    return userService.getProfile(userId).getNickName();
+    return userService.getProfile(userId).getNickname();
   }
 
   @Override
   public String getNicknameByQuestionBoard(QuestionBoard questionBoard) {
-    return userService.getProfile(questionBoard.getUserId()).getNickName();
+    return userService.getProfile(questionBoard.getUserId()).getNickname();
   }
 
 //  @Override

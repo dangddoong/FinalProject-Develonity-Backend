@@ -209,7 +209,6 @@ public class BoardController {
   public ResponseEntity<String> adoptComment(@PathVariable Long boardId,
       @RequestParam Long commentId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    System.out.println(commentId);
     questionBoardService.adoptComment(boardId, commentId, userDetails.getUser().getId());
     return new ResponseEntity<>("답변 채택 완료!", HttpStatus.OK);
   }
