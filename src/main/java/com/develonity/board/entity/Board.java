@@ -1,8 +1,6 @@
 package com.develonity.board.entity;
 
 import com.develonity.user.entity.TimeStamp;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -14,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,15 +39,11 @@ public abstract class Board extends TimeStamp {
   @Enumerated(EnumType.STRING)
   private Category category;
 
-  @Transient
-  private final List<BoardImage> boardImageList = new ArrayList<>();
-
 //  @ManyToOne
 //  @JoinColumn(name = "USER_ID", nullable = false, fetch = FetchType.LAZY)
 //  private User user;
 
   @JoinColumn(name = "USER_ID")
-  //일단 이렇게 넣어놓음
   private Long userId;
 
   public Board(Long userId, String title, String content, Category category) {
@@ -66,7 +59,7 @@ public abstract class Board extends TimeStamp {
     this.category = category;
   }
 
-  boolean isWriter(Long id) {
+  public Boolean isWriter(Long id) {
     return userId.equals(id);
   }
 

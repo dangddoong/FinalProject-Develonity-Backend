@@ -3,6 +3,7 @@ package com.develonity.board.service;
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
@@ -11,6 +12,8 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -31,7 +34,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
 //  private final AwsS3Service awsS3Service;
 
-  //잡담 게시글 생성
+  //  잡담 게시글 생성
   @Override
   @Transactional
   public void createCommunityBoard(CommunityBoardRequest request, User user) {
@@ -45,7 +48,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     communityBoardRepository.save(communityBoard);
   }
 
-  //잡담 게시글 생성(+이미지)
+  //  잡담 게시글 생성(+이미지)
 //  @Override
 //  @Transactional
 //  public void createCommunityBoard(CommunityBoardRequest request,
@@ -56,6 +59,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 //        .title(request.getTitle())
 //        .content(request.getContent())
 //        .category(request.getCategory())
+//        .communityCategory(request.getCommunityCategory())
 //        .build();
 //
 //    upload(multipartFiles, communityBoard);
@@ -120,7 +124,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
     return communityBoardPages.map(
         communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
-            getNicknameByCommunityBoard(communityBoard)));
+            getNicknameByCommunityBoard(communityBoard), getImagePaths(communityBoard)));
   }
 
   //잡담 게시글 선택 조회
@@ -129,10 +133,30 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   public CommunityBoardResponse getCommunityBoard(Long boardId, User user) {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     boolean isLike = boardLikeService.isLike(boardId, user.getId());
-    Long userId = communityBoard.getUserId();
-    String nickname = getNickname(userId);
-    return new CommunityBoardResponse(communityBoard, nickname, countLike(boardId), isLike);
+    Long boardUserId = communityBoard.getUserId();
+    String nickname = getNickname(boardUserId);
+
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(boardId);
+//    boardImageList.stream().map(boardImage -> boardImage.getImagePath())
+//        .collect(Collectors.toList());
+    List<String> imagePaths = new ArrayList<>();
+    for (BoardImage boardImage : boardImageList) {
+      imagePaths.add(boardImage.getImagePath());
+    }
+    return new CommunityBoardResponse(communityBoard, nickname, countLike(boardId), isLike,
+        imagePaths);
   }
+
+  //등급 변경
+  @Override
+  public void upgradeGrade(User user, Long boardId) {
+    if (userService.isLackedRespectPoint(user)) {
+      throw new CustomException(ExceptionStatus.POINTS_IS_LACKING);
+    }
+    userService.upgradeGrade(user);
+
+  }
+
 
   @Override
   public void checkUser(CommunityBoard communityBoard, Long userId) {
@@ -167,11 +191,23 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     return userService.getProfile(communityBoard.getUserId()).getNickname();
   }
 
+  @Override
+  public List<String> getImagePaths(CommunityBoard communityBoard) {
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(communityBoard.getId());
+    List<String> imagePaths = new ArrayList<>();
+    for (BoardImage boardImage : boardImageList) {
+      imagePaths.add(boardImage.getImagePath());
+    }
+    return imagePaths;
+  }
+}
+
 //  @Override
 //  public void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard)
 //      throws IOException {
 //
 //    List<String> uploadImagePaths = new ArrayList<>();
+//    String dir = "/board/communityImage";
 //    int checkNumber = 0;
 //    for (MultipartFile multipartFile : multipartFiles) {
 //      if (!multipartFile.isEmpty()) {
@@ -179,7 +215,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 //      }
 //    }
 //    if (checkNumber == 1) {
-//      uploadImagePaths = awsS3Service.upload(multipartFiles);
+//      uploadImagePaths = awsS3Service.upload(multipartFiles, dir);
 //    }
 //
 //    for (String imagePath : uploadImagePaths) {
@@ -202,4 +238,4 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 //    }
 //    boardImageRepository.deleteBoardImageByBoardId(boardId);
 //  }
-}
+//}

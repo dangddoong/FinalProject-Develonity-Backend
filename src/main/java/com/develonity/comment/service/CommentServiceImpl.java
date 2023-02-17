@@ -8,6 +8,7 @@ import com.develonity.comment.repository.CommentRepository;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
+import com.develonity.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class CommentServiceImpl implements CommentService {
   private final CommentRepository commentRepository;
 
   private final CommentLikeService commentLikeService;
+
+  private final UserService userService;
 
 
   // 댓글이 있는지 확인하는 기능
@@ -117,11 +120,8 @@ public class CommentServiceImpl implements CommentService {
   //답변 채택 기능
   @Override
   @Transactional
-  public void adoptComment(Long commentId, Long userId) {
-    Comment comment = getComment(commentId);
+  public void adoptComment(Comment comment) {
     comment.changeStatus();
-    //    userService.addPoint(questionBoard.getPrizePoint()); 유저서비스에 유저 포인트 추가해주는 메소드 만들기
-
   }
 
   // 잡담게시글 댓글 작성

@@ -31,10 +31,4 @@ public class BoardImage extends TimeStamp {
     this.imagePath = filePath;
     this.board = board;
   }
-
-
-  public void addBoard(Board board) {
-    this.board = board;
-
-  }
 }

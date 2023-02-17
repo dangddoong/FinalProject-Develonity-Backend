@@ -30,6 +30,6 @@ public interface CommentService {
 
   Comment getComment(Long commentId);
 
-  void adoptComment(Long commentId, Long userId);
+  void adoptComment(Comment comment);
 
 }

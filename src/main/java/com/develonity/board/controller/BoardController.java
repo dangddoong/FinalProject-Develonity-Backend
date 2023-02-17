@@ -203,4 +203,15 @@ public class BoardController {
     return new ResponseEntity<>("좋아요 취소!", HttpStatus.OK);
   }
 
+  //등업 수락
+  @PostMapping("/community-boards/{boardId}/grade")
+  public ResponseEntity<String> changeGrade(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    if (!communityBoardService.isExistBoard(boardId)) {
+      throw new CustomException(ExceptionStatus.BOARD_IS_NOT_EXIST);
+    }
+    communityBoardService.upgradeGrade(userDetails.getUser(), boardId);
+    return new ResponseEntity<>("등급 변경 완료", HttpStatus.OK);
+  }
+
 }

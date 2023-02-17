@@ -4,6 +4,15 @@ public enum SubCategory {
   BACKEND,
   FRONTEND,
   AI,
-  DATA_SCIENCE
+  DATA_SCIENCE;
 
+  public static enum CommunityCategory {
+    NORMAL,
+
+    NOTICE,
+
+    GRADE,
+
+    SUGGESTION
+  }
 }

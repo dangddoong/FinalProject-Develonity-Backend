@@ -5,10 +5,12 @@ import com.develonity.board.service.QuestionBoardService;
 import com.develonity.comment.dto.CommentList;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
+import com.develonity.comment.entity.Comment;
 import com.develonity.comment.service.CommentService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.security.users.UserDetailsImpl;
+import com.develonity.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,7 @@ public class CommentController {
 
   private final CommentService commentService;
 
+  private final UserService userService;
   private final QuestionBoardService questionBoardService;
 
   // 댓글 전체 조회
@@ -89,12 +92,15 @@ public class CommentController {
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
     QuestionBoard questionBoard = questionBoardService.getQuestionBoardAndCheck(boardId);
+    Comment comment = commentService.getComment(commentId);
     questionBoardService.checkUser(questionBoard, userDetails.getUser().getId());
     if (questionBoard.isAlreadyAdopted()) {
       throw new CustomException(ExceptionStatus.ALREADY_ADOPTED);
     }
     questionBoard.changeStatus();
-    commentService.adoptComment(commentId, userDetails.getUser().getId());
+    userService.addGiftPoint(questionBoard.getPrizePoint(), comment.getUser());
+    userService.addRespectPoint(10, comment.getUser());
+    commentService.adoptComment(comment);
     return new ResponseEntity<>("답변 채택 완료!", HttpStatus.OK);
   }
 

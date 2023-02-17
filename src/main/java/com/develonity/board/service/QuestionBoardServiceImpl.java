@@ -3,6 +3,7 @@ package com.develonity.board.service;
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
@@ -11,6 +12,8 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -46,7 +49,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
         .build();
 
     questionBoardRepository.save(questionBoard);
-    //userService.deductPoint(request.getPrizePoint); -> 유저서비스에서 질문자가 걸어놓은 포인트 차감되는 메소드 필요. 메소드 명은 알아서
+    userService.subtractGiftPoint(questionBoard.getPrizePoint(), user);
   }
 
   //질문 게시글 생성(+이미지)
@@ -119,10 +122,19 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
 
-    Long userId = questionBoard.getUserId();
-    String nickname = getNickname(userId);
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(boardId);
+//    boardImageList.stream().map(boardImage -> boardImage.getImagePath())
+//        .collect(Collectors.toList());
+    List<String> imagePaths = new ArrayList<>();
+    for (BoardImage boardImage : boardImageList) {
+      imagePaths.add(boardImage.getImagePath());
+    }
+
+    Long boardUserId = questionBoard.getUserId();
+    String nickname = getNickname(boardUserId);
     boolean isLike = boardLikeService.isLike(boardId, user.getId());
-    return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), isLike);
+    return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), isLike,
+        imagePaths);
   }
 
 
@@ -182,6 +194,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 //      throws IOException {
 //
 //    List<String> uploadImagePaths = new ArrayList<>();
+//    String dir = "/board/questionImage";
 //    int checkNumber = 0;
 //    for (MultipartFile multipartFile : multipartFiles) {
 //      if (!multipartFile.isEmpty()) {
@@ -189,7 +202,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 //      }
 //    }
 //    if (checkNumber == 1) {
-//      uploadImagePaths = awsS3Service.upload(multipartFiles);
+//      uploadImagePaths = awsS3Service.upload(multipartFiles, dir);
 //    }
 //
 //    for (String imagePath : uploadImagePaths) {

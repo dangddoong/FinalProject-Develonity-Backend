@@ -39,10 +39,10 @@ public class QuestionBoard extends Board {
     this.status = BoardStatus.ADOPTED;
   }
 
-  @Override
-  public boolean isWriter(Long id) {
-    return super.isWriter(id);
-  }
+//  @Override
+//  public Boolean isWriter(Long id) {
+//    return super.isWriter(id);
+//  }
 
   public boolean isAlreadyAdopted() {
     return this.getStatus().equals(BoardStatus.ADOPTED);

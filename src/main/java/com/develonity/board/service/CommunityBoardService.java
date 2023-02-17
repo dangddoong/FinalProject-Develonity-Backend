@@ -5,6 +5,7 @@ import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.user.entity.User;
+import java.util.List;
 import org.springframework.data.domain.Page;
 
 public interface CommunityBoardService {
@@ -39,7 +40,11 @@ public interface CommunityBoardService {
   String getNicknameByCommunityBoard(CommunityBoard communityBoard);
 
 //  void deleteBoardImages(Long boardId);
-//
+
 //  void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard) throws IOException;
+
+  void upgradeGrade(User user, Long boardId);
+
+  List<String> getImagePaths(CommunityBoard communityBoard);
 
 }

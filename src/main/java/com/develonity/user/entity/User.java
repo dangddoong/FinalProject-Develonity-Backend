@@ -43,8 +43,9 @@ public class User extends TimeStamp {
   @Embedded
   private Address address;
   private boolean withdrawal = false;
-  private int giftPoint = 0;
+  private int giftPoint = 300;
   private int respectPoint = 0;
+
 
   @Builder
   public User(String loginId, String password, String realName, String nickname,
@@ -62,6 +63,29 @@ public class User extends TimeStamp {
 
   public void withdraw() {
     this.withdrawal = true;
+  }
+
+  public void upgradeGrade() {
+    this.userRole = UserRole.EXPERT;
+  }
+
+  public void subtractGiftPoint(int giftPoint) {
+//    if (this.giftPoint < giftPoint) {
+//      throw new CustomException(ExceptionStatus.POINTS_IS_LACKING);
+//    }
+    this.giftPoint = this.giftPoint - giftPoint;
+  }
+
+  public void addGiftPoint(int giftPoint) {
+    this.giftPoint = this.giftPoint + giftPoint;
+  }
+
+  public void addRespectPoint(int respectPoint) {
+    this.respectPoint = this.respectPoint + respectPoint;
+  }
+
+  public boolean isLackedRespectPoint() {
+    return this.respectPoint < 10;
   }
 
   @Embeddable

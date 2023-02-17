@@ -17,6 +17,7 @@ public class CommunityBoardRequest {
   private final Category category;
   private final int point;
   private final String imageUrl;
-  private final SubCategory subCategory;
+  private final SubCategory.CommunityCategory communityCategory;
+
 
 }

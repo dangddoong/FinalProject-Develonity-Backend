@@ -114,4 +114,36 @@ public class UserServiceImpl implements UserService {
     return false;
   }
 
+  @Override
+  @Transactional
+  public void subtractGiftPoint(int giftPoint, User user) {
+    user.subtractGiftPoint(giftPoint);
+    userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void addGiftPoint(int giftPoint, User user) {
+    user.addGiftPoint(giftPoint);
+    userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void addRespectPoint(int respectPoint, User user) {
+    user.addRespectPoint(respectPoint);
+    userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void upgradeGrade(User user) {
+    user.upgradeGrade();
+    userRepository.save(user);
+  }
+
+  @Override
+  public boolean isLackedRespectPoint(User user) {
+    return user.isLackedRespectPoint();
+  }
 }

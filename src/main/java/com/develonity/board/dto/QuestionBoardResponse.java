@@ -5,6 +5,7 @@ import com.develonity.board.entity.Category;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.entity.SubCategory;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,11 +27,12 @@ public class QuestionBoardResponse {
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
 
-  private Boolean isLike; //로그인한 유저가 좋아요 눌렀는지 여부
+  private final List<String> imagePaths;
+  private final Boolean isLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
 
   public QuestionBoardResponse(QuestionBoard questionBoard, String nickname, int boardLike,
-      Boolean isLike) {
+      Boolean isLike, List<String> imagePaths) {
     this.id = questionBoard.getId();
     this.nickname = nickname;
     this.category = questionBoard.getCategory();
@@ -43,6 +45,7 @@ public class QuestionBoardResponse {
     this.createdAt = questionBoard.getCreatedDate();
     this.lastModifiedAt = questionBoard.getLastModifiedDate();
     this.isLike = isLike;
+    this.imagePaths = imagePaths;
   }
 
   public static QuestionBoardResponse toQuestionBoardResponse(QuestionBoard questionBoard,
