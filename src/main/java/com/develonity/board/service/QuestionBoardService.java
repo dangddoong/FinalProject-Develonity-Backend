@@ -35,8 +35,6 @@ public interface QuestionBoardService {
 
   boolean isExistBoard(Long boardId);
 
-  void adoptComment(Long boardId, Long commentId, Long userId);
-
   String getNickname(Long userId);
 
   String getNicknameByQuestionBoard(QuestionBoard questionBoard);

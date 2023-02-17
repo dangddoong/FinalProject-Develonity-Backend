@@ -3,11 +3,9 @@ package com.develonity.board.service;
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
-import com.develonity.board.entity.BoardStatus;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
-import com.develonity.comment.entity.Comment;
 import com.develonity.comment.service.CommentService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
@@ -144,24 +142,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
             getNicknameByQuestionBoard(questionBoard)));
 
   }
-
-  //답변 채택하기
-  @Override
-  @Transactional
-  public void adoptComment(Long boardId, Long commentId, Long userId) {
-    QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
-    checkUser(questionBoard, userId);
-    Comment comment = commentService.getComment(commentId);
-    if (questionBoard.getStatus().equals(BoardStatus.ADOPTED)) {
-      throw new CustomException(ExceptionStatus.ALREADY_ADOPTED);
-    }
-
-    comment.changeStatus();
-    questionBoard.changeStatus();
-
-//    userService.addPoint(questionBoard.getPrizePoint()); 유저서비스에 유저 포인트 추가해주는 메소드 만들기
-  }
-
 
   @Override
   public int countLike(Long boardId) {
