@@ -3,6 +3,7 @@ package com.develonity.comment.entity;
 import com.develonity.comment.dto.ReplyCommentRequest;
 import com.develonity.user.entity.TimeStamp;
 import com.develonity.user.entity.User;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,8 +23,9 @@ public class ReplyComment extends TimeStamp {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @Column(nullable = false)
   private String content;
-  private String nickName;
 
   @JoinColumn(name = "USER_ID")
   private Long userId;
@@ -35,7 +37,6 @@ public class ReplyComment extends TimeStamp {
 
   public ReplyComment(User user, ReplyCommentRequest request, Comment comment) {
     this.content = request.getContent();
-    this.nickName = user.getNickname();
     this.comment = comment;
     this.userId = user.getId();
     comment.getReplyCommentList.add(this);

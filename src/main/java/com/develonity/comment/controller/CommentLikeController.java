@@ -3,10 +3,14 @@ package com.develonity.comment.controller;
 import com.develonity.comment.service.CommentLikeService;
 import com.develonity.common.security.users.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,9 +34,20 @@ public class CommentLikeController {
 //    return new ResponseEntity<>("좋아요 취소 완료!", HttpStatus.OK);
 //  }
 
-  @PostMapping("{commentId}/likes")
-  public void changeCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal
-  UserDetailsImpl userDetails) {
-    commentLikeService.changeCommentLike(commentId, userDetails.getUser().getId());
+  // 좋아요 추가 기능
+  @PostMapping("/likes")
+  public ResponseEntity<String> changeCommentLike(@RequestParam("comment-id") Long commentId,
+      @AuthenticationPrincipal
+      UserDetailsImpl userDetails) {
+    commentLikeService.addCommentLike(commentId, userDetails.getUser().getId());
+    return new ResponseEntity<>("좋아요!", HttpStatus.CREATED);
+  }
+
+  // 좋아요 취소 기능
+  @DeleteMapping("/unlikes/{commentId}")
+  public ResponseEntity<String> cancelCommentLike(@PathVariable Long commentId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    commentLikeService.cancelCommentLike(commentId, userDetails.getUser().getId());
+    return new ResponseEntity<>("좋아요 취소!", HttpStatus.OK);
   }
 }

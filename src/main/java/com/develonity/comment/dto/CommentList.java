@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 @Getter
 @Setter
 public class CommentList {
-
+  
   private int page;
   private int size;
   private boolean isAsc;

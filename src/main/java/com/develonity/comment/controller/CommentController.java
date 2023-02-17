@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
   private final CommentService commentService;
-
   private final QuestionBoardService questionBoardService;
 
   // 댓글 전체 조회
@@ -52,10 +51,10 @@ public class CommentController {
   }
 
   // 질문게시글 답변 작성
-  @PostMapping("/api/comments/question/{questionBoardId}")
+  @PostMapping("/api/question-comments")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<String> createQuestionComment(
-      @PathVariable Long questionBoardId,
+      @RequestParam("question-board-id") Long questionBoardId,
       @RequestBody
       CommentRequest requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
     commentService.createQuestionComment(questionBoardId, requestDto, userDetails.getUser());
@@ -63,7 +62,7 @@ public class CommentController {
   }
 
   // 질문게시글 답변 수정
-  @PutMapping("/api/comments/question/{questionBoardId}/{commentId}")
+  @PutMapping("/api/question-comments/{questionBoardId}/{commentId}")
   public ResponseEntity<String> updateQuestionComment(
       @PathVariable Long questionBoardId,
       @PathVariable Long commentId, @RequestBody CommentRequest request,
@@ -74,7 +73,7 @@ public class CommentController {
   }
 
   // 질문게시글 답변 삭제
-  @DeleteMapping("/api/comments/question/{commentId}")
+  @DeleteMapping("/api/question-comments/{commentId}")
   public ResponseEntity<String> deleteQuestionComment(
       @PathVariable Long commentId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -98,18 +97,17 @@ public class CommentController {
     return new ResponseEntity<>("답변 채택 완료!", HttpStatus.OK);
   }
 
-
   // 잡담게시글 댓글 작성
-  @PostMapping("/api/comments/community/{communityBoardId}")
+  @PostMapping("/api/community-comments")
   public ResponseEntity<String> createCommunityComment(
-      @PathVariable Long communityBoardId,
+      @RequestParam("community-board-id") Long communityBoardId,
       @RequestBody CommentRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
     commentService.createCommunityComment(communityBoardId, request, userDetails.getUser());
     return new ResponseEntity<>("잡담 댓글 작성 완료!", HttpStatus.CREATED);
   }
 
   // 잡담게시글 댓글 수정
-  @PutMapping("/api/comments/community/{communityBoardId}/{commentId}")
+  @PutMapping("/api/community-comments/{communityBoardId}/{commentId}")
   public ResponseEntity<String> updateCommunityComment(
       @PathVariable Long communityBoardId,
       @PathVariable Long commentId, @RequestBody CommentRequest request,
@@ -120,7 +118,7 @@ public class CommentController {
   }
 
   // 잡담게시글 댓글 삭제
-  @DeleteMapping("/api/comments/community/{commentId}")
+  @DeleteMapping("/api/community-comments/{commentId}")
   public ResponseEntity<String> deleteCommunityComment(
       @PathVariable Long commentId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
