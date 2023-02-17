@@ -10,12 +10,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,8 +29,8 @@ public class Comment extends TimeStamp {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
-  private String nickName;
+//  @Column(nullable = false)
+//  private String nickname;
 
   @Column(nullable = false)
   private String content;
@@ -45,9 +43,9 @@ public class Comment extends TimeStamp {
   @Column(nullable = false)
   public int point;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  //  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_ID")
-  private User user;
+  private Long userId;
 
   //  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "BOARD_ID")
@@ -61,11 +59,12 @@ public class Comment extends TimeStamp {
   @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
   public List<ReplyComment> getReplyCommentList = new ArrayList<>();
 
+
   public Comment(User user, CommentRequest requestDto, Long questionBoardId) {
-    this.nickName = user.getNickname();
+//    this.nickname = user.getNickName();
     this.content = requestDto.getContent();
     this.point = user.getGiftPoint();
-    this.user = user;
+    this.userId = user.getId();
     this.boardId = questionBoardId;
   }
 
