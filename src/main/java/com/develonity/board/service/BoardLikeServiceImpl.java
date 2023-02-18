@@ -41,8 +41,8 @@ public class BoardLikeServiceImpl implements BoardLikeService {
   }
 
   @Override
-  public void deleteLike(Long boardId) {
-    boardLikeRepository.deleteById(boardId);
+  public void deleteLikes(Long boardId) {
+    boardLikeRepository.deleteAllByBoardId(boardId);
 
   }
 

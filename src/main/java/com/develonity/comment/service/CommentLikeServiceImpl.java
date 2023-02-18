@@ -66,4 +66,9 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     return commentLikeRepository.existsCommentLikeByCommentIdAndUserId(commentId, userId);
   }
 
+  @Override
+  public void deleteAllByCommentId(Long commentId){
+    commentLikeRepository.deleteAllByCommentId(commentId);
+  }
+
 }

@@ -5,22 +5,23 @@ import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.user.entity.User;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface QuestionBoardService {
 
-  void createBoard(QuestionBoardRequest request, User user);
 
-//  void createBoard(QuestionBoardRequest request,
-//      List<MultipartFile> multipartFiles, User user) throws IOException;
+  void createQuestionBoard(QuestionBoardRequest request,
+      List<MultipartFile> multipartFiles, User user) throws IOException;
 
-  void updateBoard(Long boardId, QuestionBoardRequest request, User user);
-
-//  void updateBoard(Long boardId, List<MultipartFile> multipartFiles, QuestionBoardRequest request,
-//      User user) throws IOException;
+  void updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
+      QuestionBoardRequest request,
+      User user) throws IOException;
 
 
-  void deleteBoard(Long boardId, User user);
+  void deleteQuestionBoard(Long boardId, User user);
 
   Page<QuestionBoardResponse> getQuetionBoardPage(User user,
       BoardPage questionBoardPage);
@@ -38,9 +39,12 @@ public interface QuestionBoardService {
   String getNickname(Long userId);
 
   String getNicknameByQuestionBoard(QuestionBoard questionBoard);
-//  void upload(List<MultipartFile> multipartFiles, QuestionBoard questionBoard) throws IOException;
-//
-//  void deleteBoardImages(Long boardId);
+
+  boolean getQuestionBoardAndCheckSameUser(Long boardId, Long userId);
+
+  void upload(List<MultipartFile> multipartFiles, QuestionBoard questionBoard) throws IOException;
+
+  void deleteBoardImages(Long boardId);
 
 
 }

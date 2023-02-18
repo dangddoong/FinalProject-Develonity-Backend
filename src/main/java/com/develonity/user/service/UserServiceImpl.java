@@ -1,5 +1,7 @@
 package com.develonity.user.service;
 
+import com.develonity.common.exception.CustomException;
+import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.redis.RedisDao;
 import com.develonity.user.dto.LoginRequest;
@@ -114,4 +116,44 @@ public class UserServiceImpl implements UserService {
     return false;
   }
 
+  @Override
+  @Transactional
+  public void subtractGiftPoint(int giftPoint, User user) {
+    user.subtractGiftPoint(giftPoint);
+    userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void addGiftPoint(int giftPoint, User user) {
+    user.addGiftPoint(giftPoint);
+    userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void addRespectPoint(int respectPoint, User user) {
+    user.addRespectPoint(respectPoint);
+    userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public void upgradeGrade(Long userId) {
+    User user = getUserAndCheck(userId);
+    user.upgradeGrade();
+    userRepository.save(user);
+  }
+
+  @Override
+  public boolean isLackedRespectPoint(Long userId) {
+    User user = getUserAndCheck(userId);
+    return user.isLackedRespectPoint();
+  }
+
+  @Override
+  public User getUserAndCheck(Long userId) {
+    return userRepository.findById(userId).orElseThrow(() -> new CustomException(
+        ExceptionStatus.USER_IS_NOT_EXIST));
+  }
 }
