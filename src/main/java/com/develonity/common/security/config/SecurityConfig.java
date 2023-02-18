@@ -27,53 +27,54 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig implements WebMvcConfigurer {
 
-  private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring()
-        .requestMatchers(PathRequest.toH2Console())
-        .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-  }
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers(PathRequest.toH2Console())
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
 
 
-  @Bean
-  protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-    http.httpBasic().disable()
-        .csrf().disable()
-        .formLogin().disable();
+    @Bean
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        http.httpBasic().disable()
+                .csrf().disable()
+                .formLogin().disable();
 
-    http.sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션이 필요하면 생성하도록 셋팅
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션이 필요하면 생성하도록 셋팅
 
-    http.authorizeHttpRequests()
-        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-        .antMatchers("/api/register").permitAll()
-        .antMatchers("/api/login").permitAll()
-        .antMatchers("/api/logout").permitAll()
+        http.authorizeHttpRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/api/register").permitAll()
+                .antMatchers("/api/login").permitAll()
+                .antMatchers("/api/logout").permitAll()
+                .antMatchers("/api/gift-cards/**").permitAll()
 //        .antMatchers("/api/users/signout").permitAll()
 //        .antMatchers("/api/users/**").hasRole("CUSTOMER")
 //        .antMatchers("/api/sellers/**").hasRole("SELLER")
-        .anyRequest().authenticated()
-        .and()
-        .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
-        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-        .and()
-        .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
+                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-  }
+        return http.build();
+    }
 
-  @Override
-  public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**")
-        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
-        .exposedHeaders("Authorization");
-  }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
+                .exposedHeaders("Authorization");
+    }
 }
