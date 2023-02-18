@@ -18,7 +18,6 @@ import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,14 +33,6 @@ public class Comment extends TimeStamp {
 
   @Column(nullable = false)
   private String content;
-
-//  @Column(nullable = false)
-//  private boolean adoptStatus;
-
-  // point는 0부터 시작한다.
-  @ColumnDefault("0")
-  @Column(nullable = false)
-  public int point;
 
   //  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "USER_ID")
@@ -63,7 +54,6 @@ public class Comment extends TimeStamp {
   public Comment(User user, CommentRequest requestDto, Long questionBoardId) {
 //    this.nickname = user.getNickName();
     this.content = requestDto.getContent();
-    this.point = user.getGiftPoint();
     this.userId = user.getId();
     this.boardId = questionBoardId;
   }

@@ -1,6 +1,7 @@
 package com.develonity.board.dto;
 
-import com.develonity.board.entity.SubCategory;
+import com.develonity.board.entity.CommunityCategory;
+import com.develonity.board.entity.QuestionCategory;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +14,9 @@ public class BoardPage {
 
   private String title;
   private String content;
-  private SubCategory subCategory;
+  private QuestionCategory questionCategory;
+
+  private CommunityCategory communityCategory;
   private int page;
   private int size = 5;
   private Boolean isAsc = false;

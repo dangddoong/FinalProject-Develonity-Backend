@@ -4,6 +4,7 @@ import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.dto.TokenResponse;
+import com.develonity.user.entity.User;
 
 public interface UserService {
 
@@ -18,4 +19,16 @@ public interface UserService {
   ProfileResponse getProfile(Long userId);
 
   TokenResponse reissue(String refreshToken);
+
+  void subtractGiftPoint(int giftPoint, User user);
+
+  void addGiftPoint(int giftPoint, User user);
+
+  void addRespectPoint(int respectPoint, User user);
+
+  void upgradeGrade(Long userId);
+
+  boolean isLackedRespectPoint(Long userId);
+
+  User getUserAndCheck(Long userId);
 }

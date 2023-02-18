@@ -3,6 +3,7 @@ package com.develonity.board.service;
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
@@ -11,10 +12,14 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -28,86 +33,62 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   private final CommentService commentService;
 
-//  private final AwsS3Service awsS3Service;
+  private final AwsS3Service awsS3Service;
 
   private final UserService userService;
 
-  //질문 게시글 생성
+
+  //질문 게시글 생성(+이미지)
   @Override
   @Transactional
-  public void createBoard(QuestionBoardRequest request, User user) {
+  public void createQuestionBoard(QuestionBoardRequest request,
+      List<MultipartFile> multipartFiles,
+      User user) throws IOException {
     QuestionBoard questionBoard = QuestionBoard.builder()
         .userId(user.getId())
         .title(request.getTitle())
         .content(request.getContent())
-        .category(request.getCategory())
         .prizePoint(request.getPoint())
-        .subCategory(request.getSubCategory())
+        .questionCategory(request.getQuestionCategory())
         .build();
-
     questionBoardRepository.save(questionBoard);
-    //userService.deductPoint(request.getPrizePoint); -> 유저서비스에서 질문자가 걸어놓은 포인트 차감되는 메소드 필요. 메소드 명은 알아서
+    upload(multipartFiles, questionBoard);
+    userService.subtractGiftPoint(questionBoard.getPrizePoint(), user);
   }
 
-  //질문 게시글 생성(+이미지)
-//  @Override
-//  @Transactional
-//  public void createBoard(QuestionBoardRequest request,
-//      List<MultipartFile> multipartFiles,
-//      User user) throws IOException {
-//    QuestionBoard questionBoard = QuestionBoard.builder()
-//        .userId(user.getId())
-//        .title(request.getTitle())
-//        .content(request.getContent())
-//        .category(request.getCategory())
-//        .prizePoint(request.getPoint())
-//        .build();
-//
-//    upload(multipartFiles, questionBoard);
-//    questionBoardRepository.save(questionBoard);
-//    //userService.deductPoint(request.getPrizePoint); -> 유저서비스에서 질문자가 걸어놓은 포인트 차감되는 메소드 필요. 메소드 명은 알아서
-//  }
 
-  //질문 게시글 수정
+  //질문 게시글 수정(+이미지)
   @Override
   @Transactional
-  public void updateBoard(Long boardId, QuestionBoardRequest request, User user) {
+  public void updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
+      QuestionBoardRequest request, User user) throws IOException {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     checkUser(questionBoard, user.getId());
-    questionBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory());
+    for (MultipartFile multipartFile : multipartFiles) {
+      if (!multipartFile.isEmpty()) {
+        deleteBoardImages(boardId);
+        upload(multipartFiles, questionBoard);
+      } else {
+        upload(multipartFiles, questionBoard);
+      }
+    }
+    questionBoard.updateBoard(request.getTitle(), request.getContent(),
+        request.getQuestionCategory());
     questionBoardRepository.save(questionBoard);
   }
-  //질문 게시글 수정(+이미지)
-//  @Override
-//  @Transactional
-//  public void updateBoard(Long boardId, List<MultipartFile> multipartFiles,
-//      QuestionBoardRequest request, User user) throws IOException {
-//    QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
-//    checkUser(questionBoard, user.getId());
-//    for (MultipartFile multipartFile : multipartFiles) {
-//      if (!multipartFile.isEmpty()) {
-//        deleteBoardImages(boardId);
-//        upload(multipartFiles, questionBoard);
-//      } else {
-//        upload(multipartFiles, questionBoard);
-//      }
-//    }
-//    questionBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory());
-//    questionBoardRepository.save(questionBoard);
-//  }
 
 
   //질문 게시글 삭제
   @Override
   @Transactional
-  public void deleteBoard(Long boardId, User user) {
+  public void deleteQuestionBoard(Long boardId, User user) {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     checkUser(questionBoard, user.getId());
     if (boardLikeService.isExistLikes(boardId)) {
-      boardLikeService.deleteLike(boardId);
+      boardLikeService.deleteLikes(boardId);
     }
-//    deleteBoardImages(boardId);
-//    commentService.deleteCommentByBoardId(boardId);
+    deleteBoardImages(boardId);
+    commentService.deleteCommentsByBoardId(boardId);
     questionBoardRepository.deleteById(boardId);
   }
 
@@ -119,10 +100,18 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
 
-    Long userId = questionBoard.getUserId();
-    String nickname = getNickname(userId);
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(boardId);
+
+    List<String> imagePaths = new ArrayList<>();
+    for (BoardImage boardImage : boardImageList) {
+      imagePaths.add(boardImage.getImagePath());
+    }
+
+    Long boardUserId = questionBoard.getUserId();
+    String nickname = getNickname(boardUserId);
     boolean isLike = boardLikeService.isLike(boardId, user.getId());
-    return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), isLike);
+    return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), isLike,
+        imagePaths);
   }
 
 
@@ -132,8 +121,8 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   public Page<QuestionBoardResponse> getQuetionBoardPage(User user,
       BoardPage questionBoardPage) {
 
-    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findBySubCategoryAndTitleContainingOrContentContaining(
-        questionBoardPage.getSubCategory(), questionBoardPage.getTitle(),
+    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByQuestionCategoryAndTitleContainingOrContentContaining(
+        questionBoardPage.getQuestionCategory(), questionBoardPage.getTitle(),
         questionBoardPage.getContent(),
         questionBoardPage.toPageable());
 
@@ -177,63 +166,50 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     return userService.getProfile(questionBoard.getUserId()).getNickname();
   }
 
-//  @Override
-//  public void upload(List<MultipartFile> multipartFiles, QuestionBoard questionBoard)
-//      throws IOException {
-//
-//    List<String> uploadImagePaths = new ArrayList<>();
-//    int checkNumber = 0;
-//    for (MultipartFile multipartFile : multipartFiles) {
-//      if (!multipartFile.isEmpty()) {
-//        checkNumber = 1;
-//      }
-//    }
-//    if (checkNumber == 1) {
-//      uploadImagePaths = awsS3Service.upload(multipartFiles);
-//    }
-//
-//    for (String imagePath : uploadImagePaths) {
-//      BoardImage boardImage = new BoardImage(imagePath, questionBoard);
-//      boardImageRepository.save(boardImage);
-//    }
-//  }
-//
-//  @Override
-//  public void deleteBoardImages(Long boardId) {
-//    List<BoardImage> boardImages = boardImageRepository.findAllByBoardId(boardId);
-//
-//    List<String> imagePaths = new ArrayList<>();
-//
-//    for (BoardImage boardImage : boardImages) {
-//      imagePaths.add(boardImage.getImagePath());
-//    }
-//    for (String imagePath : imagePaths) {
-//      awsS3Service.deleteFile(imagePath);
-//    }
-//    boardImageRepository.deleteBoardImageByBoardId(boardId);
-//  }
+  @Override
+  public boolean getQuestionBoardAndCheckSameUser(Long boardId, Long userId) {
+    return questionBoardRepository.findBoardById(boardId).getUserId().equals(userId);
+  }
 
-//나중에 다시 보기
-  //  @Override
-//  public void upload(List<MultipartFile> multipartFiles, QuestionBoard questionBoard)
-//      throws IOException {
-//    List<String> uploadImagePaths = new ArrayList<>();
-//    for (MultipartFile multipartFile : multipartFiles) {
-//      if (!multipartFile.isEmpty()) {
-//
-//      }
-//      uploadImagePaths = awsS3Service.upload(multipartFiles);
-//    }
-//
-//    for (String imagePath : uploadImagePaths) {
-//      BoardImage boardImage = new BoardImage(imagePath, questionBoard);
-//      boardImageRepository.save(boardImage);
-//    }
-//  }
-//
-//
+  @Override
+  @Transactional
+  public void upload(List<MultipartFile> multipartFiles, QuestionBoard questionBoard)
+      throws IOException {
+
+    List<String> uploadImagePaths = new ArrayList<>();
+    String dir = "/board/questionImage";
+    boolean exists = false;
+    for (MultipartFile multipartFile : multipartFiles) {
+      if (!multipartFile.isEmpty()) {
+        exists = true;
+      }
+    }
+    if (exists) {
+      uploadImagePaths = awsS3Service.upload(multipartFiles, dir);
+    }
+
+    for (String imagePath : uploadImagePaths) {
+      BoardImage boardImage = new BoardImage(imagePath, questionBoard.getId());
+      boardImageRepository.save(boardImage);
+    }
+  }
+
+
+  @Override
+  @Transactional
+  public void deleteBoardImages(Long boardId) {
+    List<BoardImage> boardImages = boardImageRepository.findAllByBoardId(boardId);
+
+    List<String> imagePaths = new ArrayList<>();
+
+    for (BoardImage boardImage : boardImages) {
+      imagePaths.add(boardImage.getImagePath());
+    }
+    for (String imagePath : imagePaths) {
+      awsS3Service.deleteFile(imagePath);
+    }
+    boardImageRepository.deleteAllByBoardId(boardId);
+  }
 }
-
-
 
 

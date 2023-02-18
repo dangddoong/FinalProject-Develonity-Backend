@@ -20,21 +20,15 @@ public class BoardImage extends TimeStamp {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @ManyToOne
   @JoinColumn(name = "BOARD_ID")
-  private Board board;
+  private Long boardId;
   @Column(nullable = false)
   private String imagePath;
 
 
-  public BoardImage(String filePath, Board board) {
+  public BoardImage(String filePath, Long boardId) {
     this.imagePath = filePath;
-    this.board = board;
+    this.boardId = boardId;
   }
 
-
-  public void addBoard(Board board) {
-    this.board = board;
-
-  }
 }

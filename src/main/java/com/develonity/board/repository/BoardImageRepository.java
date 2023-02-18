@@ -9,4 +9,6 @@ public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
   List<BoardImage> findAllByBoardId(Long boardId);
 
   void deleteBoardImageByBoardId(Long boardId);
+
+  void deleteAllByBoardId(Long boardId);
 }

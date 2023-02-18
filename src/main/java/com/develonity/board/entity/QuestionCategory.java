@@ -1,6 +1,6 @@
 package com.develonity.board.entity;
 
-public enum SubCategory {
+public enum QuestionCategory {
   BACKEND,
   FRONTEND,
   AI,

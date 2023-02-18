@@ -9,6 +9,9 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -109,7 +112,7 @@ public class CommentServiceImpl implements CommentService {
     checkUser(user, comment);
 
     if (commentLikeService.isExistLikes(commentId)) {
-      commentLikeService.deleteLike(commentId);
+      commentLikeService.deleteAllByCommentId(commentId);
     }
     // 댓글 작성자면 댓글 삭제
     commentRepository.delete(comment);
@@ -118,12 +121,11 @@ public class CommentServiceImpl implements CommentService {
   //답변 채택 기능
   @Override
   @Transactional
-  public void adoptComment(Long commentId, Long userId) {
-    Comment comment = getComment(commentId);
+  public void adoptComment(Comment comment) {
     comment.changeStatus();
-    //    userService.addPoint(questionBoard.getPrizePoint()); 유저서비스에 유저 포인트 추가해주는 메소드 만들기
 
   }
+
 
   // 잡담게시글 댓글 작성
   @Override
@@ -168,7 +170,23 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 작성자와 수정하려는 유저 닉네임이 같지 않으면 익셉션 출력
     checkUser(user, comment);
     // 댓글 작성자이면 댓글 삭제
+    if (commentLikeService.isExistLikes(commentId)) {
+      commentLikeService.deleteAllByCommentId(commentId);
+    }
     commentRepository.delete(comment);
+  }
+  public void deleteCommentsByBoardId(Long boardId) {
+    List<Comment> comments = commentRepository.findAllByBoardId(boardId);
+    List<Long> commentIdList = new ArrayList<>();
+    for (Comment comment : comments) {
+      commentIdList.add(comment.getId());
+    }
+    for (Long commentId : commentIdList) {
+      if (commentLikeService.isExistLikes(commentId)) {
+        commentLikeService.deleteLike(commentId);
+      }
+    }
+    commentRepository.deleteAllByBoardId(boardId);
   }
 
   // 닉네임을 가져오는 기능
@@ -185,10 +203,7 @@ public class CommentServiceImpl implements CommentService {
   public String getNicknameByComment(Comment comment) {
     return userService.getProfile(comment.getUserId()).getNickname();
   }
-
-  @Override
-  public void deleteCommentByBoardId(Long boardId) {
-    commentRepository.deleteAllByBoardId(boardId);
-  }
-
 }
+
+
+

@@ -3,7 +3,9 @@ package com.develonity.board.service;
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.CommunityBoard;
+import com.develonity.board.entity.CommunityCategory;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.comment.service.CommentService;
@@ -11,10 +13,14 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -29,67 +35,44 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   private final CommentService commentService;
 
-//  private final AwsS3Service awsS3Service;
+  private final AwsS3Service awsS3Service;
 
-  //잡담 게시글 생성
+  //잡담 게시글 생성(+이미지)
   @Override
   @Transactional
-  public void createCommunityBoard(CommunityBoardRequest request, User user) {
+  public void createCommunityBoard(CommunityBoardRequest request,
+      List<MultipartFile> multipartFiles,
+      User user) throws IOException {
     CommunityBoard communityBoard = CommunityBoard.builder()
         .userId(user.getId())
         .title(request.getTitle())
         .content(request.getContent())
-        .category(request.getCategory())
+        .communityCategory(request.getCommunityCategory())
         .build();
-
     communityBoardRepository.save(communityBoard);
+    upload(multipartFiles, communityBoard);
+
   }
 
-  //잡담 게시글 생성(+이미지)
-//  @Override
-//  @Transactional
-//  public void createCommunityBoard(CommunityBoardRequest request,
-//      List<MultipartFile> multipartFiles,
-//      User user) throws IOException {
-//    CommunityBoard communityBoard = CommunityBoard.builder()
-//        .userId(user.getId())
-//        .title(request.getTitle())
-//        .content(request.getContent())
-//        .category(request.getCategory())
-//        .build();
-//
-//    upload(multipartFiles, communityBoard);
-//    communityBoardRepository.save(communityBoard);
-//  }
-
-  //잡담 게시글 수정
-  @Override
-  @Transactional
-  public void updateCommunityBoard(Long boardId, CommunityBoardRequest request, User user) {
-    CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
-    checkUser(communityBoard, user.getId());
-    communityBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory());
-    communityBoardRepository.save(communityBoard);
-  }
 
   //잡담 게시글 수정(+이미지)
-//  @Override
-//  @Transactional
-//  public void updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,
-//      CommunityBoardRequest request, User user) throws IOException {
-//    CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
-//    checkUser(communityBoard, user.getId());
-//    for (MultipartFile multipartFile : multipartFiles) {
-//      if (!multipartFile.isEmpty()) {
-//        deleteBoardImages(boardId);
-//        upload(multipartFiles, communityBoard);
-//      } else {
-//        upload(multipartFiles, communityBoard);
-//      }
-//    }
-//    communityBoard.updateBoard(request.getTitle(), request.getContent(), request.getCategory());
-//    communityBoardRepository.save(communityBoard);
-//  }
+  @Override
+  @Transactional
+  public void updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,
+      CommunityBoardRequest request, User user) throws IOException {
+    CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
+    checkUser(communityBoard, user.getId());
+    for (MultipartFile multipartFile : multipartFiles) {
+      if (!multipartFile.isEmpty()) {
+        deleteBoardImages(boardId);
+        upload(multipartFiles, communityBoard);
+      } else {
+        upload(multipartFiles, communityBoard);
+      }
+    }
+    communityBoard.updateBoard(request.getTitle(), request.getContent());
+    communityBoardRepository.save(communityBoard);
+  }
 
   //잡담 게시글 삭제
   @Override
@@ -98,10 +81,10 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     checkUser(communityBoard, user.getId());
     if (boardLikeService.isExistLikes(boardId)) {
-      boardLikeService.deleteLike(boardId);
+      boardLikeService.deleteLikes(boardId);
     }
-//    deleteBoardImages(boardId);
-//    commentService.deleteCommentByBoardId(boardId);
+    deleteBoardImages(boardId);
+    commentService.deleteCommentsByBoardId(boardId);
     communityBoardRepository.deleteById(boardId);
 
 
@@ -113,14 +96,15 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   public Page<CommunityBoardResponse> getCommunityBoardPage(User user,
       BoardPage communityBoardPage) {
 
-    Page<CommunityBoard> communityBoardPages = communityBoardRepository.findByTitleContainingOrContentContaining(
+    Page<CommunityBoard> communityBoardPages = communityBoardRepository.findByCommunityCategoryAndTitleContainingOrContentContaining(
+        communityBoardPage.getCommunityCategory(),
         communityBoardPage.getTitle(),
         communityBoardPage.getContent(),
         communityBoardPage.toPageable());
 
     return communityBoardPages.map(
         communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
-            getNicknameByCommunityBoard(communityBoard)));
+            getNicknameByCommunityBoard(communityBoard), getImagePaths(communityBoard)));
   }
 
   //잡담 게시글 선택 조회
@@ -129,9 +113,18 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   public CommunityBoardResponse getCommunityBoard(Long boardId, User user) {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     boolean isLike = boardLikeService.isLike(boardId, user.getId());
-    Long userId = communityBoard.getUserId();
-    String nickname = getNickname(userId);
-    return new CommunityBoardResponse(communityBoard, nickname, countLike(boardId), isLike);
+    Long boardUserId = communityBoard.getUserId();
+    String nickname = getNickname(boardUserId);
+
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(boardId);
+//    boardImageList.stream().map(boardImage -> boardImage.getImagePath())
+//        .collect(Collectors.toList());
+    List<String> imagePaths = new ArrayList<>();
+    for (BoardImage boardImage : boardImageList) {
+      imagePaths.add(boardImage.getImagePath());
+    }
+    return new CommunityBoardResponse(communityBoard, nickname, countLike(boardId), isLike,
+        imagePaths);
   }
 
   @Override
@@ -139,6 +132,16 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     if (!communityBoard.isWriter(userId)) {
       throw new CustomException(ExceptionStatus.BOARD_USER_NOT_MATCH);
     }
+  }
+
+  //등급 변경
+  @Override
+  public void upgradeGrade(Long userId, Long boardId) {
+    if (userService.isLackedRespectPoint(userId)) {
+      throw new CustomException(ExceptionStatus.POINTS_IS_LACKING);
+    }
+    userService.upgradeGrade(userId);
+
   }
 
   @Override
@@ -153,8 +156,14 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   }
 
   @Override
-  public boolean isExistBoard(Long boardId) {
+  public Boolean isExistBoard(Long boardId) {
     return communityBoardRepository.existsBoardById(boardId);
+  }
+
+  @Override
+  public boolean isGradeBoard(Long boardId) {
+    return communityBoardRepository.existsCommunityBoardByIdAndCommunityCategory(boardId,
+        CommunityCategory.GRADE);
   }
 
   @Override
@@ -167,39 +176,53 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     return userService.getProfile(communityBoard.getUserId()).getNickname();
   }
 
-//  @Override
-//  public void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard)
-//      throws IOException {
-//
-//    List<String> uploadImagePaths = new ArrayList<>();
-//    int checkNumber = 0;
-//    for (MultipartFile multipartFile : multipartFiles) {
-//      if (!multipartFile.isEmpty()) {
-//        checkNumber = 1;
-//      }
-//    }
-//    if (checkNumber == 1) {
-//      uploadImagePaths = awsS3Service.upload(multipartFiles);
-//    }
-//
-//    for (String imagePath : uploadImagePaths) {
-//      BoardImage boardImage = new BoardImage(imagePath, communityBoard);
-//      boardImageRepository.save(boardImage);
-//    }
-//  }
-//
-//  @Override
-//  public void deleteBoardImages(Long boardId) {
-//    List<BoardImage> boardImages = boardImageRepository.findAllByBoardId(boardId);
-//
-//    List<String> imagePaths = new ArrayList<>();
-//
-//    for (BoardImage boardImage : boardImages) {
-//      imagePaths.add(boardImage.getImagePath());
-//    }
-//    for (String imagePath : imagePaths) {
-//      awsS3Service.deleteFile(imagePath);
-//    }
-//    boardImageRepository.deleteBoardImageByBoardId(boardId);
-//  }
+  @Override
+  public List<String> getImagePaths(CommunityBoard communityBoard) {
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(communityBoard.getId());
+    List<String> imagePaths = new ArrayList<>();
+    for (BoardImage boardImage : boardImageList) {
+      imagePaths.add(boardImage.getImagePath());
+    }
+    return imagePaths;
+  }
+
+  @Override
+  @Transactional
+  public void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard)
+      throws IOException {
+
+    List<String> uploadImagePaths = new ArrayList<>();
+    String dir = "/board/communityImage";
+    boolean exists = false;
+    for (MultipartFile multipartFile : multipartFiles) {
+      if (!multipartFile.isEmpty()) {
+        exists = true;
+      }
+    }
+    if (exists) {
+      uploadImagePaths = awsS3Service.upload(multipartFiles, dir);
+    }
+
+    for (String imagePath : uploadImagePaths) {
+      BoardImage boardImage = new BoardImage(imagePath, communityBoard.getId());
+      boardImageRepository.save(boardImage);
+    }
+  }
+
+
+  @Override
+  @Transactional
+  public void deleteBoardImages(Long boardId) {
+    List<BoardImage> boardImages = boardImageRepository.findAllByBoardId(boardId);
+
+    List<String> imagePaths = new ArrayList<>();
+
+    for (BoardImage boardImage : boardImages) {
+      imagePaths.add(boardImage.getImagePath());
+    }
+    for (String imagePath : imagePaths) {
+      awsS3Service.deleteFile(imagePath);
+    }
+    boardImageRepository.deleteAllByBoardId(boardId);
+  }
 }

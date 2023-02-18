@@ -17,13 +17,8 @@ public class CommentResponse {
   private final Long id;
 
   private final String nickname;
-
   private final String content;
-
   private final int commentLike;
-
-  private final int point;
-
   private final LocalDateTime createdAt;
 
   private final LocalDateTime lastModifiedAt;
@@ -37,7 +32,6 @@ public class CommentResponse {
     this.nickname = nickname;
     this.content = comment.getContent();
     this.commentLike = commentLike;
-    this.point = comment.getPoint();
     this.createdAt = comment.getCreatedDate();
     this.lastModifiedAt = comment.getLastModifiedDate();
     for (ReplyComment replyComment : comment.getReplyCommentList) {
