@@ -3,9 +3,9 @@ package com.develonity.user.controller;
 import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.security.users.UserDetailsImpl;
 import com.develonity.user.dto.LoginRequest;
-import com.develonity.user.dto.LoginResponse;
 import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
+import com.develonity.user.dto.TokenResponse;
 import com.develonity.user.dto.WithdrawalRequest;
 import com.develonity.user.service.UserService;
 import javax.servlet.http.HttpServletRequest;
@@ -37,37 +37,31 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest,
+  public TokenResponse login(@RequestBody LoginRequest loginRequest,
       HttpServletResponse httpServletResponse) {
-    LoginResponse loginResponse = userService.login(loginRequest);
-    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, loginResponse.getAccessToken());
-    httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, loginResponse.getRefreshToken());
-    return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+    TokenResponse tokenResponse = userService.login(loginRequest);
+    // 44라인은 일단 포스트맨 테스트의 용이성을 위해 넣어두었습니다. 추후 프론트 구현 이후에는 삭제 예정입니다.
+    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, tokenResponse.getAccessToken());
+    return tokenResponse;
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<String> logout(HttpServletRequest httpServletRequest,
-      HttpServletResponse httpServletResponse) {
-    userService.logout(JwtUtil.resolveRefreshToken(httpServletRequest));
-
-    // response에 덮어씌우고자 하는 의도로 아래 두 라인을 작성하였음...
-    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, "clear");
-    httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, "clear");
-
+  public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    userService.logout(userDetails.getUser().getLoginId());
     return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
   }
 
   @PatchMapping("/withdrawal")
   public ResponseEntity<String> withdrawal(@RequestBody WithdrawalRequest withdrawalRequest,
-      HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    String refreshToken = JwtUtil.resolveRefreshToken(httpServletRequest);
-    userService.withdrawal(refreshToken, userDetails.getUsername(),
-        withdrawalRequest.getPassword());
-    // response에 덮어씌우고자 하는 의도로 아래 두 라인을 작성하였음...
-    httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, "clear");
-    httpServletResponse.addHeader(JwtUtil.REFRESH_HEADER, "clear");
+    userService.withdrawal(userDetails.getUsername(), withdrawalRequest.getPassword());
     return new ResponseEntity<>("회원탈퇴 성공", HttpStatus.OK);
+  }
+
+  @PostMapping("/reissue")
+  public TokenResponse reissue(HttpServletRequest httpServletRequest) {
+    String refreshToken = JwtUtil.resolveRefreshToken(httpServletRequest);
+    return userService.reissue(refreshToken);
   }
 
   // 내 프로필조회
@@ -82,14 +76,15 @@ public class UserController {
     return userService.getProfile(userId);
   }
 
-//  //프로필 정보 수정 (닉네임, 프로필사진)
-//  @PutMapping("user/me/profile")
+  //내 프로필 정보 수정 (닉네임, 프로필사진)
+//  @PatchMapping("/users/me/profile")
+//  public
 //
 //  // 개인정보 조회 (이름, 비밀번호, 이메일, 핸드폰번호, 주소)
-//  @GetMapping("user/me/personal-information")
+//  @GetMapping("/users/me/personal-information")
 //
 //  // 개인정보 수정 (이름, 비밀번호, 이메일, 핸드폰번호, 주소)
-//  @PutMapping("user/me/personal-information")
+//  @PutMapping("/users/me/personal-information")
 
   // ----아래부터는 애매한 부분 ---
   //게시글 스크랩 저장 ?-? (이거는 애매함)

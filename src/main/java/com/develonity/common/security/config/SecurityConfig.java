@@ -1,7 +1,8 @@
 package com.develonity.common.security.config;
 
-import com.develonity.common.jwt.JwtAuthFilter;
+import com.develonity.common.jwt.AdminAuthFilter;
 import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.jwt.UserAuthFilter;
 import com.develonity.common.security.exceptionHandler.CustomAccessDeniedHandler;
 import com.develonity.common.security.exceptionHandler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -52,11 +53,13 @@ public class SecurityConfig implements WebMvcConfigurer {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션이 필요하면 생성하도록 셋팅
 
+
         http.authorizeHttpRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/login").permitAll()
-                .antMatchers("/api/logout").permitAll()
+                .antMatchers("/api/admins/login").permitAll()
+                .antMatchers("/api/reissue").permitAll()
                 .antMatchers("/api/gift-cards/**").permitAll()
 //        .antMatchers("/api/users/signout").permitAll()
 //        .antMatchers("/api/users/**").hasRole("CUSTOMER")
@@ -66,7 +69,9 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new UserAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AdminAuthFilter(jwtUtil), UserAuthFilter.class);
+
 
         return http.build();
     }

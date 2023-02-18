@@ -4,7 +4,7 @@ public interface BoardLikeService {
 
   int countLike(Long boardId);
 
-  void deleteLike(Long boardId);
+  void deleteLikes(Long boardId);
 
   boolean isExistLikes(Long boardId);
 

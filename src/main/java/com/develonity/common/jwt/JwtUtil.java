@@ -1,5 +1,6 @@
 package com.develonity.common.jwt;
 
+import com.develonity.admin.entity.AdminRole;
 import com.develonity.common.redis.RedisDao;
 import com.develonity.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
@@ -10,6 +11,7 @@ import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +30,14 @@ import org.springframework.util.StringUtils;
 public class JwtUtil {
 
   private final RedisDao redisDao;
-  private final UserDetailsService userDetailsService;
+  private final Map<String, UserDetailsService> userDetailsServiceMap;
   public static final String AUTHORIZATION_HEADER = "Authorization"; // access token 헤더에 들어가는 키값
   public static final String REFRESH_HEADER = "Refresh";
+  public static final String ADMIN_HEADER = "Admin";
   public static final String AUTHORIZATION_KEY = "auth"; // 사용자 권한 키값. 사용자 권한도 토큰안에 넣어주기 때문에 그때 사용하는 키값
   private static final String BEARER_PREFIX = "Bearer "; // Token 식별자
   private static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;  // 토큰 만료시간. (60 * 1000L 이 1분)
-  private static final long REFRESH_TOKEN_TIME = 2 * 7 * 24 * 60 * 60 * 1000L;
+  public static final long REFRESH_TOKEN_TIME = 2 * 7 * 24 * 60 * 60 * 1000L;
 
 
   @Value("${jwt.secret.key}")
@@ -67,8 +70,28 @@ public class JwtUtil {
     return null;
   }
 
+  public String resolveAdminToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader(ADMIN_HEADER);
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+      return bearerToken.substring(7);
+    }
+    return null;
+  }
+
   // 토큰 생성
   public String createAccessToken(String username, UserRole role) {
+    Date date = new Date();
+    return BEARER_PREFIX +
+        Jwts.builder()
+            .setSubject(username)
+            .claim(AUTHORIZATION_KEY, role)
+            .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
+            .setIssuedAt(date)
+            .signWith(key, signatureAlgorithm)
+            .compact();
+  }
+
+  public String createAdminToken(String username, AdminRole role) {
     Date date = new Date();
     return BEARER_PREFIX +
         Jwts.builder()
@@ -98,7 +121,7 @@ public class JwtUtil {
   }
 
   // 단일책임원칙에는 위배되지만 jwt 디코딩 비용이 비싸므로 한큐에 모든결 해결하고 싶은 마음에 부득불 원칙을 어겼습니다.
-  public TokenInfo getInfoFromToken(String token) {
+  public TokenInfo getInfoFromTokenIfValidOrExpired(String token) {
     try {
       Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
           .getBody();
@@ -111,8 +134,14 @@ public class JwtUtil {
     }
   }
 
+  public String getLoginIdFromTokenIfValid(String token) {
+    return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody()
+        .getSubject();
+  }
+
   // 인증 객체 생성
-  public Authentication createAuthentication(String username) {
+  public Authentication createAuthentication(String username, String userDetailsServiceKey) {
+    UserDetailsService userDetailsService = userDetailsServiceMap.get(userDetailsServiceKey);
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
     return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
   }
@@ -120,8 +149,8 @@ public class JwtUtil {
   public Long getValidMilliSeconds(String refreshToken) {
     Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken)
         .getBody();
-    Long vaildSeconds = claims.getExpiration().getTime() - claims.getIssuedAt().getTime();
-    return vaildSeconds;
+    Long validSeconds = claims.getExpiration().getTime() - claims.getIssuedAt().getTime();
+    return validSeconds;
   }
 
   public void checkBlackList(String refreshToken) {
@@ -129,4 +158,6 @@ public class JwtUtil {
       throw new IllegalArgumentException("로그아웃 된 토큰입니다.");
     }
   }
+
+
 }

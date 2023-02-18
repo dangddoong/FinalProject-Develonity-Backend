@@ -11,15 +11,15 @@ public class ReplyCommentResponse {
 
   private final Long id;
   private final String content;
-  private final String nickName;
+  private final String nickname;
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
 
 
-  public ReplyCommentResponse(ReplyComment replyComment) {
+  public ReplyCommentResponse(ReplyComment replyComment, String nickname) {
     this.id = replyComment.getId();
     this.content = replyComment.getContent();
-    this.nickName = replyComment.getNickName();
+    this.nickname = nickname;
     this.createdAt = replyComment.getCreatedDate();
     this.lastModifiedAt = replyComment.getLastModifiedDate();
   }

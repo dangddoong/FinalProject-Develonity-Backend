@@ -30,4 +30,12 @@ public interface CommentService {
 
   Comment getComment(Long commentId);
 
+  String getNickname(Long userId);
+
+  String getNicknameByComment(Comment comment);
+
+  void adoptComment(Comment comment);
+
+  void deleteCommentsByBoardId(Long boardId);
+
 }

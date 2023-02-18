@@ -1,7 +1,6 @@
 package com.develonity.comment.service;
 
 import com.develonity.comment.dto.ReplyCommentRequest;
-import com.develonity.comment.dto.ReplyCommentResponse;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.entity.ReplyComment;
 import com.develonity.comment.repository.CommentRepository;
@@ -9,6 +8,7 @@ import com.develonity.comment.repository.ReplyCommentRepository;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
+import com.develonity.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +19,7 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
 
   private final CommentRepository commentRepository;
   private final ReplyCommentRepository replyCommentRepository;
+  private final UserService userService;
 
   // 댓글 확인
   private Comment getComment(Long commentId) {
@@ -35,8 +36,8 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
   }
 
   // 댓글 작성자 확인
-  private void checkUser(User user, ReplyComment replyComment) {
-    if (user.getNickName() != replyComment.getNickName()) {
+  public void checkUser(User user, ReplyComment replyComment) {
+    if (user.getNickname() != getNicknameByReplyComment(replyComment)) {
       throw new CustomException(ExceptionStatus.REPLY_COMMENT_USER_NOT_MATCH);
     }
   }
@@ -51,7 +52,6 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
     // 대댓글 작성
     ReplyComment replyComment = new ReplyComment(user, request, comment);
     replyCommentRepository.save(replyComment);
-    new ReplyCommentResponse(replyComment);
   }
 
   // 대댓글 수정
@@ -68,7 +68,6 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
     // 댓글 수정
     replyComment.updateReplyComment(request.getContent());
     replyCommentRepository.save(replyComment);
-    new ReplyCommentResponse(replyComment);
   }
 
   // 대댓글 삭제
@@ -81,5 +80,16 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
     checkUser(user, replyComment);
     // 댓글 삭제
     replyCommentRepository.delete(replyComment);
+  }
+
+  // 닉네임을 가져오는 기능
+  @Override
+  public String getNickname(Long userId) {
+    return userService.getProfile(userId).getNickname();
+  }
+
+  @Override
+  public String getNicknameByReplyComment(ReplyComment replyComment) {
+    return userService.getProfile(replyComment.getUserId()).getNickname();
   }
 }

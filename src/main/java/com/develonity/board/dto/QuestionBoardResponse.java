@@ -1,10 +1,10 @@
 package com.develonity.board.dto;
 
 import com.develonity.board.entity.BoardStatus;
-import com.develonity.board.entity.Category;
 import com.develonity.board.entity.QuestionBoard;
-import com.develonity.board.entity.SubCategory;
+import com.develonity.board.entity.QuestionCategory;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +16,8 @@ public class QuestionBoardResponse {
 
   private final Long id;
   private final String nickname;
-  private final Category category;
-  private final SubCategory subCategory;
+
+  private final QuestionCategory questionCategory;
   private final String title;
   private final String content;
   private final int boardLike;
@@ -25,16 +25,15 @@ public class QuestionBoardResponse {
   private final BoardStatus status;
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
-
-  private Boolean isLike; //로그인한 유저가 좋아요 눌렀는지 여부
+  private final List<String> imagePaths;
+  private final Boolean isLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
 
   public QuestionBoardResponse(QuestionBoard questionBoard, String nickname, int boardLike,
-      Boolean isLike) {
+      Boolean isLike, List<String> imagePaths) {
     this.id = questionBoard.getId();
     this.nickname = nickname;
-    this.category = questionBoard.getCategory();
-    this.subCategory = questionBoard.getSubCategory();
+    this.questionCategory = questionBoard.getQuestionCategory();
     this.title = questionBoard.getTitle();
     this.content = questionBoard.getContent();
     this.boardLike = boardLike;
@@ -43,8 +42,7 @@ public class QuestionBoardResponse {
     this.createdAt = questionBoard.getCreatedDate();
     this.lastModifiedAt = questionBoard.getLastModifiedDate();
     this.isLike = isLike;
-
-
+    this.imagePaths = imagePaths;
   }
 
   public static QuestionBoardResponse toQuestionBoardResponse(QuestionBoard questionBoard,
@@ -52,8 +50,7 @@ public class QuestionBoardResponse {
     return QuestionBoardResponse.builder()
         .id(questionBoard.getId())
         .nickname(nickname)
-        .category(questionBoard.getCategory())
-        .subCategory(questionBoard.getSubCategory())
+        .questionCategory(questionBoard.getQuestionCategory())
         .title(questionBoard.getTitle())
         .content(questionBoard.getContent())
         .prizePoint(questionBoard.getPrizePoint())
@@ -63,3 +60,4 @@ public class QuestionBoardResponse {
         .build();
   }
 }
+

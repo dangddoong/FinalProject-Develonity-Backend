@@ -9,11 +9,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-  Page<Comment> findAllByNickName(Pageable pageable, String username);
+  Page<Comment> findAllByUserId(Pageable pageable, Long userId);
+
+  void deleteAllByBoardId(Long boardId);
 
   Page<Comment> findBy(Pageable pageable);
 
-  Optional<List<Comment>> findAllByBoardId(Long boardId);
+  List<Comment> findAllByBoardId(Long boardId);
+
 
 
 }

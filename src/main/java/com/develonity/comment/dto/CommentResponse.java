@@ -16,14 +16,9 @@ public class CommentResponse {
 
   private final Long id;
 
-  private final String nickName;
-
+  private final String nickname;
   private final String content;
-
   private final int commentLike;
-
-  private final int point;
-
   private final LocalDateTime createdAt;
 
   private final LocalDateTime lastModifiedAt;
@@ -31,29 +26,30 @@ public class CommentResponse {
   private List<ReplyCommentResponse> replyCommentList;
 
 
-  public CommentResponse(Comment comment, int commentLike) {
+  public CommentResponse(Comment comment, String nickname, int commentLike) {
     List<ReplyCommentResponse> list = new ArrayList<>();
     this.id = comment.getId();
-    this.nickName = comment.getNickName();
+    this.nickname = nickname;
     this.content = comment.getContent();
     this.commentLike = commentLike;
-    this.point = comment.getPoint();
     this.createdAt = comment.getCreatedDate();
     this.lastModifiedAt = comment.getLastModifiedDate();
     for (ReplyComment replyComment : comment.getReplyCommentList) {
-      list.add(new ReplyCommentResponse(replyComment));
+      list.add(new ReplyCommentResponse(replyComment, nickname));
     }
     this.replyCommentList = list;
   }
 
-//  public static CommentResponse toCommentResponseDto(final Comment comment) {
+//  public static CommentResponse toCommentResponseDto(Comment comment, String nickname,
+//      int commentLike) {
 //    return CommentResponse.builder()
 //        .id(comment.getId())
-//        .nickName(comment.getNickName())
+//        .nickname(nickname)
 //        .content(comment.getContent())
-//        .commentLike(Math.toIntExact(comment.getId()))
+//        .commentLike(commentLike)
 //        .point(comment.getPoint())
 //        .createdAt(comment.getCreatedDate())
+//        .lastModifiedAt(comment.getLastModifiedDate())
 //        .build();
 //  }
 

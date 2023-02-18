@@ -17,30 +17,34 @@ import lombok.NoArgsConstructor;
 public class QuestionBoard extends Board {
 
   @Column
-  private int prizePoint;
+  private int prizePoint = 0;
   @Column
   @Enumerated(EnumType.STRING)
   private BoardStatus status = BoardStatus.NOT_ADOPTED;
   @Column
   @Enumerated(EnumType.STRING)
-  private SubCategory subCategory;
+  private QuestionCategory questionCategory;
 
 
   @Builder
-  public QuestionBoard(Long userId, String title, String content, Category category,
-      int prizePoint, SubCategory subCategory) {
-    super(userId, title, content, category);
+  public QuestionBoard(Long userId, String title, String content,
+      int prizePoint, QuestionCategory questionCategory) {
+    super(userId, title, content);
     this.prizePoint = prizePoint;
-    this.subCategory = subCategory;
+    this.questionCategory = questionCategory;
   }
 
+  public void updateBoard(String title, String content, QuestionCategory questionCategory) {
+    super.updateBoard(title, content);
+    this.questionCategory = questionCategory;
+  }
 
   public void changeStatus() {
     this.status = BoardStatus.ADOPTED;
   }
 
-  @Override
-  public boolean isWriter(Long id) {
-    return super.isWriter(id);
+
+  public boolean isAlreadyAdopted() {
+    return this.getStatus().equals(BoardStatus.ADOPTED);
   }
 }
