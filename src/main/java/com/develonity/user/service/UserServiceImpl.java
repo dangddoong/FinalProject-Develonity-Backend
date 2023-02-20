@@ -42,10 +42,10 @@ public class UserServiceImpl implements UserService {
     User user = userRepository.findByLoginId(loginRequest.getLoginId())
         .orElseThrow(IllegalArgumentException::new);
     if (user.isWithdrawal()) {
-      throw new IllegalArgumentException("탈퇴한 회원입니다.");
+      throw new IllegalArgumentException("탈퇴처리 된 계정입니다. 고객센터로 문의바랍니다.");
     }
     if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-      throw new IllegalArgumentException("비밀번호 불일치");
+      throw new IllegalArgumentException("아이디와 비밀번호를 확인해주시기 바랍니다.");
     }
 
     String accessToken = jwtUtil.createAccessToken(user.getLoginId(), user.getUserRole());
