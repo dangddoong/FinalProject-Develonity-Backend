@@ -13,6 +13,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
   List<Board> findAllByUserId(Long userId);
 
 
-  List<Board> findAllByIdIn(List<Long> boardIds); //애초에 저장을 스크랩엔티티에 저장시에.. 100개미만 제한 기능상
+  List<Board> findAllByIdIn(List<Long> boardIds);
 
 }

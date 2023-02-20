@@ -92,4 +92,10 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
   public String getNicknameByReplyComment(ReplyComment replyComment) {
     return userService.getProfile(replyComment.getUserId()).getNickname();
   }
+
+
+  @Override
+  public void deleteAllReplyComments(Comment comment) {
+    replyCommentRepository.deleteAllByCommentId(comment);
+  }
 }

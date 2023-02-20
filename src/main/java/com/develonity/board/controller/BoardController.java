@@ -93,7 +93,7 @@ public class BoardController {
   //잡담 게시글 수정 (+이미지)
   @PatchMapping("/community-boards/{boardId}")
   public ResponseEntity<String> updateCommunityBoard(@PathVariable Long boardId,
-      @RequestPart("images") List<MultipartFile> multipartFiles,
+      @RequestPart(required = false, name = "images") List<MultipartFile> multipartFiles,
       @RequestPart("request") CommunityBoardRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
     communityBoardService.updateCommunityBoard(boardId, multipartFiles, request,
@@ -150,6 +150,17 @@ public class BoardController {
   ) {
     return questionBoardService.getTestQuetionBoardPage(userDetails.getUser(), questionBoardPage);
   }
+
+  //잡담게시글 전체 조회(테스트용)
+  @GetMapping("/community-boards/test")
+  public Page<CommunityBoardResponse> getTestCommunityBoardsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardPage communityBoardPage
+  ) {
+    return communityBoardService.getTestCommunityBoardPage(userDetails.getUser(),
+        communityBoardPage);
+  }
+
 
   //잡담게시글 전체 조회
   @GetMapping("/community-boards")

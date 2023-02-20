@@ -24,6 +24,8 @@ public class CommentServiceImpl implements CommentService {
 
   private final CommentLikeService commentLikeService;
 
+  private final ReplyCommentService replyCommentService;
+
   private final UserService userService;
 
 
@@ -50,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
     Page<Comment> commentPages = commentRepository.findBy(commentList.toPageable());
     return commentPages.map(
         comment -> new CommentResponse(comment, getNicknameByComment(comment),
-            commentLikeService.countLike(comment.getId())));
+            countLike(comment.getId())));
 
   }
 
@@ -59,15 +61,29 @@ public class CommentServiceImpl implements CommentService {
   @Transactional(readOnly = true)
   public Page<CommentResponse> getMyComments(CommentList commentList, Long userId, User user) {
 
-    if (userId != user.getId()) {
+    if (!userId.equals(user.getId())) {
       throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
     }
 
     Page<Comment> myCommentList = commentRepository.findAllByUserId(commentList.toPageable(),
         user.getId());
     return myCommentList.map(
-        comment1 -> new CommentResponse(comment1, getNicknameByComment(comment1),
-            commentLikeService.countLike(comment1.getId())));
+        comment -> new CommentResponse(comment, getNicknameByComment(comment),
+            countLike(comment.getId())));
+  }
+
+  //게시글에 달린 댓글,대댓글 조회
+  @Override
+  @Transactional(readOnly = true)
+  public Page<CommentResponse> getCommentsByBoard(CommentList commentList, Long boardId,
+      User user) {
+
+    Page<Comment> commentPage = commentRepository.findAllByBoardId(commentList.toPageable(),
+        boardId);
+    return commentPage.map(
+        comment -> new CommentResponse(comment, getNicknameByComment(comment),
+            countLike(comment.getId())));
+
   }
 
   // 질문게시글 답변 작성
@@ -75,9 +91,9 @@ public class CommentServiceImpl implements CommentService {
   @Transactional
   public void createQuestionComment(Long questionBoardId, CommentRequest requestDto,
       User user) {
-    if (existsCommentByBoardIdAndUserId(questionBoardId, user.getId())) {
-      throw new CustomException(ExceptionStatus.COMMENT_IS_EXIST);
-    }
+//    if (existsCommentByBoardIdAndUserId(questionBoardId, user.getId())) {
+//      throw new CustomException(ExceptionStatus.COMMENT_IS_EXIST);
+//    }
     // 댓글 생성
     Comment comment = new Comment(user, requestDto, questionBoardId);
     commentRepository.save(comment);
@@ -178,22 +194,30 @@ public class CommentServiceImpl implements CommentService {
   }
 
   public void deleteCommentsByBoardId(Long boardId) {
+//    if (existsCommentsByBoardId(boardId)) {
     List<Comment> comments = commentRepository.findAllByBoardId(boardId);
     List<Long> commentIdList = new ArrayList<>();
     for (Comment comment : comments) {
       commentIdList.add(comment.getId());
+      replyCommentService.deleteAllReplyComments(comment);
     }
     for (Long commentId : commentIdList) {
       if (commentLikeService.isExistLikes(commentId)) {
         commentLikeService.deleteLike(commentId);
       }
+
+      commentRepository.deleteAllByBoardId(boardId);
     }
-    commentRepository.deleteAllByBoardId(boardId);
   }
 
   @Override
   public boolean existsCommentByBoardIdAndUserId(Long boardId, Long userId) {
     return commentRepository.existsCommentByBoardIdAndUserId(boardId, userId);
+  }
+
+  @Override
+  public boolean existsCommentsByBoardId(Long boardId) {
+    return commentRepository.existsCommentsByBoardId(boardId);
   }
 
   // 닉네임을 가져오는 기능
@@ -209,6 +233,12 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public String getNicknameByComment(Comment comment) {
     return userService.getProfile(comment.getUserId()).getNickname();
+  }
+
+  //좋아요 갯수
+  @Override
+  public int countLike(Long commentId) {
+    return commentLikeService.countLike(commentId);
   }
 }
 

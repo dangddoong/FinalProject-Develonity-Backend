@@ -43,6 +43,8 @@ public interface CommunityBoardService {
 
   void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard) throws IOException;
 
+  void uploadOne(MultipartFile multipartFile, CommunityBoard communityBoard) throws IOException;
+
   void upgradeGrade(Long userId, Long boardId);
 
   List<String> getImagePaths(CommunityBoard communityBoard);

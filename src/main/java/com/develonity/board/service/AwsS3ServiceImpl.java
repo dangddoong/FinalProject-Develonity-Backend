@@ -66,6 +66,26 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     return imgPaths;
   }
 
+  @Override
+  public String uploadOne(MultipartFile multipartFile, String dir) throws IOException {
+    String imgPath;
+
+    String fileName = createFileName(multipartFile.getOriginalFilename());
+    ObjectMetadata objectMetadata = new ObjectMetadata();
+    objectMetadata.setContentLength(multipartFile.getSize());
+    objectMetadata.setContentType(multipartFile.getContentType());
+
+    try (InputStream inputStream = multipartFile.getInputStream()) {
+      s3Client.putObject(
+          new PutObjectRequest(bucket + dir, fileName, inputStream, objectMetadata)
+              .withCannedAcl(CannedAccessControlList.PublicRead));
+      imgPath = s3Client.getUrl(bucket + dir, fileName).toString();
+    } catch (IOException e) {
+      throw new IOException();
+    }
+    return imgPath;
+  }
+
   public void deleteFile(String imagePathLong) {
     try {
       String imagePath = imagePathLong.substring(54);
