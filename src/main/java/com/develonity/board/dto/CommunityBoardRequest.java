@@ -16,7 +16,6 @@ public class CommunityBoardRequest {
   private final String content;
   private final CommunityCategory communityCategory;
   private final int point;
-  private final String imageUrl;
   private final QuestionCategory questionCategory;
 
 }

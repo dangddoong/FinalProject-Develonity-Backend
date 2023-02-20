@@ -15,8 +15,8 @@ public class BoardPage {
   private String title;
   private String content;
   private QuestionCategory questionCategory;
-
   private CommunityCategory communityCategory;
+
   private int page;
   private int size = 5;
   private Boolean isAsc = false;

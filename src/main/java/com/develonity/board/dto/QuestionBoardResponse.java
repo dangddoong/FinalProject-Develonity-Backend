@@ -26,11 +26,11 @@ public class QuestionBoardResponse {
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
   private final List<String> imagePaths;
-  private final Boolean isLike; //로그인한 유저가 좋아요 눌렀는지 여부
+  private final Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
 
   public QuestionBoardResponse(QuestionBoard questionBoard, String nickname, int boardLike,
-      Boolean isLike, List<String> imagePaths) {
+      Boolean hasLike, List<String> imagePaths) {
     this.id = questionBoard.getId();
     this.nickname = nickname;
     this.questionCategory = questionBoard.getQuestionCategory();
@@ -41,7 +41,7 @@ public class QuestionBoardResponse {
     this.status = questionBoard.getStatus();
     this.createdAt = questionBoard.getCreatedDate();
     this.lastModifiedAt = questionBoard.getLastModifiedDate();
-    this.isLike = isLike;
+    this.hasLike = hasLike;
     this.imagePaths = imagePaths;
   }
 

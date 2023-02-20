@@ -1,14 +1,17 @@
 package com.develonity.board.controller;
 
 import com.develonity.board.dto.BoardPage;
+import com.develonity.board.dto.BoardResponse;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.service.BoardLikeService;
+import com.develonity.board.service.BoardService;
 import com.develonity.board.service.CommunityBoardService;
 import com.develonity.board.service.QuestionBoardService;
+import com.develonity.board.service.ScrapService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.security.users.UserDetailsImpl;
@@ -39,19 +42,23 @@ public class BoardController {
 
   private final CommunityBoardService communityBoardService;
 
+  private final BoardService boardService;
   private final BoardLikeService boardLikeService;
+
+  private final ScrapService scrapService;
 
   //  질문게시글 생성
   @PostMapping("/question-boards")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<String> createQuestionBoard(
-      @RequestPart("images") List<MultipartFile> multipartFiles,
+      @RequestPart(required = false, name = "images") List<MultipartFile> multipartFiles,
       @RequestPart("request") QuestionBoardRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
     if (request.getQuestionCategory() == null) {
       throw new CustomException(ExceptionStatus.COMMENT_IS_NOT_EXIST);
     }
+
     questionBoardService.createQuestionBoard(request, multipartFiles, userDetails.getUser());
     return new ResponseEntity<>("질문 게시글이 생성되었습니다", HttpStatus.CREATED);
   }
@@ -61,12 +68,12 @@ public class BoardController {
   @PostMapping("/community-boards")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<String> createCommunityBoard(
-      @RequestPart("images") List<MultipartFile> multipartFiles,
+      @RequestPart(required = false, name = "images") List<MultipartFile> multipartFiles,
       @RequestPart("request") CommunityBoardRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
     if (request.getCommunityCategory() == null) {
-      throw new CustomException(ExceptionStatus.COMMENT_IS_NOT_EXIST);
+      throw new CustomException(ExceptionStatus.CATEGORY_IS_NOT_EXIST);
     }
     communityBoardService.createCommunityBoard(request, multipartFiles, userDetails.getUser());
     return new ResponseEntity<>("잡담 게시글이 생성되었습니다", HttpStatus.CREATED);
@@ -75,7 +82,7 @@ public class BoardController {
   //질문게시글 수정
   @PatchMapping("/question-boards/{boardId}")
   public ResponseEntity<String> updateQuestionBoard(@PathVariable Long boardId,
-      @RequestPart("images") List<MultipartFile> multipartFiles,
+      @RequestPart(required = false, name = "images") List<MultipartFile> multipartFiles,
       @RequestPart("request") QuestionBoardRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
     questionBoardService.updateQuestionBoard(boardId, multipartFiles, request,
@@ -118,11 +125,12 @@ public class BoardController {
   }
 
   //잡담게시글 선택 조회
-  @GetMapping("/community-boards/{boardId}")
+  @GetMapping("community-boards/{boardId}")
   public CommunityBoardResponse getCommunityBoard(@PathVariable Long boardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     return communityBoardService.getCommunityBoard(boardId, userDetails.getUser());
   }
+
 
   //질문게시글 전체 조회
   @GetMapping("/question-boards")
@@ -131,6 +139,16 @@ public class BoardController {
       BoardPage questionBoardPage
   ) {
     return questionBoardService.getQuetionBoardPage(userDetails.getUser(), questionBoardPage);
+  }
+
+
+  //질문게시글 전체 조회(테스트용)
+  @GetMapping("/question-boards/test")
+  public Page<QuestionBoardResponse> getTestQuestionBoardsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardPage questionBoardPage
+  ) {
+    return questionBoardService.getTestQuetionBoardPage(userDetails.getUser(), questionBoardPage);
   }
 
   //잡담게시글 전체 조회
@@ -156,7 +174,7 @@ public class BoardController {
 
 
   //질문 게시글 좋아요 취소
-  @DeleteMapping("/question-boards/{boardId}/unlikes")
+  @DeleteMapping("/question-boards/{boardId}/likes")
   public ResponseEntity<String> cancelQuestionBoardLike(@PathVariable Long boardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     boardLikeService.cancelBoardLike(userDetails.getUser().getId(), boardId);
@@ -167,7 +185,7 @@ public class BoardController {
   @PostMapping("/community-boards/{boardId}/likes")
   public ResponseEntity<String> addCommunityBoardLike(@PathVariable Long boardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    if (!communityBoardService.isExistBoard(boardId)) {
+    if (!communityBoardService.ExistsBoard(boardId)) {
       throw new CustomException(ExceptionStatus.BOARD_IS_NOT_EXIST);
     }
     boardLikeService.addBoardLike(userDetails.getUser().getId(), boardId);
@@ -175,7 +193,7 @@ public class BoardController {
   }
 
   //잡담 게시글 좋아요 취소
-  @DeleteMapping("/community-boards/{boardId}/unlikes")
+  @DeleteMapping("/community-boards/{boardId}/likes")
   public ResponseEntity<String> cancelCommunityBoardLike(@PathVariable Long boardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     boardLikeService.cancelBoardLike(userDetails.getUser().getId(), boardId);
@@ -186,7 +204,7 @@ public class BoardController {
   @PostMapping("/community-boards/{boardId}/grade")
   public ResponseEntity<String> changeGrade(@PathVariable Long boardId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    if (!communityBoardService.isExistBoard(boardId)) {
+    if (!communityBoardService.ExistsBoard(boardId)) {
       throw new CustomException(ExceptionStatus.BOARD_IS_NOT_EXIST);
     }
     if (!communityBoardService.isGradeBoard(boardId)) {
@@ -196,4 +214,32 @@ public class BoardController {
     communityBoardService.upgradeGrade(communityBoard.getUserId(), boardId);
     return new ResponseEntity<>("등급 변경 완료", HttpStatus.OK);
   }
+
+  //스크랩 추가
+  @PostMapping("/boards/{boardId}/scrap")
+  public ResponseEntity<String> addScrap(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    scrapService.addScrap(userDetails.getUser().getId(), boardId);
+    return new ResponseEntity<>("스크랩 추가!", HttpStatus.CREATED);
+  }
+
+  //스크랩 취소
+  @DeleteMapping("/boards/{boardId}/scrap")
+  public ResponseEntity<String> cancelScrap(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    scrapService.cancelScrap(userDetails.getUser().getId(), boardId);
+    return new ResponseEntity<>("스크랩 취소!", HttpStatus.OK);
+  }
+
+
+  //유저 스크랩 게시물 전체 조회
+  @GetMapping("/boards/scrap")
+  public Page<BoardResponse> getScrapsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardPage boardPage
+  ) {
+    return boardService.getScrapBoardPage(userDetails.getUser(), boardPage);
+  }
+
+
 }

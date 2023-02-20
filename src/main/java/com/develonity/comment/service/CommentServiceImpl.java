@@ -11,7 +11,6 @@ import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -76,7 +75,9 @@ public class CommentServiceImpl implements CommentService {
   @Transactional
   public void createQuestionComment(Long questionBoardId, CommentRequest requestDto,
       User user) {
-
+    if (existsCommentByBoardIdAndUserId(questionBoardId, user.getId())) {
+      throw new CustomException(ExceptionStatus.COMMENT_IS_EXIST);
+    }
     // 댓글 생성
     Comment comment = new Comment(user, requestDto, questionBoardId);
     commentRepository.save(comment);
@@ -175,6 +176,7 @@ public class CommentServiceImpl implements CommentService {
     }
     commentRepository.delete(comment);
   }
+
   public void deleteCommentsByBoardId(Long boardId) {
     List<Comment> comments = commentRepository.findAllByBoardId(boardId);
     List<Long> commentIdList = new ArrayList<>();
@@ -187,6 +189,11 @@ public class CommentServiceImpl implements CommentService {
       }
     }
     commentRepository.deleteAllByBoardId(boardId);
+  }
+
+  @Override
+  public boolean existsCommentByBoardIdAndUserId(Long boardId, Long userId) {
+    return commentRepository.existsCommentByBoardIdAndUserId(boardId, userId);
   }
 
   // 닉네임을 가져오는 기능

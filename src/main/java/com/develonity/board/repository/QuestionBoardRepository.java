@@ -16,7 +16,9 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoard, Lo
       QuestionCategory questionCategory, String title, String content,
       Pageable pageable);
 
-  Page<QuestionBoard> findByTitleContaining(String title,
+  //테스트용
+  Page<QuestionBoard> findByQuestionCategory(
+      QuestionCategory questionCategory,
       Pageable pageable);
 
 

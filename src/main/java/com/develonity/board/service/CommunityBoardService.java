@@ -33,13 +33,13 @@ public interface CommunityBoardService {
 
   int countLike(Long boardId);
 
-  Boolean isExistBoard(Long boardId);
+  Boolean ExistsBoard(Long boardId);
 
   String getNickname(Long userId);
 
   String getNicknameByCommunityBoard(CommunityBoard communityBoard);
 
-    void deleteBoardImages(Long boardId);
+  void deleteBoardImages(Long boardId);
 
   void upload(List<MultipartFile> multipartFiles, CommunityBoard communityBoard) throws IOException;
 
@@ -48,4 +48,8 @@ public interface CommunityBoardService {
   List<String> getImagePaths(CommunityBoard communityBoard);
 
   boolean isGradeBoard(Long boardId);
+
+  //test
+  Page<CommunityBoardResponse> getTestCommunityBoardPage(User user,
+      BoardPage communityBoardPage);
 }

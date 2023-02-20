@@ -1,7 +1,7 @@
 package com.develonity.board.dto;
 
+import com.develonity.board.entity.Board;
 import com.develonity.board.entity.CommunityBoard;
-import com.develonity.board.entity.CommunityCategory;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,11 +11,11 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class CommunityBoardResponse {
+public class BoardResponse {
+
 
   private final Long id;
   private final String nickname;
-  private final CommunityCategory communityCategory;
   private final String title;
   private final String content;
   private final int boardLike;
@@ -25,33 +25,31 @@ public class CommunityBoardResponse {
   private final Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
 
-  public CommunityBoardResponse(CommunityBoard communityBoard, String nickname, int boardLike,
-      Boolean isLike, List<String> imagePaths) {
+  public BoardResponse(CommunityBoard communityBoard, String nickname, int boardLike,
+      Boolean hasLike, List<String> imagePaths) {
     this.id = communityBoard.getId();
     this.nickname = nickname;
-    this.communityCategory = communityBoard.getCommunityCategory();
     this.title = communityBoard.getTitle();
     this.content = communityBoard.getContent();
     this.boardLike = boardLike;
     this.createdAt = communityBoard.getCreatedDate();
     this.lastModifiedAt = communityBoard.getLastModifiedDate();
-    this.hasLike = isLike;
+    this.hasLike = hasLike;
     this.imagePaths = imagePaths;
 
 
   }
 
-  public static CommunityBoardResponse toCommunityBoardResponse(CommunityBoard communityBoard,
+  public static com.develonity.board.dto.BoardResponse toBoardResponse(
+      Board Board,
       String nickname) {
-    return CommunityBoardResponse.builder()
-        .id(communityBoard.getId())
+    return com.develonity.board.dto.BoardResponse.builder()
+        .id(Board.getId())
         .nickname(nickname)
-        .communityCategory(communityBoard.getCommunityCategory())
-        .title(communityBoard.getTitle())
-        .content(communityBoard.getContent())
-        .createdAt(communityBoard.getCreatedDate())
-        .lastModifiedAt(communityBoard.getLastModifiedDate())
+        .title(Board.getTitle())
+        .content(Board.getContent())
+        .createdAt(Board.getCreatedDate())
+        .lastModifiedAt(Board.getLastModifiedDate())
         .build();
   }
-
 }

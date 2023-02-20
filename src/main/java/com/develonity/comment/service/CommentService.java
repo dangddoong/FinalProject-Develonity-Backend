@@ -38,4 +38,6 @@ public interface CommentService {
 
   void deleteCommentsByBoardId(Long boardId);
 
+  boolean existsCommentByBoardIdAndUserId(Long boardId, Long userId);
+
 }

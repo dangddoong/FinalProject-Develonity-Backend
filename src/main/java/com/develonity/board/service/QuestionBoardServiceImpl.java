@@ -37,6 +37,8 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   private final UserService userService;
 
+  private final ScrapService scrapService;
+
 
   //질문 게시글 생성(+이미지)
   @Override
@@ -52,7 +54,9 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
         .questionCategory(request.getQuestionCategory())
         .build();
     questionBoardRepository.save(questionBoard);
-    upload(multipartFiles, questionBoard);
+    if (multipartFiles != null) {
+      upload(multipartFiles, questionBoard);
+    }
     userService.subtractGiftPoint(questionBoard.getPrizePoint(), user);
   }
 
@@ -64,12 +68,14 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
       QuestionBoardRequest request, User user) throws IOException {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     checkUser(questionBoard, user.getId());
-    for (MultipartFile multipartFile : multipartFiles) {
-      if (!multipartFile.isEmpty()) {
-        deleteBoardImages(boardId);
-        upload(multipartFiles, questionBoard);
-      } else {
-        upload(multipartFiles, questionBoard);
+    if (multipartFiles != null) {
+      for (MultipartFile multipartFile : multipartFiles) {
+        if (!multipartFile.isEmpty()) {
+          deleteBoardImages(boardId);
+          upload(multipartFiles, questionBoard);
+        } else {
+          upload(multipartFiles, questionBoard);
+        }
       }
     }
     questionBoard.updateBoard(request.getTitle(), request.getContent(),
@@ -84,11 +90,10 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   public void deleteQuestionBoard(Long boardId, User user) {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     checkUser(questionBoard, user.getId());
-    if (boardLikeService.isExistLikes(boardId)) {
-      boardLikeService.deleteLikes(boardId);
-    }
+    boardLikeService.deleteLike(boardId);
     deleteBoardImages(boardId);
     commentService.deleteCommentsByBoardId(boardId);
+    scrapService.deleteScraps(boardId);
     questionBoardRepository.deleteById(boardId);
   }
 
@@ -109,8 +114,8 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
     Long boardUserId = questionBoard.getUserId();
     String nickname = getNickname(boardUserId);
-    boolean isLike = boardLikeService.isLike(boardId, user.getId());
-    return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), isLike,
+    boolean hasLike = boardLikeService.existsLikesBoardIdAndUserId(boardId, user.getId());
+    return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), hasLike,
         imagePaths);
   }
 
@@ -132,9 +137,23 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   }
 
+  //테스트용전체조회
+  @Override
+  public Page<QuestionBoardResponse> getTestQuetionBoardPage(User user,
+      BoardPage questionBoardPage) {
+
+    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByQuestionCategory(
+        questionBoardPage.getQuestionCategory(),
+        questionBoardPage.toPageable());
+
+    return questionBoardPages.map(
+        questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
+            getNicknameByQuestionBoard(questionBoard)));
+  }
+
   @Override
   public int countLike(Long boardId) {
-    return boardLikeService.countLike(boardId);
+    return boardLikeService.countLikes(boardId);
   }
 
   //게시글 가져오기 + 있는지 확인
