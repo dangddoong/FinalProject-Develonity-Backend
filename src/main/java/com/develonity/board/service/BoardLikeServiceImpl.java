@@ -17,7 +17,7 @@ public class BoardLikeServiceImpl implements BoardLikeService {
   @Transactional
   @Override
   public void addBoardLike(Long userId, Long boardId) {
-    if (isExistLikesBoardIdAndUserId(boardId, userId)) {
+    if (existsLikesBoardIdAndUserId(boardId, userId)) {
       throw new CustomException(ExceptionStatus.LIKE_IS_EXIST);
     }
     BoardLike boardLike = new BoardLike(userId, boardId);
@@ -28,7 +28,7 @@ public class BoardLikeServiceImpl implements BoardLikeService {
   @Transactional
   @Override
   public void cancelBoardLike(Long userId, Long boardId) {
-    if (!isExistLikesBoardIdAndUserId(boardId, userId)) {
+    if (!existsLikesBoardIdAndUserId(boardId, userId)) {
       throw new CustomException(ExceptionStatus.LIKE_IS_NOT_EXIST);
     }
     BoardLike boardLike = boardLikeRepository.findByBoardIdAndUserId(boardId, userId);
@@ -36,28 +36,23 @@ public class BoardLikeServiceImpl implements BoardLikeService {
   }
 
   @Override
-  public int countLike(Long boardId) {
+  public int countLikes(Long boardId) {
     return boardLikeRepository.countByBoardId(boardId);
   }
 
   @Override
-  public void deleteLikes(Long boardId) {
+  public void deleteLike(Long boardId) {
     boardLikeRepository.deleteAllByBoardId(boardId);
 
   }
 
   @Override
-  public boolean isExistLikes(Long boardId) {
+  public boolean existLikes(Long boardId) {
     return boardLikeRepository.existsBoardLikeById(boardId);
   }
 
   @Override
-  public boolean isExistLikesBoardIdAndUserId(Long boardId, Long userId) {
-    return boardLikeRepository.existsBoardLikeByBoardIdAndUserId(boardId, userId);
-  }
-
-  @Override
-  public boolean isLike(Long boardId, Long userId) {
+  public boolean existsLikesBoardIdAndUserId(Long boardId, Long userId) {
     return boardLikeRepository.existsBoardLikeByBoardIdAndUserId(boardId, userId);
   }
 

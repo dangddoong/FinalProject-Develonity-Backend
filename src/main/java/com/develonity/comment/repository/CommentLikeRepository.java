@@ -2,6 +2,9 @@ package com.develonity.comment.repository;
 
 import com.develonity.comment.entity.CommentLike;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
 
@@ -13,5 +16,8 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
 
   boolean existsCommentById(Long commentId);
 
-  void deleteAllByCommentId(Long commentId);
+  @Modifying
+  @Query("delete from CommentLike l where l.commentId in :commentId")
+  void deleteAllByCommentId(@Param("commentId") Long commentId);
+
 }

@@ -26,6 +26,10 @@ public interface QuestionBoardService {
   Page<QuestionBoardResponse> getQuetionBoardPage(User user,
       BoardPage questionBoardPage);
 
+  //test
+  Page<QuestionBoardResponse> getTestQuetionBoardPage(User user,
+      BoardPage questionBoardPage);
+
   QuestionBoardResponse getQuestionBoard(Long boardId, User user);
 
   QuestionBoard getQuestionBoardAndCheck(Long boardId);

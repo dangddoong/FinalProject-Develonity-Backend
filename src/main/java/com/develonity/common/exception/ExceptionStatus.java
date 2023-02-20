@@ -25,13 +25,16 @@ public enum ExceptionStatus {
   COMMENT_IS_NOT_EXIST(404, "댓글이 존재하지 않습니다."),
   BOARD_IS_NOT_EXIST(404, "게시글이 존재하지 않습니다."),
   LIKE_IS_NOT_EXIST(404, "좋아요가 존재하지 않습니다."),
+  SCRAP_IS_NOT_EXIST(404, "스크랩하지 않은 게시물입니다."),
   REPLY_COMMENT_IS_NOT_EXIST(404, "대댓글이 존재하지 않습니다."),
 
+  COMMENT_IS_EXIST(409, " 이미 답변한 게시글입니다."),
   USERID_IS_EXIST(409, " 이미 등록된 아이디입니다. "),
   POINTS_IS_LACKING(409, "포인트가 부족합니다."),
   QUANTITY_IS_LACKING(409, "재고가 부족합니다."),
   GIFTCARD_IS_EXIST(409, "이미 등록된 기프트카드 입니다."),
   LIKE_IS_EXIST(409, "이미 좋아요를 누른 게시글입니다."),
+  SCRAP_IS_EXIST(409, "이미 스크랩한 게시글입니다."),
   ALREADY_ADOPTED(409, "이미 답변 채택된 게시글입니다.");
 
   private final int statusCode;

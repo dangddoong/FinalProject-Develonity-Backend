@@ -7,6 +7,7 @@ import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.entity.CommunityCategory;
 import com.develonity.board.repository.BoardImageRepository;
+import com.develonity.board.repository.BoardRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.comment.service.CommentService;
 import com.develonity.common.exception.CustomException;
@@ -35,7 +36,11 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   private final CommentService commentService;
 
+  private final ScrapService scrapService;
+
   private final AwsS3Service awsS3Service;
+
+  private final BoardRepository boardRepository;
 
   //잡담 게시글 생성(+이미지)
   @Override
@@ -50,7 +55,10 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
         .communityCategory(request.getCommunityCategory())
         .build();
     communityBoardRepository.save(communityBoard);
-    upload(multipartFiles, communityBoard);
+
+    if (multipartFiles != null) {
+      upload(multipartFiles, communityBoard);
+    }
 
   }
 
@@ -62,12 +70,14 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
       CommunityBoardRequest request, User user) throws IOException {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     checkUser(communityBoard, user.getId());
-    for (MultipartFile multipartFile : multipartFiles) {
-      if (!multipartFile.isEmpty()) {
-        deleteBoardImages(boardId);
-        upload(multipartFiles, communityBoard);
-      } else {
-        upload(multipartFiles, communityBoard);
+    if (multipartFiles != null) {
+      for (MultipartFile multipartFile : multipartFiles) {
+        if (!multipartFile.isEmpty()) {
+          deleteBoardImages(boardId);
+          upload(multipartFiles, communityBoard);
+        } else {
+          upload(multipartFiles, communityBoard);
+        }
       }
     }
     communityBoard.updateBoard(request.getTitle(), request.getContent());
@@ -80,11 +90,10 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   public void deleteCommunityBoard(Long boardId, User user) {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     checkUser(communityBoard, user.getId());
-    if (boardLikeService.isExistLikes(boardId)) {
-      boardLikeService.deleteLikes(boardId);
-    }
+    boardLikeService.deleteLike(boardId);
     deleteBoardImages(boardId);
     commentService.deleteCommentsByBoardId(boardId);
+    scrapService.deleteScraps(boardId);
     communityBoardRepository.deleteById(boardId);
 
 
@@ -104,7 +113,21 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
     return communityBoardPages.map(
         communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
-            getNicknameByCommunityBoard(communityBoard), getImagePaths(communityBoard)));
+            getNicknameByCommunityBoard(communityBoard)));
+  }
+
+  //테스트용전체조회
+  @Override
+  public Page<CommunityBoardResponse> getTestCommunityBoardPage(User user,
+      BoardPage communityBoardPage) {
+
+    Page<CommunityBoard> communityBoardPages = communityBoardRepository.findByCommunityCategory(
+        communityBoardPage.getCommunityCategory(),
+        communityBoardPage.toPageable());
+
+    return communityBoardPages.map(
+        communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
+            getNicknameByCommunityBoard(communityBoard)));
   }
 
   //잡담 게시글 선택 조회
@@ -112,7 +135,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   @Transactional(readOnly = true)
   public CommunityBoardResponse getCommunityBoard(Long boardId, User user) {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
-    boolean isLike = boardLikeService.isLike(boardId, user.getId());
+    boolean hasLike = boardLikeService.existsLikesBoardIdAndUserId(boardId, user.getId());
     Long boardUserId = communityBoard.getUserId();
     String nickname = getNickname(boardUserId);
 
@@ -123,7 +146,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     for (BoardImage boardImage : boardImageList) {
       imagePaths.add(boardImage.getImagePath());
     }
-    return new CommunityBoardResponse(communityBoard, nickname, countLike(boardId), isLike,
+    return new CommunityBoardResponse(communityBoard, nickname, countLike(boardId), hasLike,
         imagePaths);
   }
 
@@ -152,11 +175,11 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   @Override
   public int countLike(Long boardId) {
-    return boardLikeService.countLike(boardId);
+    return boardLikeService.countLikes(boardId);
   }
 
   @Override
-  public Boolean isExistBoard(Long boardId) {
+  public Boolean ExistsBoard(Long boardId) {
     return communityBoardRepository.existsBoardById(boardId);
   }
 
