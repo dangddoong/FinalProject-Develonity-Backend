@@ -62,10 +62,10 @@ public class CommentController {
       @RequestParam("question-board-id") Long questionBoardId,
       @RequestBody
       CommentRequest requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    if (questionBoardService.getQuestionBoardAndCheckSameUser(questionBoardId,
-        userDetails.getUserId())) {
-      throw new CustomException(ExceptionStatus.NOT_ALLOWED);
-    }
+//    if (questionBoardService.getQuestionBoardAndCheckSameUser(questionBoardId,
+//        userDetails.getUserId())) {
+//      throw new CustomException(ExceptionStatus.NOT_ALLOWED);
+//    }
     commentService.createQuestionComment(questionBoardId, requestDto, userDetails.getUser());
     return new ResponseEntity<>("답변 작성 완료!", HttpStatus.CREATED);
   }
@@ -137,6 +137,16 @@ public class CommentController {
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     commentService.deleteCommunity(commentId, userDetails.getUser());
     return new ResponseEntity<>("잡담 댓글 삭제 완료!", HttpStatus.OK);
+  }
+
+  //게시물에 달린 댓글 대댓글 전체 조회
+  @GetMapping("/api/comments/test")
+  public Page<CommentResponse> getScrapsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      @RequestParam Long boardId,
+      CommentList commentList
+  ) {
+    return commentService.getCommentsByBoard(commentList, boardId, userDetails.getUser());
   }
 
 }

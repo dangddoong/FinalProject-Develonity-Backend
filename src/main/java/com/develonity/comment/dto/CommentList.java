@@ -9,9 +9,9 @@ import org.springframework.data.domain.Sort;
 @Getter
 @Setter
 public class CommentList {
-  
+
   private int page;
-  private int size;
+  private int size = 5;
   private boolean isAsc;
 
   public Pageable toPageable() {

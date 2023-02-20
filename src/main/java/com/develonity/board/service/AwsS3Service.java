@@ -8,6 +8,8 @@ public interface AwsS3Service {
 
   List<String> upload(List<MultipartFile> multipartFiles, String dir) throws IOException;
 
+  String uploadOne(MultipartFile multipartFiles, String dir) throws IOException;
+
   String createFileName(String fileName) throws IOException;
 
   String getFileExtension(String fileName) throws IOException;

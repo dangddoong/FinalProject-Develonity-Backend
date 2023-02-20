@@ -47,7 +47,7 @@ public class ScrapServiceImpl implements ScrapService {
     List<Scrap> scraps = scrapRepository.findAllByUserId(userId);
     List<Long> scrapBoardIds = new ArrayList<>();
     for (Scrap scrap : scraps) {
-      Long scrapBoardId = scrap.getUserId();
+      Long scrapBoardId = scrap.getBoardId();
       scrapBoardIds.add(scrapBoardId);
     }
     return scrapBoardIds;
