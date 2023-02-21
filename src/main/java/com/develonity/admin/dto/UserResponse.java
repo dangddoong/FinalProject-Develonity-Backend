@@ -16,8 +16,6 @@ public class UserResponse {
   private final Long id;
   private final String loginId;
 
-  private final String realName;
-
   private final String nickName;
 
   private final UserRole userRole;
@@ -26,7 +24,6 @@ public class UserResponse {
   public UserResponse(User user) {
     this.id = user.getId();
     this.loginId = user.getLoginId();
-    this.realName = user.getRealName();
     this.nickName = user.getNickname();
     this.userRole = user.getUserRole();
   }
