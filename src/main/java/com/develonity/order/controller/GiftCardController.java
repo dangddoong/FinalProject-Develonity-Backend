@@ -41,7 +41,7 @@ public class GiftCardController {
 
     //기프트 카드 수정
     @PutMapping("/gift-cards/{giftCardId}")
-    public Long updateGiftCard(@PathVariable Long giftCardId, @RequestBody GiftCardRegister giftCardRegister) {
+    public GiftCardResponse updateGiftCard(@PathVariable Long giftCardId, @RequestBody GiftCardRegister giftCardRegister) {
         return giftCardService.updateGiftCard(giftCardId, giftCardRegister);
     }
 

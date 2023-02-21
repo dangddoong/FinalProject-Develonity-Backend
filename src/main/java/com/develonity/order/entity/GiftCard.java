@@ -21,12 +21,18 @@ public class GiftCard {
     @Column(name = "GIFTCARD_ID")
     private Long id;
     @Enumerated(EnumType.STRING)
-    @Column(name="category", nullable = false)
+    @Column(name = "category", nullable = false)
     private GiftCardCategory category;
+
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String details;
+    @Column(nullable = false)
     private String imageUrl;
+    @Column(nullable = false)
     private int price;
+    @Column(nullable = false)
     private int stockQuantity; // 동시성 문제를 막기 위한 수량 설정(?)
 
     @Builder
@@ -39,7 +45,8 @@ public class GiftCard {
         this.stockQuantity = stockQuantity;
     }
 
-    public void update(String name, String details, String imageUrl, int price, int stockQuantity) {
+    public void update(GiftCardCategory category, String name, String details, String imageUrl, int price, int stockQuantity) {
+        this.category = category;
         this.name = name;
         this.details = details;
         this.imageUrl = imageUrl;
@@ -55,7 +62,7 @@ public class GiftCard {
     }
 
     /**
-     *  stock 감소
+     * stock 감소
      */
     public void removeStock(int quantity) {
         int restStock = this.stockQuantity - quantity;

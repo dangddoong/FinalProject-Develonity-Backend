@@ -18,7 +18,7 @@ public interface GiftCardService {
     @Transactional(readOnly = true)
     GiftCardResponse getGiftCard(Long giftCardId);
     @Transactional
-    Long updateGiftCard(Long id, GiftCardRegister giftCardRegister);
+    GiftCardResponse updateGiftCard(Long id, GiftCardRegister giftCardRegister);
     @Transactional
     Long deleteGiftCard(Long giftCardId);
 

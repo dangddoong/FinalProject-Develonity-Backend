@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GiftCardServiceImpl implements GiftCardService{
+public class GiftCardServiceImpl implements GiftCardService {
 
     private final GiftCardRepository giftCardRepository;
 
@@ -62,7 +62,7 @@ public class GiftCardServiceImpl implements GiftCardService{
 
         Page<GiftCard> giftCardList = giftCardRepository.findAllByCategory(category, pageable);
 
-        if(giftCardList.isEmpty())
+        if (giftCardList.isEmpty())
             throw new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST);
 
         return new GiftCardResponse().toDtoList(giftCardList);
@@ -77,25 +77,27 @@ public class GiftCardServiceImpl implements GiftCardService{
 
     @Override
     @Transactional
-    public Long updateGiftCard(Long id, GiftCardRegister giftCardRegister) {
+    public GiftCardResponse updateGiftCard(Long id, GiftCardRegister giftCardRegister) {
 
         GiftCard foundGiftCard = giftCardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST));
 
-        if(foundGiftCard.getName().equals(giftCardRegister.getName())){
-            throw new CustomException(ExceptionStatus.GIFTCARD_IS_EXIST);
+        if (!foundGiftCard.getName().equals(giftCardRegister.getName())) {
+            if (giftCardRepository.existsByName(giftCardRegister.getName())) {
+                throw new CustomException(ExceptionStatus.GIFTCARD_IS_EXIST);
+            }
         }
 
-        foundGiftCard.update(giftCardRegister.getName(), giftCardRegister.getDetails(), giftCardRegister.getImageUrl(), giftCardRegister.getPrice(), giftCardRegister.getStockQuantity());
+        foundGiftCard.update(giftCardRegister.getCategory(), giftCardRegister.getName(), giftCardRegister.getDetails(), giftCardRegister.getImageUrl(), giftCardRegister.getPrice(), giftCardRegister.getStockQuantity());
 
-        return foundGiftCard.getId();
+        return new GiftCardResponse(foundGiftCard);
     }
 
     @Override
     @Transactional
     public Long deleteGiftCard(Long giftCardId) {
 
-        if(!giftCardRepository.existsById(giftCardId)) {
+        if (!giftCardRepository.existsById(giftCardId)) {
             throw new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST);
         }
         giftCardRepository.deleteById(giftCardId);

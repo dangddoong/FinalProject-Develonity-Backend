@@ -32,16 +32,26 @@ public class OrderServiceImpl implements OrderService{
     @Transactional
     public Long order(OrderRequest orderRequest, Long userId) {
 
-        String realName = orderRequest.getRealName();
+        String recipientName = orderRequest.getRecipientName();
         String phoneNumber = orderRequest.getPhoneNumber();
         Long giftCardId = orderRequest.getGiftCardId();
 
         GiftCard giftCard = giftCardRepository.findById(giftCardId).orElseThrow(() -> new CustomException(ExceptionStatus.GIFTCARD_IS_NOT_EXIST));
         giftCard.removeStock(1);
         //여기서 포인트를 차감하는 메서드가 필요한지..?
+        String image = giftCard.getImageUrl();
+        String giftCardName = giftCard.getName();
 
         //주문 생성
-        Order order = Order.createOrder(userId, realName, phoneNumber, giftCardId, giftCard.getPrice());
+        Order order = Order.builder()
+                .image(image)
+                .userId(userId)
+                .recipientName(recipientName)
+                .phoneNumber(phoneNumber)
+                .giftCardId(giftCardId)
+                .giftCardName(giftCardName)
+                .purchasePrice(giftCard.getPrice())
+                .build();
 
         //주문 저장
         orderRepository.save(order);
