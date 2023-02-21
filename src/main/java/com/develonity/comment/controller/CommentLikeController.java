@@ -35,8 +35,8 @@ public class CommentLikeController {
 //  }
 
   // 좋아요 추가 기능
-  @PostMapping("/likes")
-  public ResponseEntity<String> changeCommentLike(@RequestParam("comment-id") Long commentId,
+  @PostMapping("/{commentId}/likes")
+  public ResponseEntity<String> changeCommentLike(@PathVariable Long commentId,
       @AuthenticationPrincipal
       UserDetailsImpl userDetails) {
     commentLikeService.addCommentLike(commentId, userDetails.getUser().getId());
@@ -44,7 +44,7 @@ public class CommentLikeController {
   }
 
   // 좋아요 취소 기능
-  @DeleteMapping("/unlikes/{commentId}")
+  @DeleteMapping("/{commentId}/likes")
   public ResponseEntity<String> cancelCommentLike(@PathVariable Long commentId,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     commentLikeService.cancelCommentLike(commentId, userDetails.getUser().getId());
