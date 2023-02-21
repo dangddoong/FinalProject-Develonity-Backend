@@ -9,6 +9,7 @@ import com.develonity.order.entity.GiftCard;
 import com.develonity.order.entity.Order;
 import com.develonity.order.repository.GiftCardRepository;
 import com.develonity.order.repository.OrderRepository;
+import com.develonity.user.service.UserServiceImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class OrderServiceImpl implements OrderService {
   private final OrderRepository orderRepository;
   private final GiftCardRepository giftCardRepository;
 
+  private final UserServiceImpl userService;
+
   /**
    * 주문 하기
    */
@@ -38,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     GiftCard giftCard = giftCardRepository.findById(giftCardId)
         .orElseThrow(() -> new CustomException(ExceptionStatus.GIFT_CARD_IS_NOT_EXIST));
     giftCard.removeStock(1);
+    userService.subtractGiftPoint(giftCard.getPrice(), userService.getUserAndCheck(userId));
     //여기서 포인트를 차감하는 메서드가 필요한지..?
     String image = giftCard.getImagePath();
     String giftCardName = giftCard.getName();
