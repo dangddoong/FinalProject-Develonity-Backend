@@ -22,7 +22,7 @@ public class ExceptionAdviceHandler {
   protected ResponseEntity handleMethodArgumentNotValidException(
       MethodArgumentNotValidException e) {
     return new ResponseEntity<>(e.getBindingResult().getFieldErrors().get(0).getField() + "의 "
-        + e.getBindingResult().getFieldErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
+        + e.getBindingResult().getFieldErrors().get(0).getDefaultMessage(), HttpStatus.CONFLICT);
   }
 
 

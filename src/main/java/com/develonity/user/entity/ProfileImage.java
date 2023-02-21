@@ -1,6 +1,5 @@
-package com.develonity.board.entity;
+package com.develonity.user.entity;
 
-import com.develonity.user.entity.TimeStamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,20 +13,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Entity
-public class BoardImage extends TimeStamp {
+public class ProfileImage extends TimeStamp {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @JoinColumn(name = "BOARD_ID")
-  private Long boardId;
+  @JoinColumn(name = "USER_ID")
+  private Long userId;
   @Column(nullable = false)
   private String imagePath;
 
 
-  public BoardImage(String filePath, Long boardId) {
+  public ProfileImage(String filePath, Long userId) {
     this.imagePath = filePath;
-    this.boardId = boardId;
+    this.userId = userId;
   }
 
 }

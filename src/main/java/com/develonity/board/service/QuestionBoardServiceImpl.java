@@ -8,6 +8,7 @@ import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
 import com.develonity.comment.service.CommentService;
+import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
@@ -60,8 +61,8 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     userService.subtractGiftPoint(questionBoard.getPrizePoint(), user);
   }
 
-
   //질문 게시글 수정(+이미지)
+
   @Override
   @Transactional
   public void updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
@@ -69,20 +70,12 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     checkUser(questionBoard, user.getId());
     if (multipartFiles != null) {
-      for (MultipartFile multipartFile : multipartFiles) {
-        if (!multipartFile.isEmpty()) {
-          deleteBoardImages(boardId);
-          upload(multipartFiles, questionBoard);
-        } else {
-          upload(multipartFiles, questionBoard);
-        }
-      }
+      deleteBoardImages(boardId);
+      upload(multipartFiles, questionBoard);
     }
-    questionBoard.updateBoard(request.getTitle(), request.getContent(),
-        request.getQuestionCategory());
+    questionBoard.updateBoard(request.getTitle(), request.getContent());
     questionBoardRepository.save(questionBoard);
   }
-
 
   //질문 게시글 삭제
   @Override

@@ -11,7 +11,7 @@ public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
 
   List<BoardImage> findAllByBoardId(Long boardId);
 
-  @Modifying
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from BoardImage b where b.boardId in :boardId")
   void deleteAllByBoardId(@Param("boardId") Long boardId);
 }

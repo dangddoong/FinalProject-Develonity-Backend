@@ -3,11 +3,13 @@ package com.develonity.user.controller;
 import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.security.users.UserDetailsImpl;
 import com.develonity.user.dto.LoginRequest;
+import com.develonity.user.dto.ProfileRequest;
 import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.dto.TokenResponse;
 import com.develonity.user.dto.WithdrawalRequest;
 import com.develonity.user.service.UserService;
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -19,9 +21,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,7 +70,7 @@ public class UserController {
   }
 
   // 내 프로필조회
-  @GetMapping("/users/me/profile")
+  @GetMapping("/user/me/profile")
   public ProfileResponse getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
     return userService.getProfile(userDetails.getUserId());
   }
@@ -76,10 +81,19 @@ public class UserController {
     return userService.getProfile(userId);
   }
 
-  //내 프로필 정보 수정 (닉네임, 프로필사진)
-//  @PatchMapping("/users/me/profile")
-//  public
-//
+  //
+//  내 프로필 정보 수정 (닉네임, 프로필사진)
+  @PutMapping("/user/me/profile")
+  public ResponseEntity<String> profileUpdate(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      @RequestPart(required = false, name = "image") MultipartFile multipartFile,
+      @RequestPart("request") ProfileRequest request) throws IOException {
+
+    userService.updateProfile(request, multipartFile, userDetails.getUser());
+    return new ResponseEntity<>("프로필 수정 완료", HttpStatus.OK);
+
+  }
+
 //  // 개인정보 조회 (이름, 비밀번호, 이메일, 핸드폰번호, 주소)
 //  @GetMapping("/users/me/personal-information")
 //

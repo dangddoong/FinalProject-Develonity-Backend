@@ -1,10 +1,13 @@
 package com.develonity.user.service;
 
 import com.develonity.user.dto.LoginRequest;
+import com.develonity.user.dto.ProfileRequest;
 import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.dto.TokenResponse;
 import com.develonity.user.entity.User;
+import java.io.IOException;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -31,4 +34,16 @@ public interface UserService {
   boolean isLackedRespectPoint(Long userId);
 
   User getUserAndCheck(Long userId);
+
+  //프로필 수정
+  void updateProfile(ProfileRequest request,
+      MultipartFile multipartFile, User user) throws IOException;
+
+  //이미지 업로드
+  void uploadOne(MultipartFile multipartFile, Long userId) throws IOException;
+
+  //이미지 삭제
+  void deleteProfileImage(Long userId);
+
+  boolean existsByUserId(Long userId);
 }

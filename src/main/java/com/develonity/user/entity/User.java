@@ -3,8 +3,6 @@ package com.develonity.user.entity;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -31,35 +29,21 @@ public class User extends TimeStamp {
   private String loginId;
   @Column(nullable = false)
   private String password;
-  @Column(nullable = false)
-  private String realName;
   @Column(nullable = false, unique = true)
   private String nickname;
-  @Column(nullable = false)
-  private String profileImageUrl;
   @Column(nullable = false, unique = true)
   private String email;
-  @Column(nullable = false, unique = true)
-  private String phoneNumber;
-  @Column(nullable = false)
-  @Embedded
-  private Address address;
   private boolean withdrawal = false;
   private int giftPoint = 300;
   private int respectPoint = 0;
 
   @Builder
-  public User(String loginId, String password, String realName, String nickname,
-      String profileImageUrl, String email, String phoneNumber, String detailAddress,
-      String zipcode) {
+  public User(String loginId, String password, String nickname,
+      String email) {
     this.loginId = loginId;
     this.password = password;
-    this.realName = realName;
     this.nickname = nickname;
-    this.profileImageUrl = profileImageUrl;
     this.email = email;
-    this.phoneNumber = phoneNumber;
-    this.address = new Address(detailAddress, zipcode);
   }
 
   public void withdraw() {
@@ -89,20 +73,10 @@ public class User extends TimeStamp {
     return this.respectPoint < 10;
   }
 
-  @Embeddable
-  @Getter
-  public static class Address {
-
-    private String detailAddress;
-    @Column(length = 5)
-    private String zipcode;
-
-    public Address() {
-    }
-
-    public Address(String detailAddress, String zipcode) {
-      this.detailAddress = detailAddress;
-      this.zipcode = zipcode;
-    }
+  //프로필 수정(닉네임 변경)
+  public void updateProfile(String nickname) {
+    this.nickname = nickname;
   }
+
+
 }

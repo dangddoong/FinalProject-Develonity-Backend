@@ -13,8 +13,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
   Page<Comment> findAllByUserId(Pageable pageable, Long userId);
 
+  Page<Comment> findAllByBoardId(Pageable pageable, Long boardId);
 
-  @Modifying
+
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from Comment c where c.boardId in :boardId")
   void deleteAllByBoardId(@Param("boardId") Long boardId);
 
@@ -23,5 +25,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   List<Comment> findAllByBoardId(Long boardId);
 
   boolean existsCommentByBoardIdAndUserId(Long boardId, Long userId);
+
+  boolean existsCommentsByBoardId(Long boardId);
 
 }

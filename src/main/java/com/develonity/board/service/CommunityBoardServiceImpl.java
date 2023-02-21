@@ -10,6 +10,8 @@ import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.BoardRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.comment.service.CommentService;
+import com.develonity.comment.service.ReplyCommentService;
+import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
@@ -36,13 +38,15 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   private final CommentService commentService;
 
+  private final ReplyCommentService replyCommentService;
+
   private final ScrapService scrapService;
 
   private final AwsS3Service awsS3Service;
 
   private final BoardRepository boardRepository;
 
-  //잡담 게시글 생성(+이미지)
+  //잡담 게시글 생성
   @Override
   @Transactional
   public void createCommunityBoard(CommunityBoardRequest request,
@@ -59,11 +63,9 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     if (multipartFiles != null) {
       upload(multipartFiles, communityBoard);
     }
-
   }
 
-
-  //잡담 게시글 수정(+이미지)
+  //잡담 게시글 수정
   @Override
   @Transactional
   public void updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,
@@ -71,14 +73,8 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     checkUser(communityBoard, user.getId());
     if (multipartFiles != null) {
-      for (MultipartFile multipartFile : multipartFiles) {
-        if (!multipartFile.isEmpty()) {
-          deleteBoardImages(boardId);
-          upload(multipartFiles, communityBoard);
-        } else {
-          upload(multipartFiles, communityBoard);
-        }
-      }
+      deleteBoardImages(boardId);
+      upload(multipartFiles, communityBoard);
     }
     communityBoard.updateBoard(request.getTitle(), request.getContent());
     communityBoardRepository.save(communityBoard);
@@ -230,6 +226,21 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
       BoardImage boardImage = new BoardImage(imagePath, communityBoard.getId());
       boardImageRepository.save(boardImage);
     }
+  }
+
+  @Override
+  @Transactional
+  public void uploadOne(MultipartFile multipartFile, CommunityBoard communityBoard)
+      throws IOException {
+
+    String uploadImagePath;
+    String dir = "/board/communityImage";
+
+//    if (!multipartFile.isEmpty()) {
+    uploadImagePath = awsS3Service.uploadOne(multipartFile, dir);
+    BoardImage boardImage = new BoardImage(uploadImagePath, communityBoard.getId());
+    boardImageRepository.save(boardImage);
+//    }
   }
 
 

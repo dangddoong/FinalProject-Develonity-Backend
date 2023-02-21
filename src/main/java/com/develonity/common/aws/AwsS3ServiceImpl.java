@@ -1,4 +1,4 @@
-package com.develonity.board.service;
+package com.develonity.common.aws;
 
 
 import com.amazonaws.AmazonServiceException;
@@ -45,6 +45,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 //        .build();
 //  }
 
+  //다중파일 업로드
   public List<String> upload(List<MultipartFile> multipartFiles, String dir) throws IOException {
     List<String> imgPaths = new ArrayList<>();
 
@@ -64,6 +65,27 @@ public class AwsS3ServiceImpl implements AwsS3Service {
       }
     }
     return imgPaths;
+  }
+
+  //단일파일업로드
+  @Override
+  public String uploadOne(MultipartFile multipartFile, String dir) throws IOException {
+    String imgPath;
+
+    String fileName = createFileName(multipartFile.getOriginalFilename());
+    ObjectMetadata objectMetadata = new ObjectMetadata();
+    objectMetadata.setContentLength(multipartFile.getSize());
+    objectMetadata.setContentType(multipartFile.getContentType());
+
+    try (InputStream inputStream = multipartFile.getInputStream()) {
+      s3Client.putObject(
+          new PutObjectRequest(bucket + dir, fileName, inputStream, objectMetadata)
+              .withCannedAcl(CannedAccessControlList.PublicRead));
+      imgPath = s3Client.getUrl(bucket + dir, fileName).toString();
+    } catch (IOException e) {
+      throw new IOException();
+    }
+    return imgPath;
   }
 
   public void deleteFile(String imagePathLong) {

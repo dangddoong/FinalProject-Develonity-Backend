@@ -28,9 +28,6 @@ public class BoardServiceImpl implements BoardService {
     List<Long> scrapBoardIds = scrapService.getScrapBoardIds(user.getId());
     List<Board> scrapBoards = boardRepository.findAllByIdIn(scrapBoardIds);
 
-//    return scrapBoardPage.map(
-//        board -> BoardResponse.toBoardResponse(board, getNicknameByBoard(board)));
-
     Page<Board> scrapBoardPage = new PageImpl<>(scrapBoards);
     return scrapBoardPage.map(
         board -> BoardResponse.toBoardResponse(board, getNicknameByBoard(board)));

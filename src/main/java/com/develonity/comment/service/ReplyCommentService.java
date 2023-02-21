@@ -1,6 +1,7 @@
 package com.develonity.comment.service;
 
 import com.develonity.comment.dto.ReplyCommentRequest;
+import com.develonity.comment.entity.Comment;
 import com.develonity.comment.entity.ReplyComment;
 import com.develonity.user.entity.User;
 
@@ -16,4 +17,6 @@ public interface ReplyCommentService {
   String getNickname(Long userId);
 
   String getNicknameByReplyComment(ReplyComment replyComment);
+
+  void deleteAllReplyComments(Comment comment);
 }

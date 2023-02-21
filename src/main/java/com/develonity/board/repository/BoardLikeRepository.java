@@ -16,7 +16,7 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
 
   int countByBoardId(Long boardId);
 
-  @Modifying
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from BoardLike l where l.boardId in :boardId")
   void deleteAllByBoardId(@Param("boardId") Long boardId);
 }
