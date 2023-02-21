@@ -114,7 +114,12 @@ public class UserServiceImpl implements UserService {
     if (!profileImage.getImagePath().equals(imagePath)) {
       imagePath = profileImage.getImagePath();
     }
-    return new ProfileResponse(imagePath, user.getNickname());
+    return ProfileResponse.builder()
+             .profileImageUrl(imagePath)
+             .nickname(user.getNickname())
+             .giftPoint(user.getGiftPoint())
+             .respectPoint(user.getRespectPoint())
+            .build();
   }
 
   private void deleteRefreshTokenFromRedis(String loginId) {

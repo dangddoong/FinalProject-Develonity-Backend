@@ -1,15 +1,23 @@
 package com.develonity.user.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
+@Builder
 public class ProfileResponse {
 
   private final String profileImageUrl;
   private final String nickname;
+  private final int giftPoint;
+  private final int respectPoint;
 
-  // 나중에 프로필에 '등급점수' 추가돼도 괜찮을듯 합니다.
-
+  public ProfileResponse(String profileImageUrl, String nickname, int giftPoint, int respectPoint) {
+    this.profileImageUrl = profileImageUrl;
+    this.nickname = nickname;
+    this.giftPoint = giftPoint;
+    this.respectPoint = respectPoint;
+  }
 }
