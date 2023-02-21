@@ -1,5 +1,6 @@
 package com.develonity.comment.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,7 @@ public class CommentLike {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "COMMENT_LIKE_ID")
   private Long id;
 
   @JoinColumn(name = "USER_ID")

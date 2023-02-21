@@ -22,6 +22,7 @@ public class ReplyComment extends TimeStamp {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "REPLY_COMMENT_ID")
   private Long id;
 
   @Column(nullable = false)
