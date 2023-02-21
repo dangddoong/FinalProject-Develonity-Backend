@@ -21,7 +21,6 @@ public class RegisterRequest {
   private final String realName;
   @Size(min = 2, max = 10)
   private final String nickname;
-  private final String profileImageUrl;
   @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$", message = "이메일 형식을 확인해주세요")
   private final String email;
   private final String phoneNumber;
@@ -35,7 +34,6 @@ public class RegisterRequest {
         .password(encodingPassword)
         .realName(this.realName)
         .nickname(this.nickname)
-        .profileImageUrl(this.profileImageUrl)
         .email(this.email)
         .phoneNumber(this.phoneNumber)
         .detailAddress(this.detailAddress)

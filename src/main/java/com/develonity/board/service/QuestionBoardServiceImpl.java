@@ -8,6 +8,7 @@ import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
 import com.develonity.comment.service.CommentService;
+import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
