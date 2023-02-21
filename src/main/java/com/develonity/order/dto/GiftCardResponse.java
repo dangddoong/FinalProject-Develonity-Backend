@@ -16,15 +16,17 @@ public class GiftCardResponse {
     private String details;
     private String imageUrl;
     private int price;
+    private int stockQuantity;
 
     @Builder
-    public GiftCardResponse(GiftCardCategory category, Long id, String name, String details, String imageUrl, int price) {
+    public GiftCardResponse(GiftCardCategory category, Long id, String name, String details, String imageUrl, int price, int stockQuantity) {
         this.category = category;
         this.id = id;
         this.name = name;
         this.details = details;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.stockQuantity = stockQuantity;
     }
 
     @Builder
@@ -35,6 +37,7 @@ public class GiftCardResponse {
         this.details = giftCard.getDetails();
         this.imageUrl = giftCard.getImageUrl();
         this.price = giftCard.getPrice();
+        this.stockQuantity = giftCard.getStockQuantity();
     }
 
 
@@ -47,6 +50,7 @@ public class GiftCardResponse {
                 .details(m.getDetails())
                 .imageUrl(m.getImageUrl())
                 .price(m.getPrice())
+                .stockQuantity(m.getStockQuantity())
                 .build());
     }
 }

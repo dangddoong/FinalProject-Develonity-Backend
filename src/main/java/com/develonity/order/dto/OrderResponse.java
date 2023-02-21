@@ -12,27 +12,37 @@ import java.time.LocalDateTime;
 @Getter //주문 조회할 때 필요한 정보
 @NoArgsConstructor
 public class OrderResponse {
+    private String image;
     private Long orderId;
+    private String giftCardName;
     private Long userId;
+    private String recipientName;
     private int purchasePrice;
     private String phoneNumber;
     private LocalDateTime orderDate;
     private OrderStatus orderStatus;
 
     @Builder
-    public OrderResponse(Long orderId, Long userId, int purchasePrice, String phoneNumber, LocalDateTime orderDate, OrderStatus orderStatus) {
+    public OrderResponse(String image, Long orderId, String giftCardName, Long userId, String recipientName, int purchasePrice, String phoneNumber, LocalDateTime orderDate, OrderStatus orderStatus) {
+        this.image = image;
         this.orderId = orderId;
+        this.giftCardName = giftCardName;
         this.userId = userId;
+        this.recipientName = recipientName;
         this.purchasePrice = purchasePrice;
         this.phoneNumber = phoneNumber;
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
     }
 
+
     @Builder
     public OrderResponse(Order order) {
+        this.image = order.getImage();
         this.orderId = order.getId();
+        this.giftCardName = order.getGiftCardName();
         this.userId = order.getUserId();
+        this.recipientName = order.getRecipientName();
         this.purchasePrice = order.getPurchasePrice();
         this.phoneNumber = order.getPhoneNumber();
         this.orderDate = order.getOrderDate();
@@ -41,8 +51,11 @@ public class OrderResponse {
 
     public Page<OrderResponse> toDtoList (Page<Order> orderList) {
         return orderList.map(m -> OrderResponse.builder()
+                .image(m.getImage())
                 .orderId(m.getId())
+                .giftCardName(m.getGiftCardName())
                 .userId(m.getUserId())
+                .recipientName(m.getRecipientName())
                 .purchasePrice(m.getPurchasePrice())
                 .phoneNumber(m.getPhoneNumber())
                 .orderDate(m.getOrderDate())

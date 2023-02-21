@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter //주문할 때 필요한 정보
 public class OrderRequest {
-    private String realName;
+    private String recipientName;
     private String phoneNumber;
     private Long giftCardId;
 }
