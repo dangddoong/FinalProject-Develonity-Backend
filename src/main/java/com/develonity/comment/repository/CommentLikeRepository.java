@@ -16,7 +16,7 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
 
   boolean existsCommentById(Long commentId);
 
-  @Modifying
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from CommentLike l where l.commentId in :commentId")
   void deleteAllByCommentId(@Param("commentId") Long commentId);
 

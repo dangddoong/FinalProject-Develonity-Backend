@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReplyCommentRepository extends JpaRepository<ReplyComment, Long> {
 
-  @Modifying
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from ReplyComment r where r.comment in :comment")
   void deleteAllByCommentId(@Param("comment") Comment comment);
 }

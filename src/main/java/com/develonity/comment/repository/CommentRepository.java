@@ -16,7 +16,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   Page<Comment> findAllByBoardId(Pageable pageable, Long boardId);
 
 
-  @Modifying
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from Comment c where c.boardId in :boardId")
   void deleteAllByBoardId(@Param("boardId") Long boardId);
 

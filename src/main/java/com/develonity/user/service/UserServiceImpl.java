@@ -102,12 +102,18 @@ public class UserServiceImpl implements UserService {
     return new TokenResponse(accessToken, createdRefreshToken);
   }
 
+  //프로필 조회(기본이미지 설정 때문에 readOnly 제외)
   @Override
-  @Transactional(readOnly = true)
+  @Transactional
   public ProfileResponse getProfile(Long userId) {
     User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
-    ProfileImage profileImage = profileImageRepository.findByUserId(userId);
-    String imagePath = profileImage.getImagePath();
+    String imagePath = "https://dthezntil550i.cloudfront.net/p6/latest/p62007150224230440002288000/ed8e25a2-d8dd-43ac-8d18-77712b287dc6.png";
+    ProfileImage profileImage = profileImageRepository.findByUserId(userId)
+        .orElse(new ProfileImage(imagePath, userId));
+
+    if (!profileImage.getImagePath().equals(imagePath)) {
+      imagePath = profileImage.getImagePath();
+    }
     return new ProfileResponse(imagePath, user.getNickname());
   }
 
@@ -122,6 +128,7 @@ public class UserServiceImpl implements UserService {
 
   //프로필 수정
   @Override
+  @Transactional
   public void updateProfile(ProfileRequest request, MultipartFile multipartFile, User user)
       throws IOException {
 
@@ -153,7 +160,8 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public void deleteProfileImage(Long userId) {
 
-    ProfileImage profileImage = profileImageRepository.findByUserId(userId);
+    ProfileImage profileImage = profileImageRepository.findByUserId(userId)
+        .orElseThrow(IllegalArgumentException::new);
 
     String imagePath = profileImage.getImagePath();
 

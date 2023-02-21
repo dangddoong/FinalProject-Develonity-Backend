@@ -3,8 +3,6 @@ package com.develonity.user.entity;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -14,12 +12,10 @@ import javax.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @NoArgsConstructor
 @Entity(name = "users")
-@DynamicInsert
 public class User extends TimeStamp {
 
   @Id
@@ -42,7 +38,7 @@ public class User extends TimeStamp {
   private int respectPoint = 0;
 
   @Builder
-  public User(String loginId, String password,  String nickname,
+  public User(String loginId, String password, String nickname,
       String email) {
     this.loginId = loginId;
     this.password = password;

@@ -17,7 +17,7 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
 
   int countByUserId(Long userId);
 
-  @Modifying
+  @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from Scrap s where s.boardId in :boardId")
   void deleteAllByBoardId(@Param("boardId") Long boardId);
 
