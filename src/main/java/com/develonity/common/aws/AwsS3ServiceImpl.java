@@ -35,16 +35,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
   @Value("${cloud.aws.region.static}")
   private String region;
-
-//  @PostConstruct
-//  public AmazonS3Client amazonS3Client() {
-//    BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-//    return (AmazonS3Client) AmazonS3ClientBuilder.standard()
-//        .withRegion(region)
-//        .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-//        .build();
-//  }
-
+  
   //다중파일 업로드
   public List<String> upload(List<MultipartFile> multipartFiles, String dir) throws IOException {
     List<String> imgPaths = new ArrayList<>();
