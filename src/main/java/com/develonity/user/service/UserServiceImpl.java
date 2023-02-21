@@ -1,20 +1,26 @@
 package com.develonity.user.service;
 
+import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.redis.RedisDao;
 import com.develonity.user.dto.LoginRequest;
+import com.develonity.user.dto.ProfileRequest;
 import com.develonity.user.dto.ProfileResponse;
 import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.dto.TokenResponse;
+import com.develonity.user.entity.ProfileImage;
 import com.develonity.user.entity.User;
+import com.develonity.user.repository.ProfileImageRepository;
 import com.develonity.user.repository.UserRepository;
+import java.io.IOException;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +28,12 @@ public class UserServiceImpl implements UserService {
 
   private final RedisDao redisDao;
   private final UserRepository userRepository;
+
+  private final ProfileImageRepository profileImageRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
+
+  private final AwsS3Service awsS3Service;
 
   @Override
   @Transactional
@@ -96,7 +106,9 @@ public class UserServiceImpl implements UserService {
   @Transactional(readOnly = true)
   public ProfileResponse getProfile(Long userId) {
     User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
-    return new ProfileResponse(user.getProfileImageUrl(), user.getNickname());
+    ProfileImage profileImage = profileImageRepository.findByUserId(userId);
+    String imagePath = profileImage.getImagePath();
+    return new ProfileResponse(imagePath, user.getNickname());
   }
 
   private void deleteRefreshTokenFromRedis(String loginId) {
@@ -108,6 +120,47 @@ public class UserServiceImpl implements UserService {
         Duration.ofMillis(JwtUtil.REFRESH_TOKEN_TIME));
   }
 
+  //프로필 수정
+  @Override
+  public void updateProfile(ProfileRequest request, MultipartFile multipartFile, User user)
+      throws IOException {
+
+    if (multipartFile != null) {
+      if (existsByUserId(user.getId())) {
+        deleteProfileImage(user.getId());
+      }
+      uploadOne(multipartFile, user.getId());
+    }
+    user.updateProfile(request.getNickname());
+    userRepository.save(user);
+  }
+
+  //이미지 단일 파일 업로드
+  @Override
+  @Transactional
+  public void uploadOne(MultipartFile multipartFile, Long userId) throws IOException {
+
+    String uploadImagePath;
+    String dir = "/user/profileImage";
+
+    uploadImagePath = awsS3Service.uploadOne(multipartFile, dir);
+    ProfileImage profileImage = new ProfileImage(uploadImagePath, userId);
+    profileImageRepository.save(profileImage);
+  }
+
+  //이미지 파일 삭제
+  @Override
+  @Transactional
+  public void deleteProfileImage(Long userId) {
+
+    ProfileImage profileImage = profileImageRepository.findByUserId(userId);
+
+    String imagePath = profileImage.getImagePath();
+
+    awsS3Service.deleteFile(imagePath);
+    profileImageRepository.deleteByUserId(userId);
+  }
+
   private boolean isSameRefreshTokenInRedis(String loginId, String refreshToken) {
     Object redisRefreshToken = redisDao.getValues(loginId);
     if (redisRefreshToken != null) {
@@ -115,6 +168,7 @@ public class UserServiceImpl implements UserService {
     }
     return false;
   }
+
 
   @Override
   @Transactional
@@ -156,4 +210,11 @@ public class UserServiceImpl implements UserService {
     return userRepository.findById(userId).orElseThrow(() -> new CustomException(
         ExceptionStatus.USER_IS_NOT_EXIST));
   }
+
+  //해당 유저 프로필이미지 존재하는지 확인
+  @Override
+  public boolean existsByUserId(Long userId) {
+    return profileImageRepository.existsByUserId(userId);
+  }
+
 }

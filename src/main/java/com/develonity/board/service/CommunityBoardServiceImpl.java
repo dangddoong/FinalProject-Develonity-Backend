@@ -11,6 +11,7 @@ import com.develonity.board.repository.BoardRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.comment.service.CommentService;
 import com.develonity.comment.service.ReplyCommentService;
+import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
@@ -45,7 +46,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   private final BoardRepository boardRepository;
 
-  //잡담 게시글 생성(+이미지)
+  //잡담 게시글 생성
   @Override
   @Transactional
   public void createCommunityBoard(CommunityBoardRequest request,
@@ -64,7 +65,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     }
   }
 
-
+  //잡담 게시글 수정
   @Override
   @Transactional
   public void updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,

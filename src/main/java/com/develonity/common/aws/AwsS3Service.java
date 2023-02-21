@@ -1,4 +1,4 @@
-package com.develonity.board.service;
+package com.develonity.common.aws;
 
 import java.io.IOException;
 import java.util.List;

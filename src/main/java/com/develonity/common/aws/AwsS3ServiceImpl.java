@@ -1,4 +1,4 @@
-package com.develonity.board.service;
+package com.develonity.common.aws;
 
 
 import com.amazonaws.AmazonServiceException;
@@ -45,6 +45,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 //        .build();
 //  }
 
+  //다중파일 업로드
   public List<String> upload(List<MultipartFile> multipartFiles, String dir) throws IOException {
     List<String> imgPaths = new ArrayList<>();
 
@@ -66,6 +67,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     return imgPaths;
   }
 
+  //단일파일업로드
   @Override
   public String uploadOne(MultipartFile multipartFile, String dir) throws IOException {
     String imgPath;

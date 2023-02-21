@@ -14,10 +14,12 @@ import javax.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @NoArgsConstructor
 @Entity(name = "users")
+@DynamicInsert
 public class User extends TimeStamp {
 
   @Id
@@ -35,8 +37,6 @@ public class User extends TimeStamp {
   private String realName;
   @Column(nullable = false, unique = true)
   private String nickname;
-  @Column(nullable = false)
-  private String profileImageUrl;
   @Column(nullable = false, unique = true)
   private String email;
   @Column(nullable = false, unique = true)
@@ -50,13 +50,12 @@ public class User extends TimeStamp {
 
   @Builder
   public User(String loginId, String password, String realName, String nickname,
-      String profileImageUrl, String email, String phoneNumber, String detailAddress,
+      String email, String phoneNumber, String detailAddress,
       String zipcode) {
     this.loginId = loginId;
     this.password = password;
     this.realName = realName;
     this.nickname = nickname;
-    this.profileImageUrl = profileImageUrl;
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.address = new Address(detailAddress, zipcode);
@@ -87,6 +86,11 @@ public class User extends TimeStamp {
 
   public boolean isLackedRespectPoint() {
     return this.respectPoint < 10;
+  }
+
+  //프로필 수정(닉네임 변경)
+  public void updateProfile(String nickname) {
+    this.nickname = nickname;
   }
 
   @Embeddable
