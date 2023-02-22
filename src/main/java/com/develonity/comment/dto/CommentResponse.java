@@ -23,6 +23,8 @@ public class CommentResponse {
 
   private final LocalDateTime lastModifiedAt;
 
+  private Boolean hasLike;
+
   private List<ReplyCommentResponse> replyCommentList;
 
 
@@ -34,6 +36,21 @@ public class CommentResponse {
     this.commentLike = commentLike;
     this.createdAt = comment.getCreatedDate();
     this.lastModifiedAt = comment.getLastModifiedDate();
+    for (ReplyComment replyComment : comment.getReplyCommentList) {
+      list.add(new ReplyCommentResponse(replyComment, nickname));
+    }
+    this.replyCommentList = list;
+  }
+
+  public CommentResponse(Comment comment, String nickname, int commentLike, Boolean hasLike) {
+    List<ReplyCommentResponse> list = new ArrayList<>();
+    this.id = comment.getId();
+    this.nickname = nickname;
+    this.content = comment.getContent();
+    this.commentLike = commentLike;
+    this.createdAt = comment.getCreatedDate();
+    this.lastModifiedAt = comment.getLastModifiedDate();
+    this.hasLike = hasLike;
     for (ReplyComment replyComment : comment.getReplyCommentList) {
       list.add(new ReplyCommentResponse(replyComment, nickname));
     }
