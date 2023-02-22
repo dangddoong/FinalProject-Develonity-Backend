@@ -17,6 +17,7 @@ public enum ExceptionStatus {
   REPLY_COMMENT_USER_NOT_MATCH(401, "대댓글 작성자가 아닙니다."),
   CATEGORY_DO_NOT_MATCH(401, "카테고리가 일치하지 않습니다."),
   IS_NOT_CORRECT_FORMAT(401, "올바른 형식의 파일이 아닙니다"),
+
   USER_IS_NOT_EXIST(404, "사용자가 존재 하지 않습니다."),
   GIFT_CARD_IMAGE_IS_NOT_EXIST(404, "기프트카드 이미지가 존재 하지 않습니다."),
   ORDER_IS_NOT_EXIST(404, " 주문내역이 존재하지 않습니다. "),
@@ -37,7 +38,8 @@ public enum ExceptionStatus {
   GIFT_CARD_IS_EXIST(409, "이미 등록된 기프트카드 입니다."),
   LIKE_IS_EXIST(409, "이미 좋아요를 누른 게시글입니다."),
   SCRAP_IS_EXIST(409, "이미 스크랩한 게시글입니다."),
-  ALREADY_ADOPTED(409, "이미 답변 채택된 게시글입니다.");
+  ALREADY_ADOPTED(409, "이미 답변 채택된 게시글입니다."),
+  ADOPTED_QUESTION_BOARD(409, "답변이 채택된 게시글과 채택된 답변 댓글은 수정, 삭제할 수 없습니다.");
 
   private final int statusCode;
   private final String message;

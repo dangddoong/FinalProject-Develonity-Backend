@@ -68,5 +68,8 @@ public class Comment extends TimeStamp {
     this.commentStatus = CommentStatus.ADOPTED;
   }
 
+  public boolean isAdopted() {
+    return this.getCommentStatus().equals(CommentStatus.ADOPTED);
+  }
 
 }

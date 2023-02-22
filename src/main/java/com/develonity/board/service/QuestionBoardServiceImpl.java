@@ -68,6 +68,9 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   public void updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
       QuestionBoardRequest request, User user) throws IOException {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
+    if (questionBoard.isAlreadyAdopted()) {
+      throw new CustomException(ExceptionStatus.ADOPTED_QUESTION_BOARD);
+    }
     checkUser(questionBoard, user.getId());
     if (multipartFiles != null) {
       deleteBoardImages(boardId);
@@ -83,6 +86,9 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   @Transactional
   public void deleteQuestionBoard(Long boardId, User user) {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
+    if (questionBoard.isAlreadyAdopted()) {
+      throw new CustomException(ExceptionStatus.ADOPTED_QUESTION_BOARD);
+    }
     checkUser(questionBoard, user.getId());
     boardLikeService.deleteLike(boardId);
     deleteBoardImages(boardId);
