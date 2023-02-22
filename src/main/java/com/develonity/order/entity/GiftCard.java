@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -39,6 +42,8 @@ public class GiftCard {
   @Column(nullable = false)
   private int stockQuantity; // 동시성 문제를 막기 위한 수량 설정(?)
 
+  private String lastModifiedDate;
+
   @Builder
   public GiftCard(GiftCardCategory category, String name, String details, String imagePath,
       int price, int stockQuantity) {
@@ -48,6 +53,7 @@ public class GiftCard {
     this.imagePath = imagePath;
     this.price = price;
     this.stockQuantity = stockQuantity;
+    this.lastModifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   }
 
   public void update(GiftCardCategory category, String name, String details, String imagePath,
@@ -58,6 +64,7 @@ public class GiftCard {
     this.imagePath = imagePath;
     this.price = price;
     this.stockQuantity = stockQuantity;
+    this.lastModifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   }
 
   /**

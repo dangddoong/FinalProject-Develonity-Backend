@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "orders")
@@ -35,7 +36,7 @@ public class Order {
     private String giftCardName;
     @Column(nullable = false)
     private int purchasePrice;
-    private LocalDateTime orderDate;
+    private String orderDate;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -49,7 +50,7 @@ public class Order {
         this.giftCardId = giftCardId;
         this.giftCardName = giftCardName;
         this.purchasePrice = purchasePrice;
-        this.orderDate = LocalDateTime.now();
+        this.orderDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.orderStatus = OrderStatus.PAYMENT_COMPLETED;
     }
 
