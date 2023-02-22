@@ -109,7 +109,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
     return communityBoardPages.map(
         communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
-            getNicknameByCommunityBoard(communityBoard)));
+            getNicknameByCommunityBoard(communityBoard), countAllComments(communityBoard.getId())));
   }
 
   //테스트용전체조회
@@ -123,7 +123,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
     return communityBoardPages.map(
         communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
-            getNicknameByCommunityBoard(communityBoard)));
+            getNicknameByCommunityBoard(communityBoard), countAllComments(communityBoard.getId())));
   }
 
   //잡담 게시글 선택 조회
@@ -143,7 +143,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
       imagePaths.add(boardImage.getImagePath());
     }
     return new CommunityBoardResponse(communityBoard, nickname, countLike(boardId), hasLike,
-        imagePaths);
+        imagePaths, countAllComments(boardId));
   }
 
   @Override
@@ -258,5 +258,11 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
       awsS3Service.deleteFile(imagePath);
     }
     boardImageRepository.deleteAllByBoardId(boardId);
+  }
+
+  //댓글 갯수(대댓글 갯수 포함)
+  @Override
+  public int countAllComments(Long boardId) {
+    return commentService.countCommentsAndReplyComments(boardId);
   }
 }

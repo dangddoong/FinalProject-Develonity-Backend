@@ -28,9 +28,11 @@ public class QuestionBoardResponse {
   private final List<String> imagePaths;
   private final Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
+  private final int countComments;
+
 
   public QuestionBoardResponse(QuestionBoard questionBoard, String nickname, int boardLike,
-      Boolean hasLike, List<String> imagePaths) {
+      Boolean hasLike, List<String> imagePaths, int countComments) {
     this.id = questionBoard.getId();
     this.nickname = nickname;
     this.questionCategory = questionBoard.getQuestionCategory();
@@ -43,10 +45,11 @@ public class QuestionBoardResponse {
     this.lastModifiedAt = questionBoard.getLastModifiedDate();
     this.hasLike = hasLike;
     this.imagePaths = imagePaths;
+    this.countComments = countComments;
   }
 
   public static QuestionBoardResponse toQuestionBoardResponse(QuestionBoard questionBoard,
-      String nickname) {
+      String nickname, int countComments) {
     return QuestionBoardResponse.builder()
         .id(questionBoard.getId())
         .nickname(nickname)
@@ -57,6 +60,7 @@ public class QuestionBoardResponse {
         .status(questionBoard.getStatus())
         .createdAt(questionBoard.getCreatedDate())
         .lastModifiedAt(questionBoard.getLastModifiedDate())
+        .countComments(countComments)
         .build();
   }
 }

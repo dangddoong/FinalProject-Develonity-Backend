@@ -109,7 +109,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     String nickname = getNickname(boardUserId);
     boolean hasLike = boardLikeService.existsLikesBoardIdAndUserId(boardId, user.getId());
     return new QuestionBoardResponse(questionBoard, nickname, countLike(boardId), hasLike,
-        imagePaths);
+        imagePaths, countComments(boardId));
   }
 
 
@@ -126,7 +126,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
     return questionBoardPages.map(
         questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
-            getNicknameByQuestionBoard(questionBoard)));
+            getNicknameByQuestionBoard(questionBoard), countComments(questionBoard.getId())));
 
   }
 
@@ -141,7 +141,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
     return questionBoardPages.map(
         questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
-            getNicknameByQuestionBoard(questionBoard)));
+            getNicknameByQuestionBoard(questionBoard), countComments(questionBoard.getId())));
   }
 
   @Override
@@ -221,6 +221,12 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
       awsS3Service.deleteFile(imagePath);
     }
     boardImageRepository.deleteAllByBoardId(boardId);
+  }
+
+  //답변 댓글 수 (대댓글 제외)
+  @Override
+  public int countComments(Long boardId) {
+    return commentService.countComments(boardId);
   }
 }
 

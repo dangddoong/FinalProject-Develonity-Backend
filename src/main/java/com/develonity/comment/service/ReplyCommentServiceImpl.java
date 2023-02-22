@@ -9,6 +9,7 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,9 +94,14 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
     return userService.getProfile(replyComment.getUserId()).getNickname();
   }
 
-
+  @Transactional
   @Override
   public void deleteAllReplyComments(Comment comment) {
     replyCommentRepository.deleteAllByCommentId(comment);
+  }
+
+  @Override
+  public int countReplyComments(List<Comment> comments) {
+    return replyCommentRepository.countAllByCommentIn(comments);
   }
 }
