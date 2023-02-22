@@ -49,8 +49,8 @@ public class GiftCardServiceImpl implements GiftCardService {
 
     giftCardRepository.save(giftCard);
     if (multipartFile != null) {
-      uploadOne(multipartFile, giftCard.getId());
-      giftCard.addImagePath(getImagePath(giftCard.getId()));
+      String imagePath = uploadImage(multipartFile, giftCard.getId());
+      giftCard.addImagePath(imagePath);
     }
 
     return giftCard.getId();
@@ -107,15 +107,18 @@ public class GiftCardServiceImpl implements GiftCardService {
     }
 
     foundGiftCard.update(giftCardRegister.getCategory(), giftCardRegister.getName(),
-        giftCardRegister.getDetails(), giftCardRegister.getImageUrl(), giftCardRegister.getPrice(),
+        giftCardRegister.getDetails(), giftCardRegister.getPrice(),
         giftCardRegister.getStockQuantity());
 
     if (multipartFile != null) {
-      deleteProfileImage(foundGiftCard.getId());
-      uploadOne(multipartFile, foundGiftCard.getId());
+      deleteGiftCardImage(id);
+      String uploadImagePath = uploadImage(multipartFile, id);
+      foundGiftCard.addImagePath(uploadImagePath);
     }
+
   }
 
+  //기프트카드 삭제
   @Override
   @Transactional
   public Long deleteGiftCard(Long giftCardId) {
@@ -123,6 +126,9 @@ public class GiftCardServiceImpl implements GiftCardService {
     if (!giftCardRepository.existsById(giftCardId)) {
       throw new CustomException(ExceptionStatus.GIFT_CARD_IS_NOT_EXIST);
     }
+
+    deleteGiftCardImage(giftCardId);
+    giftCardImageRepository.deleteByGiftCardId(giftCardId);
     giftCardRepository.deleteById(giftCardId);
     return giftCardId;
   }
@@ -130,7 +136,7 @@ public class GiftCardServiceImpl implements GiftCardService {
   //이미지 단일 파일 업로드
   @Override
   @Transactional
-  public void uploadOne(MultipartFile multipartFile, Long giftCardId) throws IOException {
+  public String uploadImage(MultipartFile multipartFile, Long giftCardId) throws IOException {
 
     String uploadImagePath;
     String dir = "/order/giftCardImage";
@@ -138,27 +144,30 @@ public class GiftCardServiceImpl implements GiftCardService {
     uploadImagePath = awsS3Service.uploadOne(multipartFile, dir);
     GiftCardImage giftCardImage = new GiftCardImage(uploadImagePath, giftCardId);
     giftCardImageRepository.save(giftCardImage);
+    return uploadImagePath;
   }
 
   //이미지 경로 반환
   @Override
+  @Transactional
   public String getImagePath(Long giftCardId) {
     GiftCardImage giftCardImage = giftCardImageRepository.findByGiftCardId(giftCardId)
-        .orElseThrow(
-            () -> new CustomException(ExceptionStatus.GIFT_CARD_IMAGE_IS_NOT_EXIST));
-
+        .orElse(new GiftCardImage(
+            "https://pbs.twimg.com/profile_images/1121253455333474304/SzW8OOtq_400x400.jpg",
+            giftCardId));
+//            () -> new CustomException(ExceptionStatus.GIFT_CARD_IMAGE_IS_NOT_EXIST));
     return giftCardImage.getImagePath();
   }
 
   //이미지 파일 삭제
   @Override
   @Transactional
-  public void deleteProfileImage(Long giftCardId) {
-
-    String imagePath = getImagePath(giftCardId);
-
-    awsS3Service.deleteFile(imagePath);
-    giftCardImageRepository.deleteByGiftCardId(giftCardId);
+  public void deleteGiftCardImage(Long id) {
+    String imagePath = getImagePath(id);
+    if (!imagePath.equals(
+        "https://pbs.twimg.com/profile_images/1121253455333474304/SzW8OOtq_400x400.jpg")) {
+      awsS3Service.deleteFile(imagePath);
+      giftCardImageRepository.deleteByGiftCardId(id);
+    }
   }
-
 }

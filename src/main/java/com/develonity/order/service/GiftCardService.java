@@ -31,10 +31,11 @@ public interface GiftCardService {
   @Transactional
   Long deleteGiftCard(Long giftCardId);
 
-  void uploadOne(MultipartFile multipartFile, Long giftCardId) throws IOException;
+  String uploadImage(MultipartFile multipartFile, Long giftCardId) throws IOException;
 
-  void deleteProfileImage(Long giftCardId);
+  void deleteGiftCardImage(Long giftCardId);
 
   String getImagePath(Long giftCardId);
+
 
 }
