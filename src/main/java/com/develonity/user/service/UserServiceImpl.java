@@ -16,6 +16,8 @@ import com.develonity.user.repository.ProfileImageRepository;
 import com.develonity.user.repository.UserRepository;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -115,11 +117,11 @@ public class UserServiceImpl implements UserService {
       imagePath = profileImage.getImagePath();
     }
     return ProfileResponse.builder()
-             .profileImageUrl(imagePath)
-             .nickname(user.getNickname())
-             .giftPoint(user.getGiftPoint())
-             .respectPoint(user.getRespectPoint())
-            .build();
+        .profileImageUrl(imagePath)
+        .nickname(user.getNickname())
+        .giftPoint(user.getGiftPoint())
+        .respectPoint(user.getRespectPoint())
+        .build();
   }
 
   private void deleteRefreshTokenFromRedis(String loginId) {
@@ -229,5 +231,22 @@ public class UserServiceImpl implements UserService {
   public boolean existsByUserId(Long userId) {
     return profileImageRepository.existsByUserId(userId);
   }
+
+  //유저아이디 리스트로 유저 리스트 가져오는 메소드
+  @Override
+  public HashMap<Long, String> getUserIdAndNickname(List<Long> userIds) {
+    List<User> users = userRepository.findAllByIdIn(userIds);
+
+    HashMap<Long, String> userIdAndNickname = new HashMap<>();
+    for (User user : users) {
+      Long userId = user.getId();
+      String userNickname = user.getNickname();
+      userIdAndNickname.put(userId, userNickname);
+    }
+
+    return userIdAndNickname;
+
+  }
+
 
 }

@@ -73,7 +73,8 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
       deleteBoardImages(boardId);
       upload(multipartFiles, questionBoard);
     }
-    questionBoard.updateBoard(request.getTitle(), request.getContent());
+    questionBoard.updateBoard(request.getTitle(), request.getContent(),
+        request.getQuestionCategory());
     questionBoardRepository.save(questionBoard);
   }
 

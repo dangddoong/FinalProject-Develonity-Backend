@@ -15,4 +15,6 @@ public interface ReplyCommentRepository extends JpaRepository<ReplyComment, Long
   void deleteAllByCommentId(@Param("comment") Comment comment);
 
   long countAllByCommentIn(List<Comment> comments);
+
+  List<ReplyComment> findAllByComment(Comment comment);
 }

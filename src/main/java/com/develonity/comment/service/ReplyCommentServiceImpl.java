@@ -1,6 +1,7 @@
 package com.develonity.comment.service;
 
 import com.develonity.comment.dto.ReplyCommentRequest;
+import com.develonity.comment.dto.ReplyCommentResponse;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.entity.ReplyComment;
 import com.develonity.comment.repository.CommentRepository;
@@ -9,6 +10,8 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -83,6 +86,7 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
     replyCommentRepository.delete(replyComment);
   }
 
+
   // 닉네임을 가져오는 기능
   @Override
   public String getNickname(Long userId) {
@@ -92,6 +96,28 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
   @Override
   public String getNicknameByReplyComment(ReplyComment replyComment) {
     return userService.getProfile(replyComment.getUserId()).getNickname();
+  }
+
+  @Override
+  @Transactional
+  public List<ReplyCommentResponse> getReplyCommentResponses(Comment comment) {
+
+    List<ReplyComment> replyComments = replyCommentRepository.findAllByComment(comment);
+    List<Long> userIds = new ArrayList<>();
+    List<ReplyCommentResponse> replyCommentResponses = new ArrayList<>();
+
+    for (ReplyComment replyComment : replyComments) {
+      Long userId = replyComment.getUserId();
+      userIds.add(userId);
+    }
+    HashMap<Long, String> userIdAndNickname = userService.getUserIdAndNickname(userIds);
+
+    for (ReplyComment replyComment : replyComments) {
+      ReplyCommentResponse replyCommentResponse = new ReplyCommentResponse(replyComment,
+          userIdAndNickname.get(replyComment.getUserId()));
+      replyCommentResponses.add(replyCommentResponse);
+    }
+    return replyCommentResponses;
   }
 
   @Transactional

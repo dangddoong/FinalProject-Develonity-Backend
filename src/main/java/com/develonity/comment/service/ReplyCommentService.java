@@ -1,6 +1,7 @@
 package com.develonity.comment.service;
 
 import com.develonity.comment.dto.ReplyCommentRequest;
+import com.develonity.comment.dto.ReplyCommentResponse;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.entity.ReplyComment;
 import com.develonity.user.entity.User;
@@ -22,4 +23,6 @@ public interface ReplyCommentService {
   void deleteAllReplyComments(Comment comment);
 
   long countReplyComments(List<Comment> comments);
+
+  List<ReplyCommentResponse> getReplyCommentResponses(Comment comment);
 }

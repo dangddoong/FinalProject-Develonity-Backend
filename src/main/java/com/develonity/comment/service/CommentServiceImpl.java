@@ -3,6 +3,7 @@ package com.develonity.comment.service;
 import com.develonity.comment.dto.CommentList;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
+import com.develonity.comment.dto.ReplyCommentResponse;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.repository.CommentRepository;
 import com.develonity.common.exception.CustomException;
@@ -10,6 +11,7 @@ import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -83,11 +85,24 @@ public class CommentServiceImpl implements CommentService {
 
     List<CommentResponse> commentResponses = new ArrayList<>();
 
+    List<Long> userIds = new ArrayList<>();
     for (Comment comment : comments) {
+//댓글안에 있는 유저 아이디 리스트로 넣어서 해시맵<userId,userNickname> 리턴 받음
+      userIds.add(comment.getUserId());
+    }
+    HashMap<Long, String> userIdAndNickname = userService.getUserIdAndNickname(userIds);
+
+    for (Comment comment : comments) {
+
+      List<ReplyCommentResponse> replyCommentResponses = replyCommentService.getReplyCommentResponses(
+          comment);
       boolean hasLike = commentLikeService.isExistLikesCommentIdAndUserId(comment.getId(),
           user.getId());
-      CommentResponse response = new CommentResponse(comment, user.getNickname(),
-          countLike(comment.getId()), hasLike);
+
+      //댓글dto의 닉네임에 위의 해시맵 이용해서 해당 유저 닉네임 넣어주기
+      CommentResponse response = new CommentResponse(comment,
+          userIdAndNickname.get(comment.getUserId()),
+          countLike(comment.getId()), hasLike, replyCommentResponses);
       commentResponses.add(response);
     }
     return new PageImpl<>(commentResponses);

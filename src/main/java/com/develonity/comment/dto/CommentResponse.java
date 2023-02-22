@@ -42,8 +42,9 @@ public class CommentResponse {
     this.replyCommentList = list;
   }
 
-  public CommentResponse(Comment comment, String nickname, long commentLike, Boolean hasLike) {
-    List<ReplyCommentResponse> list = new ArrayList<>();
+  public CommentResponse(Comment comment, String nickname, long commentLike, Boolean hasLike,
+      List<ReplyCommentResponse> replyCommentResponses) {
+
     this.id = comment.getId();
     this.nickname = nickname;
     this.content = comment.getContent();
@@ -51,10 +52,7 @@ public class CommentResponse {
     this.createdAt = comment.getCreatedDate();
     this.lastModifiedAt = comment.getLastModifiedDate();
     this.hasLike = hasLike;
-    for (ReplyComment replyComment : comment.getReplyCommentList) {
-      list.add(new ReplyCommentResponse(replyComment, nickname));
-    }
-    this.replyCommentList = list;
+    this.replyCommentList = replyCommentResponses;
   }
 
 //  public static CommentResponse toCommentResponseDto(Comment comment, String nickname,
