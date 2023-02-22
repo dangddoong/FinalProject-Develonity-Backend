@@ -24,9 +24,11 @@ public class CommunityBoardResponse {
   private final List<String> imagePaths;
   private final Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
+  private final int countAllComments;
+
 
   public CommunityBoardResponse(CommunityBoard communityBoard, String nickname, int boardLike,
-      Boolean isLike, List<String> imagePaths) {
+      Boolean isLike, List<String> imagePaths, int countAllComments) {
     this.id = communityBoard.getId();
     this.nickname = nickname;
     this.communityCategory = communityBoard.getCommunityCategory();
@@ -37,12 +39,13 @@ public class CommunityBoardResponse {
     this.lastModifiedAt = communityBoard.getLastModifiedDate();
     this.hasLike = isLike;
     this.imagePaths = imagePaths;
+    this.countAllComments = countAllComments;
 
 
   }
 
   public static CommunityBoardResponse toCommunityBoardResponse(CommunityBoard communityBoard,
-      String nickname) {
+      String nickname, int countAllComments) {
     return CommunityBoardResponse.builder()
         .id(communityBoard.getId())
         .nickname(nickname)
@@ -51,6 +54,7 @@ public class CommunityBoardResponse {
         .content(communityBoard.getContent())
         .createdAt(communityBoard.getCreatedDate())
         .lastModifiedAt(communityBoard.getLastModifiedDate())
+        .countAllComments(countAllComments)
         .build();
   }
 

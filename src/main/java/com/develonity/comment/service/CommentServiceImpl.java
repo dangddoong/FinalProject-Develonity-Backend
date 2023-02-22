@@ -236,11 +236,29 @@ public class CommentServiceImpl implements CommentService {
   }
 
   //좋아요 갯수
+  @Transactional
   @Override
   public int countLike(Long commentId) {
     return commentLikeService.countLike(commentId);
   }
+
+  //게시글에 달린 댓글 (질문 게시글에 붙힐 것)
+  @Override
+  public int countComments(Long boardId) {
+    return commentRepository.countByBoardId(boardId);
+  }
+
+  //게시글에 달린 댓글, 대댓글 갯수(잡담 게시글에 붙힐 것)
+  @Override
+  public int countCommentsAndReplyComments(Long boardId) {
+    int countComments = commentRepository.countByBoardId(boardId);
+    List<Comment> comments = commentRepository.findAllByBoardId(boardId);
+    int countReplyComments = replyCommentService.countReplyComments(comments);
+
+    return (countComments + countReplyComments);
+  }
 }
+
 
 
 
