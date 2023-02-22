@@ -144,9 +144,11 @@ public class CommentController {
   public Page<CommentResponse> getScrapsPage(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
       @RequestParam Long boardId,
+      @RequestParam Long commentId,
       CommentList commentList
   ) {
-    return commentService.getCommentsByBoard(commentList, boardId, userDetails.getUser());
+    return commentService.getCommentsByBoard(commentList, boardId, userDetails.getUser(),
+        commentId);
   }
 
 }

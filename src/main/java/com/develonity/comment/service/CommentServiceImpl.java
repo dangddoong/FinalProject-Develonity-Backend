@@ -76,13 +76,13 @@ public class CommentServiceImpl implements CommentService {
   @Override
   @Transactional(readOnly = true)
   public Page<CommentResponse> getCommentsByBoard(CommentList commentList, Long boardId,
-      User user) {
-
+      User user, Long commentId) {
+    boolean hasLike = commentLikeService.isExistLikesCommentIdAndUserId(commentId, user.getId());
     Page<Comment> commentPage = commentRepository.findAllByBoardId(commentList.toPageable(),
         boardId);
     return commentPage.map(
         comment -> new CommentResponse(comment, getNicknameByComment(comment),
-            countLike(comment.getId())));
+            countLike(comment.getId()), hasLike));
 
   }
 
