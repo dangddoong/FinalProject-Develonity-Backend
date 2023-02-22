@@ -18,7 +18,7 @@ public class CommentResponse {
 
   private final String nickname;
   private final String content;
-  private final int commentLike;
+  private final long commentLike;
   private final LocalDateTime createdAt;
 
   private final LocalDateTime lastModifiedAt;
@@ -28,7 +28,7 @@ public class CommentResponse {
   private List<ReplyCommentResponse> replyCommentList;
 
 
-  public CommentResponse(Comment comment, String nickname, int commentLike) {
+  public CommentResponse(Comment comment, String nickname, long commentLike) {
     List<ReplyCommentResponse> list = new ArrayList<>();
     this.id = comment.getId();
     this.nickname = nickname;
@@ -42,7 +42,7 @@ public class CommentResponse {
     this.replyCommentList = list;
   }
 
-  public CommentResponse(Comment comment, String nickname, int commentLike, Boolean hasLike) {
+  public CommentResponse(Comment comment, String nickname, long commentLike, Boolean hasLike) {
     List<ReplyCommentResponse> list = new ArrayList<>();
     this.id = comment.getId();
     this.nickname = nickname;

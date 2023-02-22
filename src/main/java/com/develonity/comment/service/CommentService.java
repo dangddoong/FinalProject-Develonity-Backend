@@ -43,12 +43,12 @@ public interface CommentService {
   boolean existsCommentsByBoardId(Long boardId);
 
   //게시글에 달린 댓글 ,대댓글 조회
-  Page<CommentResponse> getCommentsByBoard(CommentList commentList, Long boardId, User user,
-      Long commentId);
+  Page<CommentResponse> getCommentsByBoard(Long boardId, User user);
 
-  public int countLike(Long commentId);
+  long countLike(Long commentId);
 
-  int countCommentsAndReplyComments(Long boardId);
+  long countCommentsAndReplyComments(Long boardId);
 
-  int countComments(Long boardId);
+  long countComments(Long boardId);
+
 }

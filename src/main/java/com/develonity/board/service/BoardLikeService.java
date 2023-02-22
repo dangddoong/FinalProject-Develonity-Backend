@@ -2,7 +2,7 @@ package com.develonity.board.service;
 
 public interface BoardLikeService {
 
-  int countLikes(Long boardId);
+  long countLikes(Long boardId);
 
   void deleteLike(Long boardId);
 

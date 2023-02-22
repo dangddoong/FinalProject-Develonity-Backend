@@ -38,11 +38,20 @@ public class CommentController {
   private final UserService userService;
 
   // 댓글 전체 조회
-  @GetMapping("/api/comments")
+  @GetMapping("/api/comments/all")
   public Page<CommentResponse> getAllComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
       CommentList commentList) {
     return commentService.getAllComment(userDetails.getUser(), commentList);
 
+  }
+
+  //게시글별 댓글 대댓글 전체 조회
+  @GetMapping("/api/comments")
+  public Page<CommentResponse> getScrapsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      @RequestParam Long boardId
+  ) {
+    return commentService.getCommentsByBoard(boardId, userDetails.getUser());
   }
 
   // 내가 쓴 댓글 전체 조회
@@ -139,16 +148,5 @@ public class CommentController {
     return new ResponseEntity<>("잡담 댓글 삭제 완료!", HttpStatus.OK);
   }
 
-  //게시물에 달린 댓글 대댓글 전체 조회
-  @GetMapping("/api/comments/test")
-  public Page<CommentResponse> getScrapsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      @RequestParam Long boardId,
-      @RequestParam Long commentId,
-      CommentList commentList
-  ) {
-    return commentService.getCommentsByBoard(commentList, boardId, userDetails.getUser(),
-        commentId);
-  }
 
 }

@@ -38,7 +38,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
   // 좋아요 카운트 (좋아요 1 올리는?) 기능
   @Override
-  public int countLike(Long commentId) {
+  public long countLike(Long commentId) {
     return commentLikeRepository.countByCommentId(commentId);
   }
 
@@ -67,7 +67,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
   }
 
   @Override
-  public void deleteAllByCommentId(Long commentId){
+  public void deleteAllByCommentId(Long commentId) {
     commentLikeRepository.deleteAllByCommentId(commentId);
   }
 

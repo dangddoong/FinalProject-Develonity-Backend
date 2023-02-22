@@ -145,7 +145,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   }
 
   @Override
-  public int countLike(Long boardId) {
+  public long countLike(Long boardId) {
     return boardLikeService.countLikes(boardId);
   }
 
@@ -225,7 +225,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   //답변 댓글 수 (대댓글 제외)
   @Override
-  public int countComments(Long boardId) {
+  public long countComments(Long boardId) {
     return commentService.countComments(boardId);
   }
 }

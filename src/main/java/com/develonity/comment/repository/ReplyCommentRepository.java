@@ -14,5 +14,5 @@ public interface ReplyCommentRepository extends JpaRepository<ReplyComment, Long
   @Query("delete from ReplyComment r where r.comment in :comment")
   void deleteAllByCommentId(@Param("comment") Comment comment);
 
-  int countAllByCommentIn(List<Comment> comments);
+  long countAllByCommentIn(List<Comment> comments);
 }

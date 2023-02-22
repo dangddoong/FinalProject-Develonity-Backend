@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,14 +76,21 @@ public class CommentServiceImpl implements CommentService {
   //게시글에 달린 댓글,대댓글 조회
   @Override
   @Transactional(readOnly = true)
-  public Page<CommentResponse> getCommentsByBoard(CommentList commentList, Long boardId,
-      User user, Long commentId) {
-    boolean hasLike = commentLikeService.isExistLikesCommentIdAndUserId(commentId, user.getId());
-    Page<Comment> commentPage = commentRepository.findAllByBoardId(commentList.toPageable(),
-        boardId);
-    return commentPage.map(
-        comment -> new CommentResponse(comment, getNicknameByComment(comment),
-            countLike(comment.getId()), hasLike));
+  public Page<CommentResponse> getCommentsByBoard(Long boardId,
+      User user) {
+
+    List<Comment> comments = commentRepository.findAllByBoardId(boardId);
+
+    List<CommentResponse> commentResponses = new ArrayList<>();
+
+    for (Comment comment : comments) {
+      boolean hasLike = commentLikeService.isExistLikesCommentIdAndUserId(comment.getId(),
+          user.getId());
+      CommentResponse response = new CommentResponse(comment, user.getNickname(),
+          countLike(comment.getId()), hasLike);
+      commentResponses.add(response);
+    }
+    return new PageImpl<>(commentResponses);
 
   }
 
@@ -238,25 +246,26 @@ public class CommentServiceImpl implements CommentService {
   //좋아요 갯수
   @Transactional
   @Override
-  public int countLike(Long commentId) {
+  public long countLike(Long commentId) {
     return commentLikeService.countLike(commentId);
   }
 
   //게시글에 달린 댓글 (질문 게시글에 붙힐 것)
   @Override
-  public int countComments(Long boardId) {
+  public long countComments(Long boardId) {
     return commentRepository.countByBoardId(boardId);
   }
 
   //게시글에 달린 댓글, 대댓글 갯수(잡담 게시글에 붙힐 것)
   @Override
-  public int countCommentsAndReplyComments(Long boardId) {
-    int countComments = commentRepository.countByBoardId(boardId);
+  public long countCommentsAndReplyComments(Long boardId) {
+    long countComments = commentRepository.countByBoardId(boardId);
     List<Comment> comments = commentRepository.findAllByBoardId(boardId);
-    int countReplyComments = replyCommentService.countReplyComments(comments);
+    long countReplyComments = replyCommentService.countReplyComments(comments);
 
     return (countComments + countReplyComments);
   }
+
 }
 
 

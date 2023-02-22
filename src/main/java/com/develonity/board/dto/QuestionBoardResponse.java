@@ -20,7 +20,7 @@ public class QuestionBoardResponse {
   private final QuestionCategory questionCategory;
   private final String title;
   private final String content;
-  private final int boardLike;
+  private final long boardLike;
   private final int prizePoint;
   private final BoardStatus status;
   private final LocalDateTime createdAt;
@@ -28,11 +28,11 @@ public class QuestionBoardResponse {
   private final List<String> imagePaths;
   private final Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
-  private final int countComments;
+  private final long countComments;
 
 
-  public QuestionBoardResponse(QuestionBoard questionBoard, String nickname, int boardLike,
-      Boolean hasLike, List<String> imagePaths, int countComments) {
+  public QuestionBoardResponse(QuestionBoard questionBoard, String nickname, long boardLike,
+      Boolean hasLike, List<String> imagePaths, long countComments) {
     this.id = questionBoard.getId();
     this.nickname = nickname;
     this.questionCategory = questionBoard.getQuestionCategory();
@@ -49,7 +49,7 @@ public class QuestionBoardResponse {
   }
 
   public static QuestionBoardResponse toQuestionBoardResponse(QuestionBoard questionBoard,
-      String nickname, int countComments) {
+      String nickname, long countComments) {
     return QuestionBoardResponse.builder()
         .id(questionBoard.getId())
         .nickname(nickname)

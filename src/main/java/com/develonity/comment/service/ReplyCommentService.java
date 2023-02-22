@@ -21,5 +21,5 @@ public interface ReplyCommentService {
 
   void deleteAllReplyComments(Comment comment);
 
-  int countReplyComments(List<Comment> comments);
+  long countReplyComments(List<Comment> comments);
 }

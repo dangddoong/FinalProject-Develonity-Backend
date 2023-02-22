@@ -31,7 +31,7 @@ public interface CommunityBoardService {
 
   CommunityBoard getCommunityBoardAndCheck(Long boardId);
 
-  int countLike(Long boardId);
+  long countLike(Long boardId);
 
   Boolean ExistsBoard(Long boardId);
 
@@ -56,5 +56,5 @@ public interface CommunityBoardService {
       BoardPage communityBoardPage);
 
   //댓글 + 대댓글 카운트
-  int countAllComments(Long boardId);
+  long countAllComments(Long boardId);
 }

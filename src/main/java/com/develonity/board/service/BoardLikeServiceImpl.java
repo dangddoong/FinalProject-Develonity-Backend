@@ -36,7 +36,7 @@ public class BoardLikeServiceImpl implements BoardLikeService {
   }
 
   @Override
-  public int countLikes(Long boardId) {
+  public long countLikes(Long boardId) {
     return boardLikeRepository.countByBoardId(boardId);
   }
 

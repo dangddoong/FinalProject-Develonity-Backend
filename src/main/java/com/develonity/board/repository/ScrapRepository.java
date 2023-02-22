@@ -15,7 +15,7 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
 
   Scrap findByBoardIdAndUserId(Long boardId, Long userId);
 
-  int countByUserId(Long userId);
+  long countByUserId(Long userId);
 
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from Scrap s where s.boardId in :boardId")
