@@ -10,9 +10,9 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -105,6 +105,7 @@ public class CommentServiceImpl implements CommentService {
           countLike(comment.getId()), hasLike, replyCommentResponses);
       commentResponses.add(response);
     }
+    Collections.reverse(commentResponses);
     return new PageImpl<>(commentResponses);
 
   }
