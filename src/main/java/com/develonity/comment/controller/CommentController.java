@@ -82,10 +82,9 @@ public class CommentController {
   // 질문게시글 답변 수정
   @PutMapping("/api/question-comments/{commentId}")
   public ResponseEntity<String> updateQuestionComment(
-      @RequestParam Long questionBoardId,
       @PathVariable Long commentId, @RequestBody CommentRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    commentService.updateQuestionComment(questionBoardId, commentId, request,
+    commentService.updateQuestionComment(commentId, request,
         userDetails.getUser());
     return new ResponseEntity<>("답변 수정 완료!", HttpStatus.OK);
   }

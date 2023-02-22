@@ -127,7 +127,7 @@ public class CommentServiceImpl implements CommentService {
   // 질문 게시글 수정
   @Override
   @Transactional
-  public void updateQuestionComment(Long questionBoardId, Long commentId,
+  public void updateQuestionComment(Long commentId,
       CommentRequest request,
       User user) {
     // 게시물이 있는지 확인
