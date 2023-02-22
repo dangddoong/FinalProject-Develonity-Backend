@@ -19,11 +19,11 @@ public class OrderResponse {
     private String recipientName;
     private int purchasePrice;
     private String phoneNumber;
-    private LocalDateTime orderDate;
+    private String orderDate;
     private OrderStatus orderStatus;
 
     @Builder
-    public OrderResponse(String image, Long orderId, String giftCardName, Long userId, String recipientName, int purchasePrice, String phoneNumber, LocalDateTime orderDate, OrderStatus orderStatus) {
+    public OrderResponse(String image, Long orderId, String giftCardName, Long userId, String recipientName, int purchasePrice, String phoneNumber, String orderDate, OrderStatus orderStatus) {
         this.image = image;
         this.orderId = orderId;
         this.giftCardName = giftCardName;

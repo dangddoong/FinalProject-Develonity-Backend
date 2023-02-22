@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Getter
 @NoArgsConstructor
 public class GiftCardResponse {
@@ -18,10 +21,11 @@ public class GiftCardResponse {
   private String imagePath;
   private int price;
   private int stockQuantity;
+  private String lastModifiedDate;
 
   @Builder
   public GiftCardResponse(GiftCardCategory category, Long id, String name, String details,
-      String imagePath, int price, int stockQuantity) {
+      String imagePath, int price, int stockQuantity, String lastModifiedDate) {
     this.category = category;
     this.id = id;
     this.name = name;
@@ -29,6 +33,7 @@ public class GiftCardResponse {
     this.imagePath = imagePath;
     this.price = price;
     this.stockQuantity = stockQuantity;
+    this.lastModifiedDate = lastModifiedDate;
   }
 
   @Builder
@@ -40,6 +45,7 @@ public class GiftCardResponse {
     this.imagePath = giftCard.getImagePath();
     this.price = giftCard.getPrice();
     this.stockQuantity = giftCard.getStockQuantity();
+    this.lastModifiedDate = giftCard.getLastModifiedDate();
   }
 
 
@@ -53,6 +59,7 @@ public class GiftCardResponse {
         .imagePath(m.getImagePath())
         .price(m.getPrice())
         .stockQuantity(m.getStockQuantity())
+        .lastModifiedDate(m.getLastModifiedDate())
         .build());
   }
 }
