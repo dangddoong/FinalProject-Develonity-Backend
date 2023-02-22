@@ -38,12 +38,12 @@ public class CommentController {
   private final UserService userService;
 
   // 댓글 전체 조회
-  @GetMapping("/api/comments/all")
-  public Page<CommentResponse> getAllComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
-      CommentList commentList) {
-    return commentService.getAllComment(userDetails.getUser(), commentList);
-
-  }
+//  @GetMapping("/api/comments/all")
+//  public Page<CommentResponse> getAllComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
+//      CommentList commentList) {
+//    return commentService.getAllComment(userDetails.getUser(), commentList);
+//
+//  }
 
   //게시글별 댓글 대댓글 전체 조회
   @GetMapping("/api/comments")
@@ -55,20 +55,20 @@ public class CommentController {
   }
 
   // 내가 쓴 댓글 전체 조회
-  @GetMapping("/api/user/{userid}/comments")
+  @GetMapping("/api/user/me/comments")
   public Page<CommentResponse> getMyComments(
       CommentList commentList,
-      @PathVariable Long userid,
       @AuthenticationPrincipal UserDetailsImpl userDetails
   ) {
-    return commentService.getMyComments(commentList, userid, userDetails.getUser());
+    return commentService.getMyComments(commentList, userDetails.getUser().getId(),
+        userDetails.getUser());
   }
 
   // 질문게시글 답변 작성
   @PostMapping("/api/question-comments")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<String> createQuestionComment(
-      @RequestParam("question-board-id") Long questionBoardId,
+      @RequestParam Long questionBoardId,
       @RequestBody
       CommentRequest requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //    if (questionBoardService.getQuestionBoardAndCheckSameUser(questionBoardId,
@@ -80,9 +80,9 @@ public class CommentController {
   }
 
   // 질문게시글 답변 수정
-  @PutMapping("/api/question-comments/{questionBoardId}/{commentId}")
+  @PutMapping("/api/question-comments/{commentId}")
   public ResponseEntity<String> updateQuestionComment(
-      @PathVariable Long questionBoardId,
+      @RequestParam Long questionBoardId,
       @PathVariable Long commentId, @RequestBody CommentRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     commentService.updateQuestionComment(questionBoardId, commentId, request,
@@ -122,16 +122,16 @@ public class CommentController {
   // 잡담게시글 댓글 작성
   @PostMapping("/api/community-comments")
   public ResponseEntity<String> createCommunityComment(
-      @RequestParam("community-board-id") Long communityBoardId,
+      @RequestParam Long communityBoardId,
       @RequestBody CommentRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
     commentService.createCommunityComment(communityBoardId, request, userDetails.getUser());
     return new ResponseEntity<>("잡담 댓글 작성 완료!", HttpStatus.CREATED);
   }
 
   // 잡담게시글 댓글 수정
-  @PutMapping("/api/community-comments/{communityBoardId}/{commentId}")
+  @PutMapping("/api/community-comments/{commentId}")
   public ResponseEntity<String> updateCommunityComment(
-      @PathVariable Long communityBoardId,
+      @RequestParam Long communityBoardId,
       @PathVariable Long commentId, @RequestBody CommentRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     commentService.updateCommunityComment(communityBoardId, commentId, request,

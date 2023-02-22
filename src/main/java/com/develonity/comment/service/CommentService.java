@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 
 public interface CommentService {
 
-  Page<CommentResponse> getAllComment(User user, CommentList commentList);
+//  Page<CommentResponse> getAllComment(User user, CommentList commentList);
 
   Page<CommentResponse> getMyComments(CommentList commentList, Long userId,
       User user);

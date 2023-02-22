@@ -1,6 +1,7 @@
 package com.develonity.comment.dto;
 
 import com.develonity.comment.entity.Comment;
+import com.develonity.comment.entity.CommentStatus;
 import com.develonity.comment.entity.ReplyComment;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class CommentResponse {
 
   private Boolean hasLike;
 
+  private final CommentStatus commentStatus;
   private List<ReplyCommentResponse> replyCommentList;
 
 
@@ -39,6 +41,7 @@ public class CommentResponse {
     for (ReplyComment replyComment : comment.getReplyCommentList) {
       list.add(new ReplyCommentResponse(replyComment, nickname));
     }
+    this.commentStatus = comment.getCommentStatus();
     this.replyCommentList = list;
   }
 
@@ -52,6 +55,7 @@ public class CommentResponse {
     this.createdAt = comment.getCreatedDate();
     this.lastModifiedAt = comment.getLastModifiedDate();
     this.hasLike = hasLike;
+    this.commentStatus = comment.getCommentStatus();
     this.replyCommentList = replyCommentResponses;
   }
 

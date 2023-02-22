@@ -10,9 +10,10 @@ import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
 import com.develonity.user.service.UserService;
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -42,22 +43,22 @@ public class CommentServiceImpl implements CommentService {
 
   // 작성자와 현재 유저가 같은지 확인하는 기능
   private void checkUser(User user, Comment comment) {
-    if (getNicknameByComment(comment) != user.getNickname()) {
+    if (!getNicknameByComment(comment).equals(user.getNickname())) {
       throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
     }
   }
 
-  // 전체 댓글 조회
-  @Override
-  @Transactional(readOnly = true)
-  public Page<CommentResponse> getAllComment(User user, CommentList commentList) {
-    // 페이징 처리
-    Page<Comment> commentPages = commentRepository.findBy(commentList.toPageable());
-    return commentPages.map(
-        comment -> new CommentResponse(comment, getNicknameByComment(comment),
-            countLike(comment.getId())));
-
-  }
+//  // 전체 댓글 조회
+//  @Override
+//  @Transactional(readOnly = true)
+//  public Page<CommentResponse> getAllComment(User user, CommentList commentList) {
+//    // 페이징 처리
+//    Page<Comment> commentPages = commentRepository.findBy(commentList.toPageable());
+//    return commentPages.map(
+//        comment -> new CommentResponse(comment, getNicknameByComment(comment),
+//            countLike(comment.getId())));
+//
+//  }
 
   // 내가 쓴 댓글 전체 조회 (페이징 처리)
   @Override
@@ -133,7 +134,9 @@ public class CommentServiceImpl implements CommentService {
 //    Board board = boardService.getBoard(boardId);
     // 댓글이 있는지 확인
     Comment comment = getComment(commentId);
-
+    if (comment.isAdopted()) {
+      throw new CustomException(ExceptionStatus.ADOPTED_QUESTION_BOARD);
+    }
     // 권한 확인
     // 댓글 작성자와 수정하려는 유저 닉네임이 같지 않으면 익셉션 출력
     checkUser(user, comment);
@@ -150,11 +153,14 @@ public class CommentServiceImpl implements CommentService {
     Comment comment = getComment(commentId);
     // 권한 확인
     // 댓글 작성자와 수정하려는 유저 닉네임이 같지 않으면 익셉션 출력
-    checkUser(user, comment);
+    if (comment.isAdopted()) {
+      throw new CustomException(ExceptionStatus.ADOPTED_QUESTION_BOARD);
+    }
 
     if (commentLikeService.isExistLikes(commentId)) {
       commentLikeService.deleteAllByCommentId(commentId);
     }
+    checkUser(user, comment);
     // 댓글 작성자면 댓글 삭제
     commentRepository.delete(comment);
   }

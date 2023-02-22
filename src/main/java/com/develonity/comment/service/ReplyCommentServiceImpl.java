@@ -99,7 +99,7 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public List<ReplyCommentResponse> getReplyCommentResponses(Comment comment) {
 
     List<ReplyComment> replyComments = replyCommentRepository.findAllByComment(comment);
