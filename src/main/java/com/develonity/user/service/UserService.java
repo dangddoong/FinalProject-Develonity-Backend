@@ -7,6 +7,8 @@ import com.develonity.user.dto.RegisterRequest;
 import com.develonity.user.dto.TokenResponse;
 import com.develonity.user.entity.User;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
@@ -46,4 +48,6 @@ public interface UserService {
   void deleteProfileImage(Long userId);
 
   boolean existsByUserId(Long userId);
+
+  HashMap<Long, String> getUserIdAndNickname(List<Long> userIds);
 }

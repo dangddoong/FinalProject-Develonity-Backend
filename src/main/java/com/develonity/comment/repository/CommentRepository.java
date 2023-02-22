@@ -29,4 +29,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   boolean existsCommentsByBoardId(Long boardId);
 
   long countByBoardId(Long boardId);
+
 }
