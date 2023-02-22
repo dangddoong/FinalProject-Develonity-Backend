@@ -46,4 +46,8 @@ public interface CommentService {
   Page<CommentResponse> getCommentsByBoard(CommentList commentList, Long boardId, User user);
 
   public int countLike(Long commentId);
+
+  int countCommentsAndReplyComments(Long boardId);
+
+  int countComments(Long boardId);
 }

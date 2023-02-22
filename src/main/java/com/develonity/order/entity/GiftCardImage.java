@@ -19,7 +19,7 @@ public class GiftCardImage extends TimeStamp {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @JoinColumn(name = "GIFT_CARD_ID")
+  @JoinColumn(name = "GIFT_CARD_ID", nullable = false)
   private Long giftCardId;
   @Column(nullable = false)
   private String imagePath;

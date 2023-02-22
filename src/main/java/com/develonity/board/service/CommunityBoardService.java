@@ -54,4 +54,7 @@ public interface CommunityBoardService {
   //test
   Page<CommunityBoardResponse> getTestCommunityBoardPage(User user,
       BoardPage communityBoardPage);
+
+  //댓글 + 대댓글 카운트
+  int countAllComments(Long boardId);
 }

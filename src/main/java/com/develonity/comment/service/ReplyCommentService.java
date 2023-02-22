@@ -4,6 +4,7 @@ import com.develonity.comment.dto.ReplyCommentRequest;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.entity.ReplyComment;
 import com.develonity.user.entity.User;
+import java.util.List;
 
 public interface ReplyCommentService {
 
@@ -19,4 +20,6 @@ public interface ReplyCommentService {
   String getNicknameByReplyComment(ReplyComment replyComment);
 
   void deleteAllReplyComments(Comment comment);
+
+  int countReplyComments(List<Comment> comments);
 }

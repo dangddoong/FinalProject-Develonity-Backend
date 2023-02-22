@@ -31,7 +31,7 @@ public class GiftCardController {
   //기프트 카드 등록
   @PostMapping("/gift-cards")
   public Long registerGiftCard(
-      @RequestPart(required = false, name = "request") GiftCardRegister giftCardRegister,
+      @RequestPart("request") GiftCardRegister giftCardRegister,
       @RequestPart(required = false, name = "image") MultipartFile multipartFile)
       throws IOException {
 //    if (multipartFile.isEmpty()) {
@@ -62,7 +62,7 @@ public class GiftCardController {
   //기프트 카드 수정
   @PutMapping("/gift-cards/{giftCardId}")
   public ResponseEntity<String> updateGiftCard(@PathVariable Long giftCardId,
-      @RequestPart GiftCardRegister giftCardRegister,
+      @RequestPart("request") GiftCardRegister giftCardRegister,
       @RequestPart(required = false, name = "image") MultipartFile multipartFile
   ) throws IOException {
     giftCardService.updateGiftCard(giftCardId, giftCardRegister, multipartFile);

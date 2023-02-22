@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicInsert
 @DynamicUpdate
 public class GiftCard {
 
@@ -36,6 +39,7 @@ public class GiftCard {
   @Column(nullable = false)
   private String details;
   @Column
+  @ColumnDefault("'https://pbs.twimg.com/profile_images/1121253455333474304/SzW8OOtq_400x400.jpg'")
   private String imagePath;
   @Column(nullable = false)
   private int price;
@@ -56,12 +60,11 @@ public class GiftCard {
     this.lastModifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   }
 
-  public void update(GiftCardCategory category, String name, String details, String imagePath,
+  public void update(GiftCardCategory category, String name, String details,
       int price, int stockQuantity) {
     this.category = category;
     this.name = name;
     this.details = details;
-    this.imagePath = imagePath;
     this.price = price;
     this.stockQuantity = stockQuantity;
     this.lastModifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
