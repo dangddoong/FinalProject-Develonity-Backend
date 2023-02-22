@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ScrapService {
 
-  int countScraps(Long boardId);
+  long countScraps(Long boardId);
 
   void deleteScraps(Long boardId);
 

@@ -38,7 +38,7 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
 
   // 댓글 작성자 확인
   public void checkUser(User user, ReplyComment replyComment) {
-    if (user.getNickname() != getNicknameByReplyComment(replyComment)) {
+    if (!user.getNickname().equals(getNicknameByReplyComment(replyComment))) {
       throw new CustomException(ExceptionStatus.REPLY_COMMENT_USER_NOT_MATCH);
     }
   }
@@ -101,7 +101,7 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
   }
 
   @Override
-  public int countReplyComments(List<Comment> comments) {
+  public long countReplyComments(List<Comment> comments) {
     return replyCommentRepository.countAllByCommentIn(comments);
   }
 }

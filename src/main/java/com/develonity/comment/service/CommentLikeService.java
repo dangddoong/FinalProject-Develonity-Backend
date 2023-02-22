@@ -6,7 +6,7 @@ public interface CommentLikeService {
 
   void cancelCommentLike(Long commentId, Long userId);
 
-  int countLike(Long commentId);
+  long countLike(Long commentId);
 
   void deleteLike(Long commentId);
 

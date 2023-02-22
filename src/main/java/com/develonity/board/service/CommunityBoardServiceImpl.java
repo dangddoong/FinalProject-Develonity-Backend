@@ -170,7 +170,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   }
 
   @Override
-  public int countLike(Long boardId) {
+  public long countLike(Long boardId) {
     return boardLikeService.countLikes(boardId);
   }
 
@@ -262,7 +262,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   //댓글 갯수(대댓글 갯수 포함)
   @Override
-  public int countAllComments(Long boardId) {
+  public long countAllComments(Long boardId) {
     return commentService.countCommentsAndReplyComments(boardId);
   }
 }

@@ -56,7 +56,7 @@ public class ScrapServiceImpl implements ScrapService {
 
   //유저가 총 스크랩한 갯수
   @Override
-  public int countScraps(Long userId) {
+  public long countScraps(Long userId) {
     return scrapRepository.countByUserId(userId);
   }
 

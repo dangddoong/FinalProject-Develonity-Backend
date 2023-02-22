@@ -36,7 +36,7 @@ public interface QuestionBoardService {
 
   void checkUser(QuestionBoard questionBoard, Long userId);
 
-  int countLike(Long boardId);
+  long countLike(Long boardId);
 
   boolean isExistBoard(Long boardId);
 
@@ -51,5 +51,5 @@ public interface QuestionBoardService {
   void deleteBoardImages(Long boardId);
 
   //댓글만 카운트
-  int countComments(Long boardId);
+  long countComments(Long boardId);
 }

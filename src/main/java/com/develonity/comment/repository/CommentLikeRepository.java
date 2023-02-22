@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
 
-  int countByCommentId(Long commentId);
+  long countByCommentId(Long commentId);
 
   boolean existsCommentLikeByCommentIdAndUserId(Long commentId, Long userId);
 

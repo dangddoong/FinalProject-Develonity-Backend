@@ -18,17 +18,17 @@ public class CommunityBoardResponse {
   private final CommunityCategory communityCategory;
   private final String title;
   private final String content;
-  private final int boardLike;
+  private final long boardLike;
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
   private final List<String> imagePaths;
   private final Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
-  private final int countAllComments;
+  private final long countAllComments;
 
 
-  public CommunityBoardResponse(CommunityBoard communityBoard, String nickname, int boardLike,
-      Boolean isLike, List<String> imagePaths, int countAllComments) {
+  public CommunityBoardResponse(CommunityBoard communityBoard, String nickname, long boardLike,
+      Boolean isLike, List<String> imagePaths, long countAllComments) {
     this.id = communityBoard.getId();
     this.nickname = nickname;
     this.communityCategory = communityBoard.getCommunityCategory();
@@ -45,7 +45,7 @@ public class CommunityBoardResponse {
   }
 
   public static CommunityBoardResponse toCommunityBoardResponse(CommunityBoard communityBoard,
-      String nickname, int countAllComments) {
+      String nickname, long countAllComments) {
     return CommunityBoardResponse.builder()
         .id(communityBoard.getId())
         .nickname(nickname)
