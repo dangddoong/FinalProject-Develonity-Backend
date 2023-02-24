@@ -104,9 +104,9 @@ public class UserServiceImpl implements UserService {
     return new TokenResponse(accessToken, createdRefreshToken);
   }
 
-  //프로필 조회(기본이미지 설정 때문에 readOnly 제외)
+  //프로필 조회
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public ProfileResponse getProfile(Long userId) {
     User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
     String imagePath = "https://dthezntil550i.cloudfront.net/p6/latest/p62007150224230440002288000/ed8e25a2-d8dd-43ac-8d18-77712b287dc6.png";

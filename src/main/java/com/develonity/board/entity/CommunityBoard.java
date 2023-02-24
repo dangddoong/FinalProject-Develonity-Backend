@@ -23,6 +23,11 @@ public class CommunityBoard extends Board {
     this.communityCategory = communityCategory;
   }
 
+  public void updateBoard(String title, String content, CommunityCategory communityCategory) {
+    super.updateBoard(title, content);
+    this.communityCategory = communityCategory;
+  }
+
   @Column
   @Enumerated(EnumType.STRING)
   private CommunityCategory communityCategory;

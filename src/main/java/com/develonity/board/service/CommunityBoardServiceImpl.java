@@ -76,7 +76,8 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
       deleteBoardImages(boardId);
       upload(multipartFiles, communityBoard);
     }
-    communityBoard.updateBoard(request.getTitle(), request.getContent());
+    communityBoard.updateBoard(request.getTitle(), request.getContent(),
+        request.getCommunityCategory());
     communityBoardRepository.save(communityBoard);
   }
 
