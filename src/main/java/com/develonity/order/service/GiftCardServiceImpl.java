@@ -56,30 +56,21 @@ public class GiftCardServiceImpl implements GiftCardService {
     return giftCard.getId();
   }
 
-
   @Override
   @Transactional(readOnly = true)
-  public Page<GiftCardResponse> getGiftCardList(PageDTO pageDTO) {
-
-    Page<GiftCard> giftCardList = giftCardRepository.findAll(pageDTO.toPageable());
-
-    return new GiftCardResponse().toDtoList(giftCardList);
-  }
-  ///
-
-
-  @Override // 카테고리 별 기프트카드 페이징 해서 가져오기
-  @Transactional(readOnly = true)
-  public Page<GiftCardResponse> getCategorizedGiftCardList(Long categoryId, PageDTO pageDTO) {
-    GiftCardCategory category = GiftCardCategory.valueOfCategoryId(categoryId);
+  public Page<GiftCardResponse> getGiftCardList(GiftCardCategory category, PageDTO pageDTO) {
     Pageable pageable = pageDTO.toPageable();
-
-    Page<GiftCard> giftCardList = giftCardRepository.findAllByCategory(category, pageable);
-
-    if (giftCardList.isEmpty()) {
-      throw new CustomException(ExceptionStatus.GIFT_CARD_IS_NOT_EXIST);
+    Page<GiftCard> giftCardList;
+    if (category.equals(GiftCardCategory.ALL)) {
+      giftCardList = giftCardRepository.findAll(pageDTO.toPageable());
     }
+    else {
+      giftCardList = giftCardRepository.findAllByCategory(category, pageable);
 
+      if (giftCardList.isEmpty()) {
+        throw new CustomException(ExceptionStatus.GIFT_CARD_IS_NOT_EXIST);
+      }
+    }
     return new GiftCardResponse().toDtoList(giftCardList);
   }
 

@@ -3,6 +3,7 @@ package com.develonity.order.controller;
 import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
 import com.develonity.order.dto.PageDTO;
+import com.develonity.order.entity.GiftCardCategory;
 import com.develonity.order.service.GiftCardServiceImpl;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -40,17 +41,12 @@ public class GiftCardController {
     return giftCardService.registerGiftCard(giftCardRegister, multipartFile);
   }
 
-  //기프트 카드 전체 조회(페이징)
-  @GetMapping("/gift-cards")
-  public Page<GiftCardResponse> getGiftCardList(PageDTO pageDTO) {
-    return giftCardService.getGiftCardList(pageDTO);
-  }
 
   //카테고리 별 기프트 카드 조회(페이징)
   @GetMapping("/gift-cards/category")
-  public Page<GiftCardResponse> getCategorizedGiftCardList(@RequestParam Long categoryId,
-      PageDTO pageDTO) {
-    return giftCardService.getCategorizedGiftCardList(categoryId, pageDTO);
+  public Page<GiftCardResponse> getGiftCardList(@RequestParam GiftCardCategory category,
+                                                           PageDTO pageDTO) {
+    return giftCardService.getGiftCardList(category, pageDTO);
   }
 
   //기프트 카드 단건 조회
