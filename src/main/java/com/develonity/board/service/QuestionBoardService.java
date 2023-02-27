@@ -23,11 +23,11 @@ public interface QuestionBoardService {
 
   void deleteQuestionBoard(Long boardId, User user);
 
-  Page<QuestionBoardResponse> getQuetionBoardPage(User user,
+  Page<QuestionBoardResponse> getQuestionBoardPage(User user,
       BoardPage questionBoardPage);
 
   //test
-  Page<QuestionBoardResponse> getTestQuetionBoardPage(User user,
+  Page<QuestionBoardResponse> getTestQuestionBoardPage(User user,
       BoardPage questionBoardPage);
 
   QuestionBoardResponse getQuestionBoard(Long boardId, User user);
