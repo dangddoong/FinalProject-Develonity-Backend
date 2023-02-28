@@ -123,7 +123,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   //질문 게시글 전체 조회
   @Override
   @Transactional(readOnly = true)
-  public Page<QuestionBoardResponse> getQuetionBoardPage(User user,
+  public Page<QuestionBoardResponse> getQuestionBoardPage(User user,
       BoardPage questionBoardPage) {
 
     Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByQuestionCategoryAndTitleContainingOrContentContaining(
@@ -139,7 +139,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   //테스트용전체조회
   @Override
-  public Page<QuestionBoardResponse> getTestQuetionBoardPage(User user,
+  public Page<QuestionBoardResponse> getTestQuestionBoardPage(User user,
       BoardPage questionBoardPage) {
 
     Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByQuestionCategory(

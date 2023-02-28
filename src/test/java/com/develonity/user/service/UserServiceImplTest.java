@@ -2,9 +2,12 @@ package com.develonity.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.redis.RedisDao;
+import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.RegisterRequest;
+import com.develonity.user.dto.TokenResponse;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
 import java.util.Optional;
@@ -25,12 +28,14 @@ class UserServiceImplTest {
   private UserServiceImpl userService;
   @Autowired
   private PasswordEncoder passwordEncoder;
-  //  @Spy
   @Autowired
   private JwtUtil jwtUtil;
 
   @Autowired
   private RedisDao redisDao;
+
+  @Autowired
+  private AwsS3Service awsS3Service;
 
   @Test
   @DisplayName("회원 가입")
@@ -54,25 +59,23 @@ class UserServiceImplTest {
     assertThat(user.get().getEmail()).isEqualTo(request.getEmail());
   }
 
-//  @Test
-//  @DisplayName("로그인")
-//
-//    //레디스 켜져있어야함
-//  void login() {
-//    //given
-//    LoginRequest request = new LoginRequest("user2", "pass12!@");
-//
-//    User user = new User("user2", passwordEncoder.encode("pass12!@"),
-//        "nickname2", "aa@b.com");
-//
-//    userRepository.save(user);
-//
-//    //when
-//    TokenResponse tokenResponse = userService.login(request);
-//
-//    //then
-//    assertThat(tokenResponse.getAccessToken()).isNotEmpty();
-//    assertThat(tokenResponse.getRefreshToken()).isNotEmpty();
-//
-//  }
+  @Test
+  @DisplayName("로그인")
+  void login() {
+    //given
+    LoginRequest request = new LoginRequest("user2", "pass12!@");
+
+    User user = new User("user2", passwordEncoder.encode("pass12!@"),
+        "nickname2", "aa@b.com");
+
+    userRepository.save(user);
+
+    //when
+    TokenResponse tokenResponse = userService.login(request);
+
+    //then
+    assertThat(tokenResponse.getAccessToken()).isNotEmpty();
+    assertThat(tokenResponse.getRefreshToken()).isNotEmpty();
+
+  }
 }
