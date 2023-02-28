@@ -3,6 +3,7 @@ package com.develonity.order.entity;
 import java.util.Arrays;
 
 public enum GiftCardCategory {
+    ALL(0L),
     CAFE(1L),
     CHICKEN(2L),
     CONVENIENCE_STORE(3L);

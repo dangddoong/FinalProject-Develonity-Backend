@@ -4,6 +4,8 @@ import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
 import com.develonity.order.dto.PageDTO;
 import java.io.IOException;
+
+import com.develonity.order.entity.GiftCardCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,11 +17,9 @@ public interface GiftCardService {
   Long registerGiftCard(GiftCardRegister giftCardRegister, MultipartFile multipartFile)
       throws IOException;
 
+  // 카테고리 별 기프트카드 페이징 해서 가져오기
   @Transactional(readOnly = true)
-  Page<GiftCardResponse> getGiftCardList(PageDTO pageDTO);
-
-  @Transactional(readOnly = true)
-  Page<GiftCardResponse> getCategorizedGiftCardList(Long categoryId, PageDTO pageDTO);
+  Page<GiftCardResponse> getGiftCardList(GiftCardCategory category, PageDTO pageDTO);
 
   @Transactional(readOnly = true)
   GiftCardResponse getGiftCard(Long giftCardId);
