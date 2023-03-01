@@ -1,6 +1,8 @@
 package com.develonity.board.service;
 
 import com.develonity.board.dto.BoardPage;
+import com.develonity.board.dto.BoardSearchCond;
+import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.entity.BoardImage;
@@ -149,6 +151,24 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     return questionBoardPages.map(
         questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
             getNicknameByQuestionBoard(questionBoard), countComments(questionBoard.getId())));
+  }
+
+  //querydsl 검색+정렬 전체 조회
+  @Override
+  public Page<QuestionBoardResponse> searchQuestionBoardByCond(BoardSearchCond cond,
+      PageDto pageDto) {
+
+    return questionBoardRepository.searchQuestionBoard(cond, pageDto);
+  }
+
+  // 좋아요순 3개 조회, 구분(카테고리, 채택여부)
+//  @Override
+//  public List<QuestionBoardResponse> questionBoardOrderBy(BoardSearchCond cond) {
+//    return questionBoardRepository.QuestionBoardOrderByLikes(cond);
+//  }
+  @Override
+  public List<QuestionBoardResponse> questionBoardOrderBy() {
+    return questionBoardRepository.QuestionBoardOrderByLikes();
   }
 
   @Override

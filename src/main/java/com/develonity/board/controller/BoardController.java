@@ -2,11 +2,14 @@ package com.develonity.board.controller;
 
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.BoardResponse;
+import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.entity.CommunityBoard;
+import com.develonity.board.repository.CommunityBoardRepositoryImpl;
 import com.develonity.board.service.BoardLikeService;
 import com.develonity.board.service.BoardService;
 import com.develonity.board.service.CommunityBoardService;
@@ -46,6 +49,7 @@ public class BoardController {
   private final BoardService boardService;
   private final BoardLikeService boardLikeService;
 
+  private final CommunityBoardRepositoryImpl communityBoardRepository;
   private final ScrapService scrapService;
 
   //  질문게시글 생성
@@ -64,6 +68,45 @@ public class BoardController {
     return new ResponseEntity<>("질문 게시글이 생성되었습니다", HttpStatus.CREATED);
   }
 
+  //QueryDsl 전체조회+검색+정렬(좋아요,생성일자)
+  @GetMapping("/test")
+  public Page<CommunityBoardResponse> getCommunityBoardsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardSearchCond cond, PageDto pageDto
+  ) {
+    return communityBoardService.searchCommunityBoardByCond(cond, pageDto);
+  }
+
+
+  //  //QueryDsl 전체조회+검색+정렬(좋아요,생성일자)
+//  @GetMapping("/test/question")
+//  public Page<QuestionBoardResponse> getQuestionBoardsPage(
+//      @AuthenticationPrincipal UserDetailsImpl userDetails,
+//      BoardSearchCond cond,
+//      @PageableDefault(page = 1) Pageable pageable/*PageDto pageDto*/
+//  ) {
+//    return questionBoardService.searchQuestionBoardByCond(cond, pageable.withPage(
+//        pageable.getPageNumber() - 1)/*pageDto*/);
+//  }
+  //QueryDsl 전체조회+검색+정렬(좋아요,생성일자)
+  @GetMapping("/test/question")
+  public Page<QuestionBoardResponse> getQuestionBoardsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardSearchCond cond,
+      PageDto pageDto
+  ) {
+    return questionBoardService.searchQuestionBoardByCond(cond, pageDto);
+  }
+
+  //QueryDsl 좋아요순 3개
+  @GetMapping("/test/like")
+  public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardSearchCond cond
+  ) {
+//    return questionBoardService.questionBoardOrderBy(cond);
+    return questionBoardService.questionBoardOrderBy();
+  }
 
   // 잡담 게시글 생성
   @PostMapping("/community-boards")

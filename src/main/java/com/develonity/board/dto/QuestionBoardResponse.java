@@ -25,11 +25,37 @@ public class QuestionBoardResponse {
   private final BoardStatus status;
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
-  private final List<String> imagePaths;
-  private final Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
+  private List<String> imagePaths;
+  private Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
 
   private final long countComments;
 
+  //queryDsl용..
+  public QuestionBoardResponse(
+      Long id,
+      String nickname,
+      QuestionCategory questionCategory,
+      String title,
+      String content,
+      int prizePoint,
+      BoardStatus status,
+      LocalDateTime createdAt,
+      LocalDateTime lastModifiedAt,
+      long countComments,
+      long boardLike
+  ) {
+    this.id = id;
+    this.nickname = nickname;
+    this.questionCategory = questionCategory;
+    this.title = title;
+    this.content = content;
+    this.boardLike = boardLike;
+    this.prizePoint = prizePoint;
+    this.status = status;
+    this.createdAt = createdAt;
+    this.lastModifiedAt = lastModifiedAt;
+    this.countComments = countComments;
+  }
 
   public QuestionBoardResponse(QuestionBoard questionBoard, String nickname, long boardLike,
       Boolean hasLike, List<String> imagePaths, long countComments) {
