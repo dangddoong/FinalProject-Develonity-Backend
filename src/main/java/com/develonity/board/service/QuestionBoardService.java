@@ -5,6 +5,7 @@ import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.dto.QuestionBoardUpdateRequest;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.user.entity.User;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public interface QuestionBoardService {
       List<MultipartFile> multipartFiles, User user) throws IOException;
 
   void updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
-      QuestionBoardRequest request,
+      QuestionBoardUpdateRequest request,
       User user) throws IOException;
 
 

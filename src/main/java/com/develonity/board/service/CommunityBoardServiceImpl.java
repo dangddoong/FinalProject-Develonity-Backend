@@ -75,7 +75,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     }
     communityBoard.updateBoard(request.getTitle(), request.getContent(),
         request.getCommunityCategory());
-//    communityBoardRepository.save(communityBoard);
+    communityBoardRepository.save(communityBoard);
   }
 
   //잡담 게시글 삭제

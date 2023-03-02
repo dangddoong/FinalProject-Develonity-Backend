@@ -8,6 +8,7 @@ import com.develonity.board.dto.CommunityBoardResponse;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.dto.QuestionBoardUpdateRequest;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.repository.CommunityBoardRepositoryImpl;
 import com.develonity.board.service.BoardLikeService;
@@ -52,6 +53,36 @@ public class BoardController {
   private final CommunityBoardRepositoryImpl communityBoardRepository;
   private final ScrapService scrapService;
 
+
+  //QueryDsl 잡담글 전체조회
+  @GetMapping("/community-boards")
+  public Page<CommunityBoardResponse> getCommunityBoardsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardSearchCond cond, PageDto pageDto
+  ) {
+    return communityBoardService.searchCommunityBoardByCond(cond, pageDto);
+  }
+
+  //QueryDsl 질문글 전체조회
+  @GetMapping("/question-boards")
+  public Page<QuestionBoardResponse> getQuestionBoardsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardSearchCond cond,
+      PageDto pageDto
+  ) {
+    return questionBoardService.searchQuestionBoardByCond(cond, pageDto);
+  }
+
+  //QueryDsl 좋아요순 3개
+//  @GetMapping("/test/like")
+//  public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
+//      @AuthenticationPrincipal UserDetailsImpl userDetails,
+//      BoardSearchCond cond
+//  ) {
+////    return questionBoardService.questionBoardOrderBy(cond);
+//    return questionBoardService.questionBoardOrderBy();
+//  }
+
   //  질문게시글 생성
   @PostMapping("/question-boards")
   @ResponseStatus(HttpStatus.CREATED)
@@ -66,46 +97,6 @@ public class BoardController {
 
     questionBoardService.createQuestionBoard(request, multipartFiles, userDetails.getUser());
     return new ResponseEntity<>("질문 게시글이 생성되었습니다", HttpStatus.CREATED);
-  }
-
-  //QueryDsl 전체조회+검색+정렬(좋아요,생성일자)
-  @GetMapping("/test")
-  public Page<CommunityBoardResponse> getCommunityBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardSearchCond cond, PageDto pageDto
-  ) {
-    return communityBoardService.searchCommunityBoardByCond(cond, pageDto);
-  }
-
-
-  //  //QueryDsl 전체조회+검색+정렬(좋아요,생성일자)
-//  @GetMapping("/test/question")
-//  public Page<QuestionBoardResponse> getQuestionBoardsPage(
-//      @AuthenticationPrincipal UserDetailsImpl userDetails,
-//      BoardSearchCond cond,
-//      @PageableDefault(page = 1) Pageable pageable/*PageDto pageDto*/
-//  ) {
-//    return questionBoardService.searchQuestionBoardByCond(cond, pageable.withPage(
-//        pageable.getPageNumber() - 1)/*pageDto*/);
-//  }
-  //QueryDsl 전체조회+검색+정렬(좋아요,생성일자)
-  @GetMapping("/test/question")
-  public Page<QuestionBoardResponse> getQuestionBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardSearchCond cond,
-      PageDto pageDto
-  ) {
-    return questionBoardService.searchQuestionBoardByCond(cond, pageDto);
-  }
-
-  //QueryDsl 좋아요순 3개
-  @GetMapping("/test/like")
-  public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardSearchCond cond
-  ) {
-//    return questionBoardService.questionBoardOrderBy(cond);
-    return questionBoardService.questionBoardOrderBy();
   }
 
   // 잡담 게시글 생성
@@ -127,7 +118,7 @@ public class BoardController {
   @PutMapping("/question-boards/{boardId}")
   public ResponseEntity<String> updateQuestionBoard(@PathVariable Long boardId,
       @RequestPart(required = false, name = "images") List<MultipartFile> multipartFiles,
-      @RequestPart("request") QuestionBoardRequest request,
+      @RequestPart("request") QuestionBoardUpdateRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
     questionBoardService.updateQuestionBoard(boardId, multipartFiles, request,
         userDetails.getUser());
@@ -176,13 +167,23 @@ public class BoardController {
   }
 
 
-  //질문게시글 전체 조회
-  @GetMapping("/question-boards")
+  //질문게시글 전체 조회(querydsl 이전방식)
+  @GetMapping("/question-boards/before")
   public Page<QuestionBoardResponse> getQuestionBoardsPage(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
       BoardPage questionBoardPage
   ) {
     return questionBoardService.getQuestionBoardPage(userDetails.getUser(), questionBoardPage);
+  }
+
+
+  //잡담게시글 전체 조회(querydsl 이전방식)
+  @GetMapping("/community-boards/before")
+  public Page<CommunityBoardResponse> getCommunityBoardsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardPage communityBoardPage
+  ) {
+    return communityBoardService.getCommunityBoardPage(userDetails.getUser(), communityBoardPage);
   }
 
 
@@ -205,15 +206,6 @@ public class BoardController {
         communityBoardPage);
   }
 
-
-  //잡담게시글 전체 조회
-  @GetMapping("/community-boards")
-  public Page<CommunityBoardResponse> getCommunityBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardPage communityBoardPage
-  ) {
-    return communityBoardService.getCommunityBoardPage(userDetails.getUser(), communityBoardPage);
-  }
 
   //질문 게시글 좋아요
   @PostMapping("/question-boards/{boardId}/likes")

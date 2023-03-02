@@ -50,6 +50,8 @@ public class CommunityBoardResponse {
     this.countAllComments = countAllComment;
   }
 
+//
+
 
   public CommunityBoardResponse(CommunityBoard communityBoard, String nickname, long boardLike,
       Boolean isLike, List<String> imagePaths, long countAllComments) {
@@ -81,4 +83,22 @@ public class CommunityBoardResponse {
         .countAllComments(countAllComments)
         .build();
   }
+
+//  public CommunityBoardResponse(Long id, String nickname, CommunityCategory communityCategory,
+//      String title, String content, LocalDateTime createdAt, LocalDateTime lastModifiedAt,
+//      long boardLike) {
+//    this.id = id;
+//    this.nickname = nickname;
+//    this.communityCategory = communityCategory;
+//    this.title = title;
+//    this.content = content;
+//    this.createdAt = createdAt;
+//    this.lastModifiedAt = lastModifiedAt;
+//    this.boardLike = boardLike;
+//  }
+//
+//  public CommunityBoardResponse(Long id, long commentsCount, long replyCommentsCount) {
+//    this.id = id;
+//    this.countAllComments = commentsCount + replyCommentsCount;
+//  }
 }

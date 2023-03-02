@@ -5,6 +5,7 @@ import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.dto.QuestionBoardUpdateRequest;
 import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.BoardImageRepository;
@@ -68,7 +69,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   @Override
   @Transactional
   public void updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
-      QuestionBoardRequest request, User user) throws IOException {
+      QuestionBoardUpdateRequest request, User user) throws IOException {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     if (questionBoard.isAlreadyAdopted()) {
       throw new CustomException(ExceptionStatus.ADOPTED_QUESTION_BOARD);
