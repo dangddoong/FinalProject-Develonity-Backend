@@ -12,7 +12,7 @@ public class ExceptionAdviceHandler {
 
   @ExceptionHandler({CustomException.class})
   protected ResponseEntity handleCustomException(CustomException ex) {
-    return new ResponseEntity(
+    return new ResponseEntity<>(
         new ErrorDto(ex.getExceptionStatus().getStatusCode(), ex.getExceptionStatus().getMessage()),
         HttpStatus.valueOf(ex.getExceptionStatus().getStatusCode()));
   }
