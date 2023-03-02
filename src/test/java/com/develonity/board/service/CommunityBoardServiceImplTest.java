@@ -17,21 +17,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Rollback
+@TestInstance(Lifecycle.PER_CLASS)
 class CommunityBoardServiceImplTest {
 
   @Autowired
@@ -55,8 +56,8 @@ class CommunityBoardServiceImplTest {
   @Autowired
   private BoardImageRepository boardImageRepository;
 
-  @BeforeEach
-  public void beforeEach() throws IOException {
+  @BeforeAll
+  public void beforeAll() throws IOException {
     CommunityBoardRequest request = new CommunityBoardRequest("제목1", "내용1",
         CommunityCategory.NORMAL);
 
@@ -83,6 +84,13 @@ class CommunityBoardServiceImplTest {
 //    }
   }
 
+//  @AfterAll
+//  public void afterAll() throws IOException {
+//    Optional<User> findUser = userRepository.findById(1L);
+//    communityBoardService.deleteCommunityBoard(1L, findUser.get());
+//  }
+
+
   List<String> getOriginImagePaths() {
     List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
     List<String> originImagePaths = new ArrayList<>();
@@ -98,7 +106,7 @@ class CommunityBoardServiceImplTest {
   void createCommunityBoard() throws IOException {
 
     //given
-    CommunityBoardRequest request = new CommunityBoardRequest("제목1", "내용1",
+    CommunityBoardRequest request = new CommunityBoardRequest("제목2", "내용2",
         CommunityCategory.NORMAL);
 //    User user1 = new User("user1", "pas12!@", "userNickname", "aaa@a.com");
 //    userRepository.save(user1);
@@ -146,7 +154,7 @@ class CommunityBoardServiceImplTest {
   void createEmptyImageCommunityBoard() throws IOException {
 
     //given
-    CommunityBoardRequest request = new CommunityBoardRequest("제목1", "내용1",
+    CommunityBoardRequest request = new CommunityBoardRequest("제목3", "내용3",
         CommunityCategory.NORMAL);
 //    User user1 = new User("user1", "pas12!@", "userNickname", "aaa@a.com");
 //
@@ -239,7 +247,7 @@ class CommunityBoardServiceImplTest {
 //    Optional<CommunityBoard> findBoard = communityBoardRepository.findById(1L);
     Optional<User> findUser = userRepository.findById(1L);
 
-    CommunityBoardRequest communityBoardRequest = new CommunityBoardRequest("수정1", "수정1",
+    CommunityBoardRequest communityBoardRequest = new CommunityBoardRequest("수정12", "수정12",
         CommunityCategory.GRADE);
 
     List<MultipartFile> multipartFiles = new ArrayList<>();
@@ -279,12 +287,6 @@ class CommunityBoardServiceImplTest {
     assertThat(communityBoardRepository.existsBoardById(1L)).isTrue();
     communityBoardService.deleteCommunityBoard(1L, findUser.get());
     assertThat(communityBoardRepository.existsBoardById(1L)).isFalse();
-  }
-
-
-  @Test
-  void getCommunityBoard() {
-
   }
 
 

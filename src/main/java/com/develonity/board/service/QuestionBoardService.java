@@ -60,6 +60,5 @@ public interface QuestionBoardService {
       PageDto pageDto);
 
 
-  //  List<QuestionBoardResponse> questionBoardOrderBy(BoardSearchCond cond);
-  List<QuestionBoardResponse> questionBoardOrderBy();
+  List<QuestionBoardResponse> questionBoardOrderBy(BoardSearchCond cond);
 }

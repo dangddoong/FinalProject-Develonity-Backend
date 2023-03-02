@@ -53,7 +53,7 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
                             communityBoard.id)/*, replyComment.comment.boardId.eq(communityBoard.id)*/
                     ),
                 JPAExpressions
-                    .select(boardLike.countDistinct())
+                    .select(Wildcard.count/*boardLike.countDistinct()*/)
                     .from(boardLike)
                     .where(boardLike.boardId.eq(communityBoard.id))
             ))
