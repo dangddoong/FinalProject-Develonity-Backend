@@ -17,21 +17,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Rollback
+@TestInstance(Lifecycle.PER_CLASS)
 class CommunityBoardServiceImplTest {
 
   @Autowired
@@ -55,8 +57,8 @@ class CommunityBoardServiceImplTest {
   @Autowired
   private BoardImageRepository boardImageRepository;
 
-  @BeforeEach
-  public void beforeEach() throws IOException {
+  @BeforeAll
+  public void beforeAll() throws IOException {
     CommunityBoardRequest request = new CommunityBoardRequest("제목1", "내용1",
         CommunityCategory.NORMAL);
 
@@ -82,6 +84,13 @@ class CommunityBoardServiceImplTest {
 //      imagePaths.add(boardImage.getImagePath());
 //    }
   }
+
+  @AfterAll
+  public void afterAll() throws IOException {
+    Optional<User> findUser = userRepository.findById(1L);
+    communityBoardService.deleteCommunityBoard(1L, findUser.get());
+  }
+
 
   List<String> getOriginImagePaths() {
     List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
@@ -279,12 +288,6 @@ class CommunityBoardServiceImplTest {
     assertThat(communityBoardRepository.existsBoardById(1L)).isTrue();
     communityBoardService.deleteCommunityBoard(1L, findUser.get());
     assertThat(communityBoardRepository.existsBoardById(1L)).isFalse();
-  }
-
-
-  @Test
-  void getCommunityBoard() {
-
   }
 
 

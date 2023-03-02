@@ -162,15 +162,12 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     return questionBoardRepository.searchQuestionBoard(cond, pageDto);
   }
 
-  // 좋아요순 3개 조회, 구분(카테고리, 채택여부)
-//  @Override
-//  public List<QuestionBoardResponse> questionBoardOrderBy(BoardSearchCond cond) {
-//    return questionBoardRepository.QuestionBoardOrderByLikes(cond);
-//  }
+  //좋아요순 3개 조회, 구분(카테고리, 채택여부)
   @Override
-  public List<QuestionBoardResponse> questionBoardOrderBy() {
-    return questionBoardRepository.QuestionBoardOrderByLikes();
+  public List<QuestionBoardResponse> questionBoardOrderBy(BoardSearchCond cond) {
+    return questionBoardRepository.QuestionBoardOrderByLikes(cond);
   }
+
 
   @Override
   public long countLike(Long boardId) {

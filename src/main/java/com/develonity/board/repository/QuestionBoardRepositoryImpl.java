@@ -4,6 +4,7 @@ import static com.develonity.board.entity.QBoardLike.boardLike;
 import static com.develonity.board.entity.QQuestionBoard.questionBoard;
 import static com.develonity.comment.entity.QComment.comment;
 import static com.develonity.user.entity.QUser.user;
+import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.PageDto;
@@ -85,12 +86,22 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
             searchByCategory(cond.getQuestionCategory()),
             searchByStatus(cond.getBoardStatus()))
         .fetch().get(0);
-
     return new PageImpl<>(responses, pageDto.toPageable(), count);
+//    JPAQuery<QuestionBoard> countQuery = jpaQueryFactory
+//        .select(questionBoard)
+//        .from(questionBoard)
+//        .where(
+//            searchByTitle(cond.getTitle()),
+//            searchByContent(cond.getContent()),
+//            searchByCategory(cond.getQuestionCategory()),
+//            searchByStatus(cond.getBoardStatus()));
+//
+//    return PageableExecutionUtils.getPage(responses, pageDto.toPageable(), countQuery::fetchCount);
+
   }
 
-  //좋아요 순서 질문글 조회(카테고리,상태 검색)
-  public List<QuestionBoardResponse> QuestionBoardOrderByLikes() {
+  //  좋아요 순서 질문글 조회(카테고리,상태 검색)
+  public List<QuestionBoardResponse> QuestionBoardOrderByLikes(BoardSearchCond cond) {
     List<QuestionBoardResponse> responses = jpaQueryFactory
         .select(
             Projections.constructor(
@@ -104,70 +115,30 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
                 questionBoard.status,
                 questionBoard.createdDate,
                 questionBoard.lastModifiedDate,
-                JPAExpressions
-                    .select(
-                        /*comment.count()*/
-                        Wildcard.count) // select count(*) from comment where comment.board_id = board_id
+                select(
+                    /*comment.count()*/
+                    Wildcard.count) // select count(*) from comment where comment.board_id = board_id
                     .from(comment)
                     .where(
                         comment.boardId.eq(questionBoard.id)
                     ),
-                JPAExpressions
-                    .select(boardLike.countDistinct())
+                select(boardLike.countDistinct())
                     .from(boardLike)
                     .where(boardLike.boardId.eq(questionBoard.id))
             ))
         .from(questionBoard)
         .leftJoin(user).on(questionBoard.userId.eq(user.id))
         .leftJoin(boardLike).on(boardLike.boardId.eq(questionBoard.id))
+        .where(
+            searchByCategory(cond.getQuestionCategory()),
+            searchByStatus(cond.getBoardStatus()))
+
         .groupBy(questionBoard.id)
         .orderBy(boardLike.countDistinct().desc(), questionBoard.createdDate.desc())
         .limit(3)
         .fetch();
     return responses;
   }
-
-  //좋아요 순서 질문글 조회(카테고리,상태 검색)
-//public List<QuestionBoardResponse> QuestionBoardOrderByLikes(BoardSearchCond cond) {
-//    List<QuestionBoardResponse> responses = jpaQueryFactory
-//        .select(
-//            Projections.constructor(
-//                QuestionBoardResponse.class,
-//                questionBoard.id,
-//                user.nickname,
-//                questionBoard.questionCategory,
-//                questionBoard.title,
-//                questionBoard.content,
-//                questionBoard.prizePoint,
-//                questionBoard.status,
-//                questionBoard.createdDate,
-//                questionBoard.lastModifiedDate,
-//                JPAExpressions
-//                    .select(
-//                        /*comment.count()*/
-//                        Wildcard.count) // select count(*) from comment where comment.board_id = board_id
-//                    .from(comment)
-//                    .where(
-//                        comment.boardId.eq(questionBoard.id)
-//                    ),
-//                JPAExpressions
-//                    .select(boardLike.countDistinct())
-//                    .from(boardLike)
-//                    .where(boardLike.boardId.eq(questionBoard.id))
-//            ))
-//        .from(questionBoard)
-//        .leftJoin(user).on(questionBoard.userId.eq(user.id))
-//        .leftJoin(boardLike).on(boardLike.boardId.eq(questionBoard.id))
-//        .where(
-//            searchByCategory(cond.getQuestionCategory()),
-//            searchByStatus(cond.getBoardStatus()))
-//
-//        .groupBy(questionBoard.id)
-//        .orderBy(boardLike.countDistinct().desc(), questionBoard.createdDate.desc())
-//        .limit(3)
-//        .fetch();
-//    return responses;
-//  }
 
 
   private BoardSort getSort(BoardSort sort) {

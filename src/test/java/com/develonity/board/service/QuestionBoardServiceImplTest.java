@@ -18,20 +18,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(Lifecycle.PER_CLASS)
 class QuestionBoardServiceImplTest {
 
   @Autowired
@@ -55,8 +58,11 @@ class QuestionBoardServiceImplTest {
   @Autowired
   private BoardImageRepository boardImageRepository;
 
-  @BeforeEach
-  public void beforeEach() throws IOException {
+  @BeforeAll
+  public void beforeAll() throws IOException {
+
+//이전테스트에서 2개 id사용.. 여기서 만드는게 3번id?
+
     QuestionBoardRequest request = new QuestionBoardRequest("제목1", "내용1",
         5, QuestionCategory.BACKEND);
 
@@ -72,6 +78,12 @@ class QuestionBoardServiceImplTest {
     questionBoardService.createQuestionBoard(request, multipartFiles, findUser.get());
   }
 
+  @AfterAll
+  public void afterAll() throws IOException {
+    Optional<User> findUser = userRepository.findById(1L);
+    questionBoardService.deleteQuestionBoard(1L, findUser.get());
+  }
+
   List<String> getOriginImagePaths() {
     List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
     List<String> originImagePaths = new ArrayList<>();
@@ -84,7 +96,6 @@ class QuestionBoardServiceImplTest {
   @Test
   @DisplayName("질문게시글 생성(이미지) & 단건 조회")
   @Order(1)
-  @Rollback
   void createQuestionBoard() throws IOException {
     //given
     QuestionBoardRequest request = new QuestionBoardRequest("제목1", "내용1",
@@ -103,7 +114,7 @@ class QuestionBoardServiceImplTest {
     //when
     questionBoardService.createQuestionBoard(request, multipartFiles, findUser.get());
 
-    Optional<QuestionBoard> findQuestionBoard = questionBoardRepository.findById(2L);
+    Optional<QuestionBoard> findQuestionBoard = questionBoardRepository.findById(5L);
     boardLikeService.addBoardLike(readUser.get().getId(), findQuestionBoard.get().getId());
     QuestionBoardResponse questionBoardResponse = questionBoardService.getQuestionBoard(
         findQuestionBoard.get().getId(), readUser.get());
@@ -132,7 +143,6 @@ class QuestionBoardServiceImplTest {
   @Test
   @DisplayName("질문게시글 생성(이미지 빈파일) + 단건 조회")
   @Order(2)
-  @Rollback
   void createEmptyImageQuestionBoard() throws IOException {
     //given
     QuestionBoardRequest request = new QuestionBoardRequest("제목1", "내용1",
@@ -148,7 +158,7 @@ class QuestionBoardServiceImplTest {
     //when
     questionBoardService.createQuestionBoard(request, multipartFiles, findUser.get());
 
-    Optional<QuestionBoard> findQuestionBoard = questionBoardRepository.findById(3L);
+    Optional<QuestionBoard> findQuestionBoard = questionBoardRepository.findById(4L);
     boardLikeService.addBoardLike(readUser.get().getId(), findQuestionBoard.get().getId());
 
     QuestionBoardResponse questionBoardResponse = questionBoardService.getQuestionBoard(
@@ -178,7 +188,6 @@ class QuestionBoardServiceImplTest {
   @Test
   @DisplayName("질문게시글 수정(이미지 빈파일)")
   @Order(3)
-  @Rollback
   void updateEmptyImageQuestionBoard() throws IOException {
     Optional<User> findUser = userRepository.findById(1L);
 
@@ -187,12 +196,12 @@ class QuestionBoardServiceImplTest {
 
     List<MultipartFile> multipartFiles = new ArrayList<>();
 
-    questionBoardService.updateQuestionBoard(1L, multipartFiles, questionBoardRequest,
+    questionBoardService.updateQuestionBoard(4L, multipartFiles, questionBoardRequest,
         findUser.get());
 
-    Optional<QuestionBoard> updatedBoard = questionBoardRepository.findById(1L);
+    Optional<QuestionBoard> updatedBoard = questionBoardRepository.findById(4L);
     List<String> originImagePaths = getOriginImagePaths();
-    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(1L);
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(4L);
     List<String> imagePaths = new ArrayList<>();
     for (BoardImage boardImage : boardImageList) {
       imagePaths.add(boardImage.getImagePath());
@@ -208,7 +217,6 @@ class QuestionBoardServiceImplTest {
   @Test
   @DisplayName("질문게시글 수정(이미지 파일)")
   @Order(4)
-  @Rollback
   void updateQuestionBoard() throws IOException {
 
     Optional<User> findUser = userRepository.findById(1L);
@@ -227,11 +235,11 @@ class QuestionBoardServiceImplTest {
     //위치 조심..
     List<String> originImagePaths = getOriginImagePaths();
 
-    questionBoardService.updateQuestionBoard(1L, multipartFiles, questionBoardUpdateRequest,
+    questionBoardService.updateQuestionBoard(4L, multipartFiles, questionBoardUpdateRequest,
         findUser.get());
-    Optional<QuestionBoard> updatedBoard = questionBoardRepository.findById(1L);
+    Optional<QuestionBoard> updatedBoard = questionBoardRepository.findById(4L);
 
-    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(1L);
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(4L);
     List<String> imagePaths = new ArrayList<>();
     for (BoardImage boardImage : boardImageList) {
       imagePaths.add(boardImage.getImagePath());
@@ -248,31 +256,10 @@ class QuestionBoardServiceImplTest {
   @Test
   @DisplayName("질문게시글 삭제")
   @Order(5)
-  @Rollback
   void deleteQuestionBoard() {
     Optional<User> findUser = userRepository.findById(1L);
-    assertThat(questionBoardRepository.existsBoardById(1L)).isTrue();
-    questionBoardService.deleteQuestionBoard(1L, findUser.get());
-    assertThat(questionBoardRepository.existsBoardById(1L)).isFalse();
-  }
-
-  @Test
-  void getQuestionBoard() {
-  }
-
-  @Test
-  void getQuestionBoardPage() {
-  }
-
-  @Test
-  void getTestQuestionBoardPage() {
-  }
-
-  @Test
-  void searchQuestionBoardByCond() {
-  }
-
-  @Test
-  void questionBoardOrderBy() {
+    assertThat(questionBoardRepository.existsBoardById(4L)).isTrue();
+    questionBoardService.deleteQuestionBoard(4L, findUser.get());
+    assertThat(questionBoardRepository.existsBoardById(4L)).isFalse();
   }
 }

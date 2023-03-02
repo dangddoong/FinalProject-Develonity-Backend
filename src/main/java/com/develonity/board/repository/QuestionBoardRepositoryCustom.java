@@ -11,6 +11,5 @@ public interface QuestionBoardRepositoryCustom {
   Page<QuestionBoardResponse> searchQuestionBoard(BoardSearchCond cond,
       PageDto pageDto);
 
-  //  List<QuestionBoardResponse> QuestionBoardOrderByLikes(BoardSearchCond cond);
-  List<QuestionBoardResponse> QuestionBoardOrderByLikes();
+  List<QuestionBoardResponse> QuestionBoardOrderByLikes(BoardSearchCond cond);
 }

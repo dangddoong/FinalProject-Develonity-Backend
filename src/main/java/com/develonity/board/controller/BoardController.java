@@ -57,7 +57,6 @@ public class BoardController {
   //QueryDsl 잡담글 전체조회
   @GetMapping("/community-boards")
   public Page<CommunityBoardResponse> getCommunityBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
       BoardSearchCond cond, PageDto pageDto
   ) {
     return communityBoardService.searchCommunityBoardByCond(cond, pageDto);
@@ -66,22 +65,20 @@ public class BoardController {
   //QueryDsl 질문글 전체조회
   @GetMapping("/question-boards")
   public Page<QuestionBoardResponse> getQuestionBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
       BoardSearchCond cond,
       PageDto pageDto
   ) {
     return questionBoardService.searchQuestionBoardByCond(cond, pageDto);
   }
 
-  //QueryDsl 좋아요순 3개
-//  @GetMapping("/test/like")
-//  public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
-//      @AuthenticationPrincipal UserDetailsImpl userDetails,
-//      BoardSearchCond cond
-//  ) {
-////    return questionBoardService.questionBoardOrderBy(cond);
-//    return questionBoardService.questionBoardOrderBy();
-//  }
+  //  질문글 좋아요순 3개
+  @GetMapping("/test/like")
+  public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
+      BoardSearchCond cond
+  ) {
+//    return questionBoardService.questionBoardOrderBy(cond);
+    return questionBoardService.questionBoardOrderBy(cond);
+  }
 
   //  질문게시글 생성
   @PostMapping("/question-boards")
