@@ -19,13 +19,19 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Rollback
 class CommunityBoardServiceImplTest {
 
   @Autowired
@@ -88,6 +94,7 @@ class CommunityBoardServiceImplTest {
 
   @Test
   @DisplayName("잡담게시글 생성(이미지) & 단건 조회")
+  @Order(1)
   void createCommunityBoard() throws IOException {
 
     //given
@@ -109,6 +116,8 @@ class CommunityBoardServiceImplTest {
 
     Optional<CommunityBoard> findCommunityBoard = communityBoardRepository.findById(2L);
 
+    boardLikeService.addBoardLike(readUser.get().getId(), findCommunityBoard.get().getId());
+
     CommunityBoardResponse communityBoardResponse = communityBoardService.getCommunityBoard(
         2L, readUser.get());
 
@@ -126,11 +135,14 @@ class CommunityBoardServiceImplTest {
         findCommunityBoard.get().getCommunityCategory());
     assertThat(communityBoardResponse.getImagePaths()).isEqualTo(imagePaths);
     assertThat(communityBoardResponse.getNickname()).isEqualTo(findUser.get().getNickname());
+    assertThat(communityBoardResponse.getBoardLike()).isEqualTo(1);
+    assertThat(communityBoardResponse.isHasLike()).isEqualTo(true);
 
   }
 
   @Test
   @DisplayName("잡담게시글 생성(이미지 빈파일) & 단건 조회")
+  @Order(2)
   void createEmptyImageCommunityBoard() throws IOException {
 
     //given
@@ -147,12 +159,15 @@ class CommunityBoardServiceImplTest {
     //when
     communityBoardService.createCommunityBoard(request, multipartFiles, findUser.get());
 
-    Optional<CommunityBoard> findCommunityBoard = communityBoardRepository.findById(2L);
+    Optional<CommunityBoard> findCommunityBoard = communityBoardRepository.findById(3L);
+
+    boardLikeService.addBoardLike(readUser.get().getId(), findCommunityBoard.get().getId());
 
     CommunityBoardResponse communityBoardResponse = communityBoardService.getCommunityBoard(
-        2L, readUser.get());
+        findCommunityBoard.get().getId(), readUser.get());
 
-    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(2L);
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(
+        findCommunityBoard.get().getId());
     List<String> imagePaths = new ArrayList<>();
     for (BoardImage boardImage : boardImageList) {
       imagePaths.add(boardImage.getImagePath());
@@ -166,11 +181,14 @@ class CommunityBoardServiceImplTest {
         findCommunityBoard.get().getCommunityCategory());
     assertThat(communityBoardResponse.getImagePaths()).isEqualTo(imagePaths);
     assertThat(communityBoardResponse.getNickname()).isEqualTo(findUser.get().getNickname());
+    assertThat(communityBoardResponse.getBoardLike()).isEqualTo(1);
+    assertThat(communityBoardResponse.isHasLike()).isEqualTo(true);
 
   }
 
   @Test
   @DisplayName("잡담게시글 수정(이미지 빈파일)")
+  @Order(3)
   void updateEmptyImageCommunityBoard() throws IOException {
 //
 //    List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
@@ -209,6 +227,7 @@ class CommunityBoardServiceImplTest {
 
   @Test
   @DisplayName("잡담게시글 수정(이미지 파일)")
+  @Order(4)
   void updateCommunityBoard() throws IOException {
 
 //    List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
@@ -253,43 +272,15 @@ class CommunityBoardServiceImplTest {
 
   @Test
   @DisplayName("잡담글 삭제")
+  @Order(5)
   void deleteCommunityBoard() {
     Optional<User> findUser = userRepository.findById(1L);
-    Optional<CommunityBoard> findBoard = communityBoardRepository.findById(1L);
-
+//    System.out.println(communityBoardRepository.findById(1L));
+    assertThat(communityBoardRepository.existsBoardById(1L)).isTrue();
     communityBoardService.deleteCommunityBoard(1L, findUser.get());
-
     assertThat(communityBoardRepository.existsBoardById(1L)).isFalse();
   }
 
-//  @Test
-//  @DisplayName("잡담글 전체 페이지 조회 ")
-//  void getCommunityBoardPage() {
-//    Optional<User> findUser = userRepository.findById(1L);
-//    BoardPage communityBoardPage = new BoardPage();
-//     = communityBoardService.getTestCommunityBoardPage(findUser.get(), communityBoardPage);
-//
-//    @Override
-//    public Page<CommunityBoardResponse> getTestCommunityBoardPage(User user,
-//        BoardPage communityBoardPage) {
-//
-//      Page<CommunityBoard> communityBoardPages = communityBoardRepository.findByCommunityCategory(
-//          communityBoardPage.getCommunityCategory(),
-//          communityBoardPage.toPageable());
-//
-//      return communityBoardPages.map(
-//          communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
-//              getNicknameByCommunityBoard(communityBoard), countAllComments(communityBoard.getId())));
-//    }
-  //given
-  //빈 페이져블 객체 만들
-
-  //then
-//empty넣고 empty인지 확인
-
-  //verify
-
-//  }
 
   @Test
   void getCommunityBoard() {

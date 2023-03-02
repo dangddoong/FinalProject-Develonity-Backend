@@ -18,13 +18,39 @@ public class CommunityBoardResponse {
   private final CommunityCategory communityCategory;
   private final String title;
   private final String content;
-  private final long boardLike;
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
-  private final List<String> imagePaths;
-  private final Boolean hasLike; //로그인한 유저가 좋아요 눌렀는지 여부
-
   private final long countAllComments;
+  private final long boardLike;
+
+  private boolean hasLike;
+
+  private List<String> imagePaths;
+
+  //querydsl용..
+  public CommunityBoardResponse(
+      Long id,
+      String nickname,
+      CommunityCategory communityCategory,
+      String title,
+      String content,
+      LocalDateTime createdAt,
+      LocalDateTime lastModifiedAt,
+      long countAllComment,
+      long boardLike
+  ) {
+    this.id = id;
+    this.nickname = nickname;
+    this.communityCategory = communityCategory;
+    this.title = title;
+    this.content = content;
+    this.boardLike = boardLike;
+    this.createdAt = createdAt;
+    this.lastModifiedAt = lastModifiedAt;
+    this.countAllComments = countAllComment;
+  }
+
+//
 
 
   public CommunityBoardResponse(CommunityBoard communityBoard, String nickname, long boardLike,
@@ -58,4 +84,21 @@ public class CommunityBoardResponse {
         .build();
   }
 
+//  public CommunityBoardResponse(Long id, String nickname, CommunityCategory communityCategory,
+//      String title, String content, LocalDateTime createdAt, LocalDateTime lastModifiedAt,
+//      long boardLike) {
+//    this.id = id;
+//    this.nickname = nickname;
+//    this.communityCategory = communityCategory;
+//    this.title = title;
+//    this.content = content;
+//    this.createdAt = createdAt;
+//    this.lastModifiedAt = lastModifiedAt;
+//    this.boardLike = boardLike;
+//  }
+//
+//  public CommunityBoardResponse(Long id, long commentsCount, long replyCommentsCount) {
+//    this.id = id;
+//    this.countAllComments = commentsCount + replyCommentsCount;
+//  }
 }

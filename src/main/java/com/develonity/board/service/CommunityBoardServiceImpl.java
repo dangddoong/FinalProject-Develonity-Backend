@@ -1,16 +1,16 @@
 package com.develonity.board.service;
 
 import com.develonity.board.dto.BoardPage;
+import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.PageDto;
 import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.entity.CommunityCategory;
 import com.develonity.board.repository.BoardImageRepository;
-import com.develonity.board.repository.BoardRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.comment.service.CommentService;
-import com.develonity.comment.service.ReplyCommentService;
 import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
@@ -38,13 +38,10 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   private final CommentService commentService;
 
-  private final ReplyCommentService replyCommentService;
-
   private final ScrapService scrapService;
 
   private final AwsS3Service awsS3Service;
 
-  private final BoardRepository boardRepository;
 
   //잡담 게시글 생성
   @Override
@@ -78,7 +75,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     }
     communityBoard.updateBoard(request.getTitle(), request.getContent(),
         request.getCommunityCategory());
-//    communityBoardRepository.save(communityBoard);
+    communityBoardRepository.save(communityBoard);
   }
 
   //잡담 게시글 삭제
@@ -125,6 +122,17 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     return communityBoardPages.map(
         communityBoard -> CommunityBoardResponse.toCommunityBoardResponse(communityBoard,
             getNicknameByCommunityBoard(communityBoard), countAllComments(communityBoard.getId())));
+  }
+
+  //전체조회+검색+좋아요 조회
+
+  @Override
+  public Page<CommunityBoardResponse> searchCommunityBoardByCond(BoardSearchCond cond,
+      PageDto pageDto) {
+
+    return communityBoardRepository.searchCommunityBoard(cond, pageDto);
+
+
   }
 
   //잡담 게시글 선택 조회

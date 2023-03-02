@@ -1,8 +1,10 @@
 package com.develonity.board.service;
 
 import com.develonity.board.dto.BoardPage;
+import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.PageDto;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.user.entity.User;
 import java.io.IOException;
@@ -57,4 +59,7 @@ public interface CommunityBoardService {
 
   //댓글 + 대댓글 카운트
   long countAllComments(Long boardId);
+
+  Page<CommunityBoardResponse> searchCommunityBoardByCond(BoardSearchCond cond,
+      PageDto pageDto);
 }
