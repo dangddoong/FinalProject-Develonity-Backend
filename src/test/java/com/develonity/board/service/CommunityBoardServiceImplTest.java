@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -85,11 +84,11 @@ class CommunityBoardServiceImplTest {
 //    }
   }
 
-  @AfterAll
-  public void afterAll() throws IOException {
-    Optional<User> findUser = userRepository.findById(1L);
-    communityBoardService.deleteCommunityBoard(1L, findUser.get());
-  }
+//  @AfterAll
+//  public void afterAll() throws IOException {
+//    Optional<User> findUser = userRepository.findById(1L);
+//    communityBoardService.deleteCommunityBoard(1L, findUser.get());
+//  }
 
 
   List<String> getOriginImagePaths() {
@@ -107,7 +106,7 @@ class CommunityBoardServiceImplTest {
   void createCommunityBoard() throws IOException {
 
     //given
-    CommunityBoardRequest request = new CommunityBoardRequest("제목1", "내용1",
+    CommunityBoardRequest request = new CommunityBoardRequest("제목2", "내용2",
         CommunityCategory.NORMAL);
 //    User user1 = new User("user1", "pas12!@", "userNickname", "aaa@a.com");
 //    userRepository.save(user1);
@@ -155,7 +154,7 @@ class CommunityBoardServiceImplTest {
   void createEmptyImageCommunityBoard() throws IOException {
 
     //given
-    CommunityBoardRequest request = new CommunityBoardRequest("제목1", "내용1",
+    CommunityBoardRequest request = new CommunityBoardRequest("제목3", "내용3",
         CommunityCategory.NORMAL);
 //    User user1 = new User("user1", "pas12!@", "userNickname", "aaa@a.com");
 //
@@ -248,7 +247,7 @@ class CommunityBoardServiceImplTest {
 //    Optional<CommunityBoard> findBoard = communityBoardRepository.findById(1L);
     Optional<User> findUser = userRepository.findById(1L);
 
-    CommunityBoardRequest communityBoardRequest = new CommunityBoardRequest("수정1", "수정1",
+    CommunityBoardRequest communityBoardRequest = new CommunityBoardRequest("수정12", "수정12",
         CommunityCategory.GRADE);
 
     List<MultipartFile> multipartFiles = new ArrayList<>();

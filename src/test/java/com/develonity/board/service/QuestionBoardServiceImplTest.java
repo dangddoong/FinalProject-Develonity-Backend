@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -63,7 +62,7 @@ class QuestionBoardServiceImplTest {
 
 //이전테스트에서 2개 id사용.. 여기서 만드는게 3번id?
 
-    QuestionBoardRequest request = new QuestionBoardRequest("제목1", "내용1",
+    QuestionBoardRequest request = new QuestionBoardRequest("제목4", "내용4",
         5, QuestionCategory.BACKEND);
 
     Optional<User> findUser = userRepository.findById(1L);
@@ -78,11 +77,11 @@ class QuestionBoardServiceImplTest {
     questionBoardService.createQuestionBoard(request, multipartFiles, findUser.get());
   }
 
-  @AfterAll
-  public void afterAll() throws IOException {
-    Optional<User> findUser = userRepository.findById(1L);
-    questionBoardService.deleteQuestionBoard(1L, findUser.get());
-  }
+//  @AfterAll
+//  public void afterAll() throws IOException {
+//    Optional<User> findUser = userRepository.findById(1L);
+//    questionBoardService.deleteQuestionBoard(1L, findUser.get());
+//  }
 
   List<String> getOriginImagePaths() {
     List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
@@ -98,7 +97,7 @@ class QuestionBoardServiceImplTest {
   @Order(1)
   void createQuestionBoard() throws IOException {
     //given
-    QuestionBoardRequest request = new QuestionBoardRequest("제목1", "내용1",
+    QuestionBoardRequest request = new QuestionBoardRequest("제목5", "내용5",
         100, QuestionCategory.AI);
 //    User user1 = new User("user1", "pas12!@", "userNickname", "aaa@a.com");
 //    userRepository.save(user1);
@@ -145,7 +144,7 @@ class QuestionBoardServiceImplTest {
   @Order(2)
   void createEmptyImageQuestionBoard() throws IOException {
     //given
-    QuestionBoardRequest request = new QuestionBoardRequest("제목1", "내용1",
+    QuestionBoardRequest request = new QuestionBoardRequest("제목6", "내용6",
         90, QuestionCategory.AI);
 //    User user1 = new User("user1", "pas12!@", "userNickname", "aaa@a.com");
 //
@@ -158,7 +157,7 @@ class QuestionBoardServiceImplTest {
     //when
     questionBoardService.createQuestionBoard(request, multipartFiles, findUser.get());
 
-    Optional<QuestionBoard> findQuestionBoard = questionBoardRepository.findById(4L);
+    Optional<QuestionBoard> findQuestionBoard = questionBoardRepository.findById(6L);
     boardLikeService.addBoardLike(readUser.get().getId(), findQuestionBoard.get().getId());
 
     QuestionBoardResponse questionBoardResponse = questionBoardService.getQuestionBoard(
@@ -191,7 +190,7 @@ class QuestionBoardServiceImplTest {
   void updateEmptyImageQuestionBoard() throws IOException {
     Optional<User> findUser = userRepository.findById(1L);
 
-    QuestionBoardUpdateRequest questionBoardRequest = new QuestionBoardUpdateRequest("수정1", "수정1",
+    QuestionBoardUpdateRequest questionBoardRequest = new QuestionBoardUpdateRequest("수정4", "수정4",
         QuestionCategory.FRONTEND);
 
     List<MultipartFile> multipartFiles = new ArrayList<>();
@@ -221,8 +220,8 @@ class QuestionBoardServiceImplTest {
 
     Optional<User> findUser = userRepository.findById(1L);
 
-    QuestionBoardUpdateRequest questionBoardUpdateRequest = new QuestionBoardUpdateRequest("수정1",
-        "수정1",
+    QuestionBoardUpdateRequest questionBoardUpdateRequest = new QuestionBoardUpdateRequest("수정42",
+        "수정42",
         QuestionCategory.FRONTEND);
 
     List<MultipartFile> multipartFiles = new ArrayList<>();
