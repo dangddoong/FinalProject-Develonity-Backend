@@ -18,21 +18,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
 class QuestionBoardServiceImplTest {
 
@@ -57,50 +52,48 @@ class QuestionBoardServiceImplTest {
   @Autowired
   private BoardImageRepository boardImageRepository;
 
-  @BeforeAll
-  public void beforeAll() throws IOException {
-
-//이전테스트에서 2개 id사용.. 여기서 만드는게 3번id?
-
-    QuestionBoardRequest request = new QuestionBoardRequest("제목4", "내용4",
-        5, QuestionCategory.BACKEND);
-
-    Optional<User> findUser = userRepository.findById(1L);
-    List<MultipartFile> multipartFiles = new ArrayList<>();
-
-    MockMultipartFile multipartFile = new MockMultipartFile("files", "imageFile.jpeg", "image/jpeg",
-        "<<jpeg data>>".getBytes());
-
-    multipartFiles.add(multipartFile);
-
-    //when
-    questionBoardService.createQuestionBoard(request, multipartFiles, findUser.get());
-  }
+//  @BeforeAll
+//  public void beforeAll() throws IOException {
+//
+//    QuestionBoardRequest request = new QuestionBoardRequest("제목4", "내용4",
+//        5, QuestionCategory.BACKEND);
+//
+//    Optional<User> findUser = userRepository.findById(1L);
+//    List<MultipartFile> multipartFiles = new ArrayList<>();
+//
+//    MockMultipartFile multipartFile = new MockMultipartFile("files", "imageFile.jpeg", "image/jpeg",
+//        "<<jpeg data>>".getBytes());
+//
+//    multipartFiles.add(multipartFile);
+//
+//    //when
+//    QuestionBoard firstQuestionBoard = questionBoardService.createQuestionBoard(request,
+//        multipartFiles, findUser.get());
+//    System.out.println(firstQuestionBoard.getId());
+//  }
 
 //  @AfterAll
 //  public void afterAll() throws IOException {
 //    Optional<User> findUser = userRepository.findById(1L);
 //    questionBoardService.deleteQuestionBoard(1L, findUser.get());
 //  }
-
-  List<String> getOriginImagePaths() {
-    List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
-    List<String> originImagePaths = new ArrayList<>();
-    for (BoardImage boardImage : originBoardImageList) {
-      originImagePaths.add(boardImage.getImagePath());
-    }
-    return originImagePaths;
-  }
+//
+//  List<String> getOriginImagePaths() {
+//    List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
+//    List<String> originImagePaths = new ArrayList<>();
+//    for (BoardImage boardImage : originBoardImageList) {
+//      originImagePaths.add(boardImage.getImagePath());
+//    }
+//    return originImagePaths;
+//  }
 
   @Test
   @DisplayName("질문게시글 생성(이미지) & 단건 조회")
-  @Order(1)
   void createQuestionBoard() throws IOException {
     //given
     QuestionBoardRequest request = new QuestionBoardRequest("제목5", "내용5",
         100, QuestionCategory.AI);
-//    User user1 = new User("user1", "pas12!@", "userNickname", "aaa@a.com");
-//    userRepository.save(user1);
+
     Optional<User> findUser = userRepository.findById(1L);
     Optional<User> readUser = userRepository.findById(2L);
     List<MultipartFile> multipartFiles = new ArrayList<>();
@@ -111,37 +104,36 @@ class QuestionBoardServiceImplTest {
     multipartFiles.add(multipartFile);
 
     //when
-    questionBoardService.createQuestionBoard(request, multipartFiles, findUser.get());
+    QuestionBoard createQuestionBoard = questionBoardService.createQuestionBoard(request,
+        multipartFiles, findUser.get());
 
-    Optional<QuestionBoard> findQuestionBoard = questionBoardRepository.findById(5L);
-    boardLikeService.addBoardLike(readUser.get().getId(), findQuestionBoard.get().getId());
+    boardLikeService.addBoardLike(readUser.get().getId(), createQuestionBoard.getId());
     QuestionBoardResponse questionBoardResponse = questionBoardService.getQuestionBoard(
-        findQuestionBoard.get().getId(), readUser.get());
+        createQuestionBoard.getId(), readUser.get());
 
     List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(
-        findQuestionBoard.get().getId());
+        createQuestionBoard.getId());
     List<String> imagePaths = new ArrayList<>();
     for (BoardImage boardImage : boardImageList) {
       imagePaths.add(boardImage.getImagePath());
     }
 
     //then
-    assertThat(questionBoardResponse.getTitle()).isEqualTo(findQuestionBoard.get().getTitle());
+    assertThat(questionBoardResponse.getTitle()).isEqualTo(createQuestionBoard.getTitle());
     assertThat(questionBoardResponse.getContent()).isEqualTo(
-        findQuestionBoard.get().getContent());
+        createQuestionBoard.getContent());
     assertThat(questionBoardResponse.getQuestionCategory()).isEqualTo(
-        findQuestionBoard.get().getQuestionCategory());
+        createQuestionBoard.getQuestionCategory());
     assertThat(questionBoardResponse.getImagePaths()).isEqualTo(imagePaths);
     assertThat(questionBoardResponse.getNickname()).isEqualTo(findUser.get().getNickname());
     assertThat(questionBoardResponse.getPrizePoint()).isEqualTo(
-        findQuestionBoard.get().getPrizePoint());
-//    assertThat(questionBoardResponse.getBoardLike()).isEqualTo(1);
-//    assertThat(questionBoardResponse.getHasLike()).isEqualTo(true);
+        createQuestionBoard.getPrizePoint());
+    assertThat(questionBoardResponse.getBoardLike()).isEqualTo(1);
+    assertThat(questionBoardResponse.getHasLike()).isEqualTo(true);
   }
 
   @Test
   @DisplayName("질문게시글 생성(이미지 빈파일) + 단건 조회")
-  @Order(2)
   void createEmptyImageQuestionBoard() throws IOException {
     //given
     QuestionBoardRequest request = new QuestionBoardRequest("제목6", "내용6",
@@ -155,13 +147,13 @@ class QuestionBoardServiceImplTest {
     List<MultipartFile> multipartFiles = new ArrayList<>();
 
     //when
-    questionBoardService.createQuestionBoard(request, multipartFiles, findUser.get());
+    QuestionBoard createQuestionBoard = questionBoardService.createQuestionBoard(request,
+        multipartFiles, findUser.get());
 
-    Optional<QuestionBoard> findQuestionBoard = questionBoardRepository.findById(6L);
-    boardLikeService.addBoardLike(readUser.get().getId(), findQuestionBoard.get().getId());
+    boardLikeService.addBoardLike(readUser.get().getId(), createQuestionBoard.getId());
 
     QuestionBoardResponse questionBoardResponse = questionBoardService.getQuestionBoard(
-        findQuestionBoard.get().getId(), readUser.get());
+        createQuestionBoard.getId(), readUser.get());
 
     List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(
         questionBoardResponse.getId());
@@ -171,82 +163,117 @@ class QuestionBoardServiceImplTest {
     }
 
     //then
-    assertThat(questionBoardResponse.getTitle()).isEqualTo(findQuestionBoard.get().getTitle());
+    assertThat(questionBoardResponse.getTitle()).isEqualTo(createQuestionBoard.getTitle());
     assertThat(questionBoardResponse.getContent()).isEqualTo(
-        findQuestionBoard.get().getContent());
+        createQuestionBoard.getContent());
     assertThat(questionBoardResponse.getQuestionCategory()).isEqualTo(
-        findQuestionBoard.get().getQuestionCategory());
+        createQuestionBoard.getQuestionCategory());
     assertThat(questionBoardResponse.getImagePaths()).isEqualTo(imagePaths);
     assertThat(questionBoardResponse.getNickname()).isEqualTo(findUser.get().getNickname());
     assertThat(questionBoardResponse.getPrizePoint()).isEqualTo(
-        findQuestionBoard.get().getPrizePoint());
+        createQuestionBoard.getPrizePoint());
     assertThat(questionBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(questionBoardResponse.getHasLike()).isEqualTo(true);
   }
 
   @Test
   @DisplayName("질문게시글 수정(이미지 빈파일)")
-  @Order(3)
   void updateEmptyImageQuestionBoard() throws IOException {
     Optional<User> findUser = userRepository.findById(1L);
 
+// 질문게시글 생성
+    QuestionBoardRequest request = new QuestionBoardRequest("제목4", "내용4",
+        5, QuestionCategory.BACKEND);
+    List<MultipartFile> multipartFiles = new ArrayList<>();
+    MockMultipartFile multipartFile = new MockMultipartFile("files", "imageFile.jpeg", "image/jpeg",
+        "<<jpeg data>>".getBytes());
+    multipartFiles.add(multipartFile);
+
+    QuestionBoard createdQuestionBoard = questionBoardService.createQuestionBoard(request,
+        multipartFiles, findUser.get());
+
+    List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(
+        createdQuestionBoard.getId());
+    List<String> originImagePaths = new ArrayList<>();
+    for (BoardImage boardImage : originBoardImageList) {
+      originImagePaths.add(boardImage.getImagePath());
+    }
+
+    //질문 게시글 수정
     QuestionBoardUpdateRequest questionBoardRequest = new QuestionBoardUpdateRequest("수정4", "수정4",
         QuestionCategory.FRONTEND);
 
-    List<MultipartFile> multipartFiles = new ArrayList<>();
-
-    questionBoardService.updateQuestionBoard(4L, multipartFiles, questionBoardRequest,
+    //이미지는 업로드 x한 경우
+    QuestionBoard updateQuestionBoard = questionBoardService.updateQuestionBoard(
+        createdQuestionBoard.getId(), null,
+        questionBoardRequest,
         findUser.get());
 
-    Optional<QuestionBoard> updatedBoard = questionBoardRepository.findById(4L);
-    List<String> originImagePaths = getOriginImagePaths();
-    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(4L);
+    //수정 후 이미지 리스트
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(
+        updateQuestionBoard.getId());
     List<String> imagePaths = new ArrayList<>();
     for (BoardImage boardImage : boardImageList) {
       imagePaths.add(boardImage.getImagePath());
     }
 
-    assertThat(updatedBoard.get().getTitle()).isEqualTo(questionBoardRequest.getTitle());
-    assertThat(updatedBoard.get().getContent()).isEqualTo(questionBoardRequest.getContent());
-    assertThat(updatedBoard.get().getQuestionCategory()).isEqualTo(
+    assertThat(updateQuestionBoard.getTitle()).isEqualTo(questionBoardRequest.getTitle());
+    assertThat(updateQuestionBoard.getContent()).isEqualTo(questionBoardRequest.getContent());
+    assertThat(updateQuestionBoard.getQuestionCategory()).isEqualTo(
         questionBoardRequest.getQuestionCategory());
     assertThat(originImagePaths).isEqualTo(imagePaths);
   }
 
   @Test
   @DisplayName("질문게시글 수정(이미지 파일)")
-  @Order(4)
   void updateQuestionBoard() throws IOException {
 
-    Optional<User> findUser = userRepository.findById(1L);
+    // 질문게시글 생성
 
+    Optional<User> findUser = userRepository.findById(1L);
+    QuestionBoardRequest request = new QuestionBoardRequest("제목4", "내용4",
+        5, QuestionCategory.BACKEND);
+    List<MultipartFile> multipartFiles = new ArrayList<>();
+    MockMultipartFile multipartFile = new MockMultipartFile("files", "imageFile.jpeg", "image/jpeg",
+        "<<jpeg data>>".getBytes());
+    multipartFiles.add(multipartFile);
+
+    QuestionBoard createdQuestionBoard = questionBoardService.createQuestionBoard(request,
+        multipartFiles, findUser.get());
+
+    List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(
+        createdQuestionBoard.getId());
+    List<String> originImagePaths = new ArrayList<>();
+    for (BoardImage boardImage : originBoardImageList) {
+      originImagePaths.add(boardImage.getImagePath());
+    }
+
+    //질문 게시글 수정(이미지파일 넣는 경우)
     QuestionBoardUpdateRequest questionBoardUpdateRequest = new QuestionBoardUpdateRequest("수정42",
         "수정42",
         QuestionCategory.FRONTEND);
 
-    List<MultipartFile> multipartFiles = new ArrayList<>();
-
-    MockMultipartFile multipartFile = new MockMultipartFile("files", "imageFile(수정).jpeg",
+    List<MultipartFile> updateMultipartFiles = new ArrayList<>();
+    MockMultipartFile updateMultipartFile = new MockMultipartFile("files", "imageFile(수정).jpeg",
         "image/jpeg",
         "<<jpeg data>>".getBytes());
-    multipartFiles.add(multipartFile);
+    updateMultipartFiles.add(updateMultipartFile);
 
-    //위치 조심..
-    List<String> originImagePaths = getOriginImagePaths();
-
-    questionBoardService.updateQuestionBoard(4L, multipartFiles, questionBoardUpdateRequest,
+    QuestionBoard updateQuestionBoard = questionBoardService.updateQuestionBoard(
+        createdQuestionBoard.getId(), updateMultipartFiles, questionBoardUpdateRequest,
         findUser.get());
-    Optional<QuestionBoard> updatedBoard = questionBoardRepository.findById(4L);
 
-    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(4L);
+    //수정 후 이미지 파일
+    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(
+        updateQuestionBoard.getId());
     List<String> imagePaths = new ArrayList<>();
     for (BoardImage boardImage : boardImageList) {
       imagePaths.add(boardImage.getImagePath());
     }
 
-    assertThat(updatedBoard.get().getTitle()).isEqualTo(questionBoardUpdateRequest.getTitle());
-    assertThat(updatedBoard.get().getContent()).isEqualTo(questionBoardUpdateRequest.getContent());
-    assertThat(updatedBoard.get().getQuestionCategory()).isEqualTo(
+    assertThat(updateQuestionBoard.getTitle()).isEqualTo(questionBoardUpdateRequest.getTitle());
+    assertThat(updateQuestionBoard.getContent()).isEqualTo(questionBoardUpdateRequest.getContent());
+    assertThat(updateQuestionBoard.getQuestionCategory()).isEqualTo(
         questionBoardUpdateRequest.getQuestionCategory());
     assertThat(originImagePaths).isNotEqualTo(imagePaths);
 
@@ -254,11 +281,17 @@ class QuestionBoardServiceImplTest {
 
   @Test
   @DisplayName("질문게시글 삭제")
-  @Order(5)
-  void deleteQuestionBoard() {
+  void deleteQuestionBoard() throws IOException {
+
+    //질문게시글 생성
     Optional<User> findUser = userRepository.findById(1L);
-    assertThat(questionBoardRepository.existsBoardById(4L)).isTrue();
-    questionBoardService.deleteQuestionBoard(4L, findUser.get());
-    assertThat(questionBoardRepository.existsBoardById(4L)).isFalse();
+    QuestionBoardRequest request = new QuestionBoardRequest("제목4", "내용4",
+        5, QuestionCategory.BACKEND);
+    QuestionBoard createdQuestionBoard = questionBoardService.createQuestionBoard(request,
+        null, findUser.get());
+
+    assertThat(questionBoardRepository.existsBoardById(createdQuestionBoard.getId())).isTrue();
+    questionBoardService.deleteQuestionBoard(createdQuestionBoard.getId(), findUser.get());
+    assertThat(questionBoardRepository.existsBoardById(createdQuestionBoard.getId())).isFalse();
   }
 }

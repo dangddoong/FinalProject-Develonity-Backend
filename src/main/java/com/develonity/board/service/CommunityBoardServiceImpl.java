@@ -46,7 +46,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   //잡담 게시글 생성
   @Override
   @Transactional
-  public void createCommunityBoard(CommunityBoardRequest request,
+  public CommunityBoard createCommunityBoard(CommunityBoardRequest request,
       List<MultipartFile> multipartFiles,
       User user) throws IOException {
     CommunityBoard communityBoard = CommunityBoard.builder()
@@ -60,12 +60,13 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     if (multipartFiles != null) {
       upload(multipartFiles, communityBoard);
     }
+    return communityBoard;
   }
 
   //잡담 게시글 수정
   @Override
   @Transactional
-  public void updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,
+  public CommunityBoard updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,
       CommunityBoardRequest request, User user) throws IOException {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     checkUser(communityBoard, user.getId());
@@ -76,6 +77,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
     communityBoard.updateBoard(request.getTitle(), request.getContent(),
         request.getCommunityCategory());
     communityBoardRepository.save(communityBoard);
+    return communityBoard;
   }
 
   //잡담 게시글 삭제

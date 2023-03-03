@@ -16,10 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 public interface QuestionBoardService {
 
 
-  void createQuestionBoard(QuestionBoardRequest request,
+  QuestionBoard createQuestionBoard(QuestionBoardRequest request,
       List<MultipartFile> multipartFiles, User user) throws IOException;
 
-  void updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
+  QuestionBoard updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
       QuestionBoardUpdateRequest request,
       User user) throws IOException;
 

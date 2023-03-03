@@ -21,6 +21,8 @@ public class CommunityBoardResponse {
   private final LocalDateTime createdAt;
   private final LocalDateTime lastModifiedAt;
   private final long countAllComments;
+
+  //  private long countAllReplyComments;
   private final long boardLike;
 
   private boolean hasLike;
@@ -37,6 +39,7 @@ public class CommunityBoardResponse {
       LocalDateTime createdAt,
       LocalDateTime lastModifiedAt,
       long countAllComment,
+      long countAllReplyComments,
       long boardLike
   ) {
     this.id = id;
@@ -47,7 +50,8 @@ public class CommunityBoardResponse {
     this.boardLike = boardLike;
     this.createdAt = createdAt;
     this.lastModifiedAt = lastModifiedAt;
-    this.countAllComments = countAllComment;
+    this.countAllComments = countAllComment + countAllReplyComments;
+//    this.countAllReplyComments = countAllReplyComments;
   }
 
 //

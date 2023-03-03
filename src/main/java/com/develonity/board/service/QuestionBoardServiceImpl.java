@@ -47,7 +47,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   //질문 게시글 생성(+이미지)
   @Override
   @Transactional
-  public void createQuestionBoard(QuestionBoardRequest request,
+  public QuestionBoard createQuestionBoard(QuestionBoardRequest request,
       List<MultipartFile> multipartFiles,
       User user) throws IOException {
     QuestionBoard questionBoard = QuestionBoard.builder()
@@ -62,13 +62,14 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
       upload(multipartFiles, questionBoard);
     }
     userService.subtractGiftPoint(questionBoard.getPrizePoint(), user);
+    return questionBoard;
   }
 
   //질문 게시글 수정(+이미지)
 
   @Override
   @Transactional
-  public void updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
+  public QuestionBoard updateQuestionBoard(Long boardId, List<MultipartFile> multipartFiles,
       QuestionBoardUpdateRequest request, User user) throws IOException {
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
     if (questionBoard.isAlreadyAdopted()) {
@@ -82,6 +83,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     questionBoard.updateBoard(request.getTitle(), request.getContent(),
         request.getQuestionCategory());
     questionBoardRepository.save(questionBoard);
+    return questionBoard;
   }
 
   //질문 게시글 삭제
