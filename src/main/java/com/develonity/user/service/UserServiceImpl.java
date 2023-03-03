@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
       throw new IllegalArgumentException("회원 중복");
     }
     String encodingPassword = passwordEncoder.encode(registerRequest.getPassword());
-    User user = registerRequest.toEntity(encodingPassword);
+//    User user = registerRequest.toEntity(encodingPassword);
     userRepository.save(user);
   }
 
