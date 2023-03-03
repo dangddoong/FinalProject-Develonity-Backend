@@ -39,13 +39,14 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public void register(RegisterRequest registerRequest) {
+  public User register(RegisterRequest registerRequest) {
     if (userRepository.existsByLoginId(registerRequest.getLoginId())) {
       throw new IllegalArgumentException("회원 중복");
     }
     String encodingPassword = passwordEncoder.encode(registerRequest.getPassword());
     User user = registerRequest.toEntity(encodingPassword);
     userRepository.save(user);
+    return user;
   }
 
   @Override

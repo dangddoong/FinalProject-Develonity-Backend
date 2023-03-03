@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
-  void register(RegisterRequest registerRequest);
+  User register(RegisterRequest registerRequest);
 
   TokenResponse login(LoginRequest loginRequest);
 
