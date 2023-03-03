@@ -71,25 +71,25 @@ class UserServiceImplTest {
     assertThat(user.getEmail()).isEqualTo(request.getEmail());
   }
 
-//  @Test
-//  @DisplayName("로그인")
-//  void login() {
-//    //given
-//    LoginRequest request = new LoginRequest("user2", "Pass12!@");
-//
-//    User user = new User("user2", passwordEncoder.encode("Pass12!@"),
-//        "nickname2", "aa@b.com");
-//
-//    userRepository.save(user);
-//
-//    //when
-//    TokenResponse tokenResponse = userService.login(request);
-//
-//    //then
-//    assertThat(tokenResponse.getAccessToken()).isNotEmpty();
-//    assertThat(tokenResponse.getRefreshToken()).isNotEmpty();
-//
-//  }
+  @Test
+  @DisplayName("로그인")
+  void login() {
+    //given
+    LoginRequest request = new LoginRequest("user2", "Pass12!@");
+
+    User user = new User("user2", passwordEncoder.encode("Pass12!@"),
+        "nickname2", "aa@b.com");
+
+    userRepository.save(user);
+
+    //when
+    TokenResponse tokenResponse = userService.login(request);
+
+    //then
+    assertThat(tokenResponse.getAccessToken()).isNotEmpty();
+    assertThat(tokenResponse.getRefreshToken()).isNotEmpty();
+
+  }
 
   @Test
   @DisplayName("프로필 수정 & 조회")
