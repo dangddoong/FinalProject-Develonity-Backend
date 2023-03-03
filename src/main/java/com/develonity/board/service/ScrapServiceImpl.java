@@ -41,6 +41,7 @@ public class ScrapServiceImpl implements ScrapService {
   }
 
 
+  //내가 스크랩 게시물 조회
   @Transactional
   @Override
   public List<Long> getScrapBoardIds(Long userId) {

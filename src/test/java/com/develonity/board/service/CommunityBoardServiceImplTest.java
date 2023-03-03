@@ -11,20 +11,14 @@ import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.entity.CommunityCategory;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
-import com.develonity.common.jwt.JwtUtil;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
-import com.develonity.user.service.UserService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -32,8 +26,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(Lifecycle.PER_CLASS)
+//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+//@TestInstance(Lifecycle.PER_CLASS)
 class CommunityBoardServiceImplTest {
 
   @Autowired
@@ -43,58 +37,14 @@ class CommunityBoardServiceImplTest {
   private BoardLikeService boardLikeService;
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
-  private CommunityBoardServiceImpl communityBoardService;
+  private CommunityBoardService communityBoardService;
 
   @Autowired
   private UserRepository userRepository;
 
   @Autowired
-  private JwtUtil jwtUtil;
-
-  @Autowired
   private BoardImageRepository boardImageRepository;
 
-//  @BeforeAll
-//  public void beforeAll() throws IOException {
-//    CommunityBoardRequest request = new CommunityBoardRequest("제목1", "내용1",
-//        CommunityCategory.NORMAL);
-//
-//    Optional<User> findUser = userRepository.findById(1L);
-//    List<MultipartFile> multipartFiles = new ArrayList<>();
-//
-//    MockMultipartFile multipartFile = new MockMultipartFile("files", "imageFile.jpeg", "image/jpeg",
-//        "<<jpeg data>>".getBytes());
-//
-//    multipartFiles.add(multipartFile);
-//
-//    //when
-//    communityBoardService.createCommunityBoard(request, multipartFiles, findUser.get());
-
-//    List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(1L);
-//    List<String> imagePaths = new ArrayList<>();
-//    for (BoardImage boardImage : boardImageList) {
-//      imagePaths.add(boardImage.getImagePath());
-//    }
-//  }
-
-//  @AfterAll
-//  public void afterAll() throws IOException {
-//    Optional<User> findUser = userRepository.findById(1L);
-//    communityBoardService.deleteCommunityBoard(1L, findUser.get());
-//  }
-//
-//
-//  List<String> getOriginImagePaths() {
-//    List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
-//    List<String> originImagePaths = new ArrayList<>();
-//    for (BoardImage boardImage : originBoardImageList) {
-//      originImagePaths.add(boardImage.getImagePath());
-//    }
-//    return originImagePaths;
-//  }
 
   @Test
   @DisplayName("잡담게시글 생성(이미지) & 단건 조회")
@@ -140,6 +90,7 @@ class CommunityBoardServiceImplTest {
     assertThat(communityBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(communityBoardResponse.isHasLike()).isEqualTo(true);
 
+    communityBoardRepository.delete(createCommunityBoard);
   }
 
   @Test
@@ -147,7 +98,7 @@ class CommunityBoardServiceImplTest {
   void createEmptyImageCommunityBoard() throws IOException {
 
     //given
-    CommunityBoardRequest request = new CommunityBoardRequest("제목3", "내용3",
+    CommunityBoardRequest request = new CommunityBoardRequest("제목생성", "내용생성",
         CommunityCategory.NORMAL);
 
     Optional<User> findUser = userRepository.findById(1L);
@@ -182,6 +133,7 @@ class CommunityBoardServiceImplTest {
     assertThat(communityBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(communityBoardResponse.isHasLike()).isEqualTo(true);
 
+    communityBoardRepository.delete(createCommunityBoard);
   }
 
   @Test
@@ -229,6 +181,8 @@ class CommunityBoardServiceImplTest {
     assertThat(updateCommunityBoard.getCommunityCategory()).isEqualTo(
         communityBoardRequest.getCommunityCategory());
     assertThat(originImagePaths).isEqualTo(imagePaths);
+
+    communityBoardRepository.delete(updateCommunityBoard);
   }
 
   @Test
@@ -280,6 +234,7 @@ class CommunityBoardServiceImplTest {
         communityBoardRequest.getCommunityCategory());
     assertThat(originImagePaths).isNotEqualTo(imagePaths);
 
+    communityBoardRepository.delete(updateCommunityBoard);
   }
 
   @Test
@@ -300,47 +255,73 @@ class CommunityBoardServiceImplTest {
   }
 
   @Test
-  @DisplayName("잡담글 전체조회")
+  @DisplayName("잡담글 전체조회 + 검색")
   void getAllCommunityBoard() {
 
     PageDto pageDto = PageDto.builder().page(1).size(10).build();
-//    BoardSearchCond boardSearchCond = BoardSearchCond.builder()
-//        .communityCategory(CommunityCategory.NORMAL)
-//        .title("제목")
-////        .content("1")
-////        .nickname("d")
-////        .boardSort(BoardSort.EMPTY)
-////        .sortDirection(SortDirection.DESC)
-//        .build();
-//
-
-//
-//    Page<CommunityBoardResponse> responses = communityBoardService.searchCommunityBoardByCond(
-//        boardSearchCond, pageDto);
-//
-//    assertThat(responses.getTotalElements()).isEqualTo(2);
-
+    //커뮤니티 보드 생성(2개)
     CommunityBoard c = CommunityBoard.builder().communityCategory(CommunityCategory.GRADE)
-        .userId(1L)
-        .title("메롱")
-        .content("메롱")
+        .userId(1L) //더미데이터 유저 1,2번
+        .title("안녕")
+        .content("하세요")
         .build();
 
     communityBoardRepository.save(c);
 
-    BoardSearchCond boardSearchCond2 = BoardSearchCond.builder()
+    CommunityBoard c2 = CommunityBoard.builder().communityCategory(CommunityCategory.NORMAL)
+        .userId(2L)
+        .title("반갑")
+        .content("습니다")
+        .build();
+
+    communityBoardRepository.save(c2);
+    BoardSearchCond cond = BoardSearchCond.builder().build();
+
+    //전체 조회(더미데이터 게시글(2개) 포함 4개)
+    Page<CommunityBoardResponse> responsesAll = communityBoardService.searchCommunityBoardByCond(
+        cond, pageDto);
+    assertThat(responsesAll.getTotalElements()).isEqualTo(4);
+
+//제목 검색
+    BoardSearchCond condTitle = BoardSearchCond.builder()
         .communityCategory(CommunityCategory.GRADE)
-//        .title("수정")
-        .content("메롱")
+        .title("안녕")
+//        .content("하세요")
 //        .nickname("d")
 //        .boardSort(BoardSort.EMPTY)
 //        .sortDirection(SortDirection.DESC)
         .build();
 
-    Page<CommunityBoardResponse> responses2 = communityBoardService.searchCommunityBoardByCond(
-        boardSearchCond2, pageDto);
+    Page<CommunityBoardResponse> responsesTitle = communityBoardService.searchCommunityBoardByCond(
+        condTitle, pageDto);
 
-    assertThat(responses2.getTotalElements()).isEqualTo(1);
+    assertThat(responsesTitle.getTotalElements()).isEqualTo(1);
+
+    //내용 검색
+    BoardSearchCond condContent = BoardSearchCond.builder()
+        .content("하세요")
+        .build();
+
+    Page<CommunityBoardResponse> responsesContent = communityBoardService.searchCommunityBoardByCond(
+        condContent, pageDto);
+
+    assertThat(responsesContent.getTotalElements()).isEqualTo(1);
+
+    //닉네임 검색(더미데이터 게시글도 같은 유저가 써서 3개)
+    BoardSearchCond condNickname = BoardSearchCond.builder()
+        .nickname("당")
+        .build();
+
+    Page<CommunityBoardResponse> responsesNickname = communityBoardService.searchCommunityBoardByCond(
+        condNickname, pageDto);
+
+    assertThat(responsesNickname.getTotalElements()).isEqualTo(3);
+
+    //카테고리 검색
+    BoardSearchCond condCategory = BoardSearchCond.builder()
+        .communityCategory(CommunityCategory.NORMAL).build();
+    Page<CommunityBoardResponse> responsesCategory = communityBoardService.searchCommunityBoardByCond(
+        condCategory, pageDto);
+    assertThat(responsesCategory.getTotalElements()).isEqualTo(1);
   }
-
 }

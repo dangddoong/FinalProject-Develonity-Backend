@@ -2,6 +2,8 @@ package com.develonity.board.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.develonity.board.dto.BoardSearchCond;
+import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
 import com.develonity.board.dto.QuestionBoardUpdateRequest;
@@ -10,25 +12,22 @@ import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.entity.QuestionCategory;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
-import com.develonity.common.jwt.JwtUtil;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
-import com.develonity.user.service.UserService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest
-@TestInstance(Lifecycle.PER_CLASS)
+//@TestInstance(Lifecycle.PER_CLASS)
 class QuestionBoardServiceImplTest {
 
   @Autowired
@@ -38,54 +37,13 @@ class QuestionBoardServiceImplTest {
   private BoardLikeService boardLikeService;
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
   private QuestionBoardService questionBoardService;
 
   @Autowired
   private UserRepository userRepository;
 
   @Autowired
-  private JwtUtil jwtUtil;
-
-  @Autowired
   private BoardImageRepository boardImageRepository;
-
-//  @BeforeAll
-//  public void beforeAll() throws IOException {
-//
-//    QuestionBoardRequest request = new QuestionBoardRequest("제목4", "내용4",
-//        5, QuestionCategory.BACKEND);
-//
-//    Optional<User> findUser = userRepository.findById(1L);
-//    List<MultipartFile> multipartFiles = new ArrayList<>();
-//
-//    MockMultipartFile multipartFile = new MockMultipartFile("files", "imageFile.jpeg", "image/jpeg",
-//        "<<jpeg data>>".getBytes());
-//
-//    multipartFiles.add(multipartFile);
-//
-//    //when
-//    QuestionBoard firstQuestionBoard = questionBoardService.createQuestionBoard(request,
-//        multipartFiles, findUser.get());
-//    System.out.println(firstQuestionBoard.getId());
-//  }
-
-//  @AfterAll
-//  public void afterAll() throws IOException {
-//    Optional<User> findUser = userRepository.findById(1L);
-//    questionBoardService.deleteQuestionBoard(1L, findUser.get());
-//  }
-//
-//  List<String> getOriginImagePaths() {
-//    List<BoardImage> originBoardImageList = boardImageRepository.findAllByBoardId(1L);
-//    List<String> originImagePaths = new ArrayList<>();
-//    for (BoardImage boardImage : originBoardImageList) {
-//      originImagePaths.add(boardImage.getImagePath());
-//    }
-//    return originImagePaths;
-//  }
 
   @Test
   @DisplayName("질문게시글 생성(이미지) & 단건 조회")
@@ -130,6 +88,8 @@ class QuestionBoardServiceImplTest {
         createQuestionBoard.getPrizePoint());
     assertThat(questionBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(questionBoardResponse.getHasLike()).isEqualTo(true);
+
+    questionBoardRepository.delete(createQuestionBoard);
   }
 
   @Test
@@ -138,9 +98,7 @@ class QuestionBoardServiceImplTest {
     //given
     QuestionBoardRequest request = new QuestionBoardRequest("제목6", "내용6",
         90, QuestionCategory.AI);
-//    User user1 = new User("user1", "pas12!@", "userNickname", "aaa@a.com");
-//
-//    userRepository.save(user1);
+
     Optional<User> findUser = userRepository.findById(1L);
     Optional<User> readUser = userRepository.findById(2L);
 
@@ -156,7 +114,7 @@ class QuestionBoardServiceImplTest {
         createQuestionBoard.getId(), readUser.get());
 
     List<BoardImage> boardImageList = boardImageRepository.findAllByBoardId(
-        questionBoardResponse.getId());
+        createQuestionBoard.getId());
     List<String> imagePaths = new ArrayList<>();
     for (BoardImage boardImage : boardImageList) {
       imagePaths.add(boardImage.getImagePath());
@@ -174,6 +132,8 @@ class QuestionBoardServiceImplTest {
         createQuestionBoard.getPrizePoint());
     assertThat(questionBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(questionBoardResponse.getHasLike()).isEqualTo(true);
+
+    questionBoardRepository.delete(createQuestionBoard);
   }
 
   @Test
@@ -222,6 +182,8 @@ class QuestionBoardServiceImplTest {
     assertThat(updateQuestionBoard.getQuestionCategory()).isEqualTo(
         questionBoardRequest.getQuestionCategory());
     assertThat(originImagePaths).isEqualTo(imagePaths);
+
+    questionBoardRepository.delete(updateQuestionBoard);
   }
 
   @Test
@@ -277,6 +239,8 @@ class QuestionBoardServiceImplTest {
         questionBoardUpdateRequest.getQuestionCategory());
     assertThat(originImagePaths).isNotEqualTo(imagePaths);
 
+    questionBoardRepository.delete(updateQuestionBoard);
+
   }
 
   @Test
@@ -293,5 +257,79 @@ class QuestionBoardServiceImplTest {
     assertThat(questionBoardRepository.existsBoardById(createdQuestionBoard.getId())).isTrue();
     questionBoardService.deleteQuestionBoard(createdQuestionBoard.getId(), findUser.get());
     assertThat(questionBoardRepository.existsBoardById(createdQuestionBoard.getId())).isFalse();
+  }
+
+
+  @Test
+  @DisplayName("질문게시글 전체조회 + 검색")
+  void getAllQuestionBoard() {
+
+    PageDto pageDto = PageDto.builder().page(1).size(10).build();
+    //질문글 생성(2개)
+    QuestionBoard q = QuestionBoard.builder().questionCategory(QuestionCategory.AI)
+        .userId(1L)
+        .title("안녕")
+        .content("하세요")
+        .build();
+
+    questionBoardRepository.save(q);
+
+    QuestionBoard q2 = QuestionBoard.builder().questionCategory(QuestionCategory.FRONTEND)
+        .userId(2L)
+        .title("반갑")
+        .content("습니다")
+        .build();
+
+    questionBoardRepository.save(q2);
+
+    BoardSearchCond cond = BoardSearchCond.builder().build();
+
+    //전체 조회(2개)
+    Page<QuestionBoardResponse> responsesAll = questionBoardService.searchQuestionBoardByCond(
+        cond, pageDto);
+    assertThat(responsesAll.getTotalElements()).isEqualTo(2);
+
+//제목 검색
+    BoardSearchCond condTitle = BoardSearchCond.builder()
+        .questionCategory(QuestionCategory.AI)
+        .title("안녕")
+//        .content("하세요")
+//        .nickname("d")
+//        .boardSort(BoardSort.EMPTY)
+//        .sortDirection(SortDirection.DESC)
+        .build();
+
+    Page<QuestionBoardResponse> responsesTitle = questionBoardService.searchQuestionBoardByCond(
+        condTitle, pageDto);
+
+    assertThat(responsesTitle.getTotalElements()).isEqualTo(1);
+
+    //내용 검색
+    BoardSearchCond condContent = BoardSearchCond.builder()
+        .content("하세요")
+        .build();
+
+    Page<QuestionBoardResponse> responsesContent = questionBoardService.searchQuestionBoardByCond(
+        condContent, pageDto);
+
+    assertThat(responsesContent.getTotalElements()).isEqualTo(1);
+
+    //닉네임 검색
+    BoardSearchCond condNickname = BoardSearchCond.builder()
+        .nickname("당")
+        .build();
+
+    Page<QuestionBoardResponse> responsesNickname = questionBoardService.searchQuestionBoardByCond(
+        condNickname, pageDto);
+
+    assertThat(responsesNickname.getTotalElements()).isEqualTo(1);
+
+    //카테고리 검색
+    BoardSearchCond condCategory = BoardSearchCond.builder()
+        .questionCategory(QuestionCategory.AI).build();
+    Page<QuestionBoardResponse> responsesCategory = questionBoardService.searchQuestionBoardByCond(
+        condCategory, pageDto);
+    assertThat(responsesCategory.getTotalElements()).isEqualTo(1);
+
   }
 }
