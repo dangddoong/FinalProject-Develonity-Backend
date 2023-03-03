@@ -46,6 +46,7 @@ public class User extends TimeStamp {
     this.email = email;
   }
 
+  
   public void withdraw() {
     this.withdrawal = true;
   }
