@@ -3,6 +3,7 @@ package com.develonity.board.repository;
 import static com.develonity.board.entity.QBoardLike.boardLike;
 import static com.develonity.board.entity.QCommunityBoard.communityBoard;
 import static com.develonity.comment.entity.QComment.comment;
+import static com.develonity.comment.entity.QReplyComment.replyComment;
 import static com.develonity.user.entity.QUser.user;
 
 import com.develonity.board.dto.BoardSearchCond;
@@ -43,15 +44,18 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
                 communityBoard.createdDate,
                 communityBoard.lastModifiedDate,
                 JPAExpressions
-                    .select(Wildcard.count
-                        /*comment.countDistinct()
-                            .add(replyComment.countDistinct())*/
-                    ) // select count(*) from comment where comment.board_id = board_id
-                    .from(comment/*, replyComment*/)
+                    .select(
+                        comment.countDistinct()
+                    )
+                    .from(comment)
                     .where(
                         comment.boardId.eq(
-                            communityBoard.id)/*, replyComment.comment.boardId.eq(communityBoard.id)*/
+                            communityBoard.id)
                     ),
+                JPAExpressions
+                    .select(replyComment.countDistinct())
+                    .from(replyComment)
+                    .where(replyComment.comment.boardId.eq(communityBoard.id)),
                 JPAExpressions
                     .select(Wildcard.count/*boardLike.countDistinct()*/)
                     .from(boardLike)
@@ -76,15 +80,17 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
         .limit(pageDto.toPageable().getPageSize())
         .fetch();
 
-    Long count = jpaQueryFactory
+    Long count = jpaQueryFactory //where from절 맞추기..조인도..
         .select(Wildcard.count)
         .from(communityBoard)
+        .leftJoin(user).on(communityBoard.userId.eq(user.id))
         .where(
             searchByTitle(cond.getTitle()),
             searchByContent(cond.getContent()),
-            searchByCategory(cond.getCommunityCategory()))
-        .fetch().get(0);
+            searchByCategory(cond.getCommunityCategory()),
+            searchByNickname(cond.getNickname()))
 
+        .fetch().get(0);
     return new PageImpl<>(responses, pageDto.toPageable(), count);
   }
 

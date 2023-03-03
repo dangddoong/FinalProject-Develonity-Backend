@@ -2,6 +2,9 @@ package com.develonity;
 
 import com.develonity.admin.entity.Admin;
 import com.develonity.admin.repository.AdminRepository;
+import com.develonity.board.entity.CommunityBoard;
+import com.develonity.board.entity.CommunityCategory;
+import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,8 @@ public class InitData implements ApplicationRunner {
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
 
+  private final CommunityBoardRepository communityBoardRepository;
+
   @Override
   public void run(ApplicationArguments args) throws Exception {
     Admin admin = new Admin("admin", passwordEncoder.encode("admin"));
@@ -26,5 +31,13 @@ public class InitData implements ApplicationRunner {
     User user1 = new User("test123", passwordEncoder.encode("aaAAaa1!"), "성현", "test12@naver.co");
     userRepository.save(user);
     userRepository.save(user1);
+
+    CommunityBoard communityBoard1 = new CommunityBoard(user.getId(), "더미제목", "더미내용",
+        CommunityCategory.GRADE);
+    communityBoardRepository.save(communityBoard1);
+
+    CommunityBoard communityBoard2 = new CommunityBoard(user.getId(), "더미제목2", "더미내용2",
+        CommunityCategory.NOTICE);
+    communityBoardRepository.save(communityBoard2);
   }
 }

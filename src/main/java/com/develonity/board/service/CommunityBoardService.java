@@ -14,12 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface CommunityBoardService {
 
-  void createCommunityBoard(CommunityBoardRequest request,
+  CommunityBoard createCommunityBoard(CommunityBoardRequest request,
       List<MultipartFile> multipartFiles,
       User user) throws IOException;
 
 
-  void updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,
+  CommunityBoard updateCommunityBoard(Long boardId, List<MultipartFile> multipartFiles,
       CommunityBoardRequest request, User user) throws IOException;
 
   void deleteCommunityBoard(Long boardId, User user);
