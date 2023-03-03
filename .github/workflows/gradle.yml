@@ -15,7 +15,9 @@ on:
 
 permissions:
   contents: read
-
+env:
+  SPRING_PROFILES_ACTIVE: test
+  
 jobs:
   build:
 
