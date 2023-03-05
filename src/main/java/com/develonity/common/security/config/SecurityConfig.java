@@ -36,12 +36,12 @@ public class SecurityConfig implements WebMvcConfigurer {
     return new BCryptPasswordEncoder();
   }
 
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring()
-        .requestMatchers(PathRequest.toH2Console())
-        .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-  }
+//  @Bean
+//  public WebSecurityCustomizer webSecurityCustomizer() {
+//    return (web) -> web.ignoring()
+//        .requestMatchers(PathRequest.toH2Console())
+//        .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+//  }
 
 
   @Bean

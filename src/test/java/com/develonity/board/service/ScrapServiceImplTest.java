@@ -51,7 +51,7 @@ class ScrapServiceImplTest {
     assertThat(scrapRepository.findByBoardIdAndUserId(findCommunityBoard.get().getId(),
         findUser.get().getId())).isNull();
 
-    //이미 좋아요 취소한 경우 예외 떠야함
+    //이미 스크랩 취소한 경우 예외 떠야함
     assertThrows(Exception.class, () -> scrapService.cancelScrap(
         findCommunityBoard.get().getId(),
         findUser.get().getId()));
