@@ -60,12 +60,6 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     return commentLikeRepository.existsCommentLikeByCommentIdAndUserId(commentId, userId);
   }
 
-  // 좋아요를 눌렀는지 안눌렀는지 확인하는 기능
-  @Override
-  public boolean isLike(Long commentId, Long userId) {
-    return commentLikeRepository.existsCommentLikeByCommentIdAndUserId(commentId, userId);
-  }
-
   @Override
   public void deleteAllByCommentId(Long commentId) {
     commentLikeRepository.deleteAllByCommentId(commentId);

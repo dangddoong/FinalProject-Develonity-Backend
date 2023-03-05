@@ -15,6 +15,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
   Page<Comment> findAllByBoardId(Pageable pageable, Long boardId);
 
+  boolean existsCommentById(Long commentId);
 
   @Modifying(clearAutomatically = true, flushAutomatically = true)
   @Query("delete from Comment c where c.boardId in :boardId")
@@ -29,5 +30,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
   boolean existsCommentsByBoardId(Long boardId);
 
   long countByBoardId(Long boardId);
+
 
 }
