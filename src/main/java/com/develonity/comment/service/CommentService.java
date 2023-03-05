@@ -14,16 +14,16 @@ public interface CommentService {
   Page<CommentResponse> getMyComments(CommentList commentList, Long userId,
       User user);
 
-  void createQuestionComment(Long questionBoardId, CommentRequest requestDto, User user);
+  Comment createQuestionComment(Long questionBoardId, CommentRequest requestDto, User user);
 
-  void updateQuestionComment(Long commentId, CommentRequest request,
+  Comment updateQuestionComment(Long commentId, CommentRequest request,
       User user);
 
   void deleteQuestionComment(Long commentId, User user);
 
-  void createCommunityComment(Long communityBoardId, CommentRequest request, User user);
+  Comment createCommunityComment(Long communityBoardId, CommentRequest request, User user);
 
-  void updateCommunityComment(Long communityBoardId, Long commentId, CommentRequest request,
+  Comment updateCommunityComment(Long communityBoardId, Long commentId, CommentRequest request,
       User user);
 
   void deleteCommunity(Long commentId, User user);
@@ -50,5 +50,7 @@ public interface CommentService {
   long countCommentsAndReplyComments(Long boardId);
 
   long countComments(Long boardId);
+
+  void checkUser(User user, Comment comment);
 
 }

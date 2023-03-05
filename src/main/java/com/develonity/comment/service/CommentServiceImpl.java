@@ -42,7 +42,8 @@ public class CommentServiceImpl implements CommentService {
   }
 
   // 작성자와 현재 유저가 같은지 확인하는 기능
-  private void checkUser(User user, Comment comment) {
+  @Override
+  public void checkUser(User user, Comment comment) {
     if (!getNicknameByComment(comment).equals(user.getNickname())) {
       throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
     }
@@ -68,7 +69,6 @@ public class CommentServiceImpl implements CommentService {
     if (!userId.equals(user.getId())) {
       throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
     }
-
     Page<Comment> myCommentList = commentRepository.findAllByUserId(commentList.toPageable(),
         user.getId());
     return myCommentList.map(
@@ -114,7 +114,7 @@ public class CommentServiceImpl implements CommentService {
   // 질문게시글 답변 작성
   @Override
   @Transactional
-  public void createQuestionComment(Long questionBoardId, CommentRequest requestDto,
+  public Comment createQuestionComment(Long questionBoardId, CommentRequest requestDto,
       User user) {
 //    if (existsCommentByBoardIdAndUserId(questionBoardId, user.getId())) {
 //      throw new CustomException(ExceptionStatus.COMMENT_IS_EXIST);
@@ -122,16 +122,15 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 생성
     Comment comment = new Comment(user, requestDto, questionBoardId);
     commentRepository.save(comment);
+    return comment;
   }
 
   // 질문 게시글 수정
   @Override
   @Transactional
-  public void updateQuestionComment(Long commentId,
+  public Comment updateQuestionComment(Long commentId,
       CommentRequest request,
       User user) {
-    // 게시물이 있는지 확인
-//    Board board = boardService.getBoard(boardId);
     // 댓글이 있는지 확인
     Comment comment = getComment(commentId);
     if (comment.isAdopted()) {
@@ -143,6 +142,7 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 작성자이면 댓글 수정
     comment.update(request.getContent());
     commentRepository.save(comment);
+    return comment;
   }
 
   // 질문 댓글 삭제 기능
@@ -151,8 +151,8 @@ public class CommentServiceImpl implements CommentService {
   public void deleteQuestionComment(Long commentId, User user) {
     // 댓글이 있는지 확인
     Comment comment = getComment(commentId);
-    // 권한 확인
-    // 댓글 작성자와 수정하려는 유저 닉네임이 같지 않으면 익셉션 출력
+
+    // 이미 채택 된 상태이면 익셉션 출력
     if (comment.isAdopted()) {
       throw new CustomException(ExceptionStatus.ADOPTED_QUESTION_BOARD);
     }
@@ -160,6 +160,8 @@ public class CommentServiceImpl implements CommentService {
     if (commentLikeService.isExistLikes(commentId)) {
       commentLikeService.deleteAllByCommentId(commentId);
     }
+    // 권한 확인
+    // 댓글 작성자와 수정하려는 유저 닉네임이 같지 않으면 익셉션 출력
     checkUser(user, comment);
     // 댓글 작성자면 댓글 삭제
     commentRepository.delete(comment);
@@ -177,19 +179,21 @@ public class CommentServiceImpl implements CommentService {
   // 잡담게시글 댓글 작성
   @Override
   @Transactional
-  public void createCommunityComment(Long communityBoardId, CommentRequest request, User user) {
+  public Comment createCommunityComment(Long communityBoardId, CommentRequest request, User user) {
     // 게시글이 있는지 확인
 //    Board board = boardService.getBoard(boardId);
 
     // 게시글이 있으면 댓글 작성
     Comment comment = new Comment(user, request, communityBoardId);
     commentRepository.save(comment);
+    return comment;
   }
 
   // 잡담 댓글 수정
   @Override
   @Transactional
-  public void updateCommunityComment(Long communityBoardId, Long commentId, CommentRequest request,
+  public Comment updateCommunityComment(Long communityBoardId, Long commentId,
+      CommentRequest request,
       User user) {
     // 게시글이 있는지 확인
     // Board board = boardService.getBoard(boardId);
@@ -203,6 +207,7 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 작성자인 경우 댓글 수정
     comment.update(request.getContent());
     commentRepository.save(comment);
+    return comment;
   }
 
   // 잡담 댓글 삭제 기능
@@ -287,6 +292,7 @@ public class CommentServiceImpl implements CommentService {
 
     return (countComments + countReplyComments);
   }
+
 
 }
 

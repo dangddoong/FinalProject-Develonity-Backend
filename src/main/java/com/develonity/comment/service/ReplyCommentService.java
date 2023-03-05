@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface ReplyCommentService {
 
-  void createReplyComment(Long commentId, ReplyCommentRequest request, User user);
+  ReplyComment createReplyComment(Long commentId, ReplyCommentRequest request, User user);
 
-  void updateReplyComment(Long commentId, Long replyCommentId, ReplyCommentRequest request,
+  ReplyComment updateReplyComment(Long commentId, Long replyCommentId, ReplyCommentRequest request,
       User user);
 
   void deleteReplyComment(Long replyCommentId, User user);
