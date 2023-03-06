@@ -166,6 +166,13 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
     return questionBoardRepository.searchQuestionBoard(questionBoardSearchCond, pageDto);
   }
 
+  //내가 쓴 질문글 조회
+  @Override
+  public Page<QuestionBoardResponse> searchMyQuestionBoardByCond(QuestionBoardSearchCond cond,
+      PageDto pageDto, Long userId) {
+    return questionBoardRepository.searchMyQuestionBoard(cond, pageDto, userId);
+  }
+
   //좋아요순 3개 조회, 구분(카테고리, 채택여부)
   @Override
   public List<QuestionBoardResponse> questionBoardOrderBy(QuestionBoardSearchCond cond) {

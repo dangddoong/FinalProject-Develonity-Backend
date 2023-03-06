@@ -90,13 +90,30 @@ public class BoardController {
     return questionBoardService.searchQuestionBoardByCond(questionBoardSearchCond, pageDto);
   }
 
-  //  질문글 좋아요순 3개
+  //  질문글 좋아요순 3개(당일 게시글 기준, 카테고리나 채택 상태별 필터 가능)
   @GetMapping("/test/like")
   public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
       QuestionBoardSearchCond cond
   ) {
-//    return questionBoardService.questionBoardOrderBy(cond);
     return questionBoardService.questionBoardOrderBy(cond);
+  }
+
+  //내가 쓴 잡담글 조회 (정렬,검색기능 동일)
+  @GetMapping("/community-boards/me")
+  public Page<CommunityBoardResponse> getMyCommunityBoardPage(
+      CommunityBoardSearchCond cond, PageDto pageDto,
+      @AuthenticationPrincipal UserDetailsImpl userDetails
+  ) {
+    return communityBoardService.searchMyCommunityBoardByCond(cond, pageDto, userDetails.getUser().getId());
+  }
+
+  //내가 쓴 질문글 조회 (정렬,검색기능 동일)
+  @GetMapping("/question-boards/me")
+  public Page<QuestionBoardResponse> getMyQuestionBoardPage(
+      QuestionBoardSearchCond cond, PageDto pageDto,
+      @AuthenticationPrincipal UserDetailsImpl userDetails
+  ) {
+    return questionBoardService.searchMyQuestionBoardByCond(cond, pageDto, userDetails.getUser().getId());
   }
 
   //  질문게시글 생성

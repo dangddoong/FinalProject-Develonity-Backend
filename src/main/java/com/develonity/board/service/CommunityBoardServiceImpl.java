@@ -134,6 +134,15 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
       PageDto pageDto) {
 
     return communityBoardRepository.searchCommunityBoard(cond, pageDto);
+  }
+
+  //내가 쓴 잡담글 조회
+
+  @Override
+  public Page<CommunityBoardResponse> searchMyCommunityBoardByCond(CommunityBoardSearchCond cond,
+      PageDto pageDto, Long userId) {
+
+    return communityBoardRepository.searchMyCommunityBoard(cond, pageDto, userId);
 
 
   }

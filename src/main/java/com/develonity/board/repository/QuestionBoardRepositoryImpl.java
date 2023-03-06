@@ -1,6 +1,7 @@
 package com.develonity.board.repository;
 
 import static com.develonity.board.entity.QBoardLike.boardLike;
+import static com.develonity.board.entity.QCommunityBoard.communityBoard;
 import static com.develonity.board.entity.QQuestionBoard.questionBoard;
 import static com.develonity.comment.entity.QComment.comment;
 import static com.develonity.user.entity.QUser.user;
@@ -103,6 +104,65 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
 //
 //    return PageableExecutionUtils.getPage(responses, pageDto.toPageable(), countQuery::fetchCount);
 
+  }
+
+  @Override
+  public Page<QuestionBoardResponse> searchMyQuestionBoard(
+      QuestionBoardSearchCond questionBoardSearchCond, PageDto pageDto, Long userId) {
+    List<QuestionBoardResponse> responses = jpaQueryFactory
+        .select(
+            Projections.constructor(
+                QuestionBoardResponse.class,
+                questionBoard.id,
+                user.nickname,
+                questionBoard.questionCategory,
+                questionBoard.title,
+                questionBoard.content,
+                questionBoard.prizePoint,
+                questionBoard.status,
+                questionBoard.createdDate,
+                questionBoard.lastModifiedDate,
+                JPAExpressions
+                    .select(
+                        /*comment.count()*/
+                        Wildcard.count) // select count(*) from comment where comment.board_id = board_id
+                    .from(comment)
+                    .where(
+                        comment.boardId.eq(questionBoard.id)
+                    ),
+                JPAExpressions
+                    .select(boardLike.countDistinct())
+                    .from(boardLike)
+                    .where(boardLike.boardId.eq(questionBoard.id))
+            ))
+        .from(questionBoard)
+        .leftJoin(user).on(questionBoard.userId.eq(user.id))
+        .leftJoin(boardLike).on(boardLike.boardId.eq(questionBoard.id))
+        .leftJoin(comment).on(comment.boardId.eq(questionBoard.id))
+        .where(
+            questionBoard.userId.eq(userId),
+            searchByTitle(questionBoardSearchCond.getTitle()),
+            searchByContent(questionBoardSearchCond.getContent()),
+            searchByCategoryEqual(questionBoardSearchCond.getQuestionCategory()),
+            searchByBoardStatusEqual(questionBoardSearchCond.getBoardStatus()))
+
+        .groupBy(questionBoard.id)
+        .orderBy(orderByCond(questionBoardSearchCond.getBoardSort(), questionBoardSearchCond.getSortDirection()),
+            questionBoard.createdDate.desc())
+        .offset(pageDto.toPageable().getOffset())
+        .limit(pageDto.toPageable().getPageSize())
+        .fetch();
+
+    Long count = jpaQueryFactory
+        .select(Wildcard.count)
+        .from(questionBoard)
+        .where(
+            searchByTitle(questionBoardSearchCond.getTitle()),
+            searchByContent(questionBoardSearchCond.getContent()),
+            searchByCategoryEqual(questionBoardSearchCond.getQuestionCategory()),
+            searchByBoardStatusEqual(questionBoardSearchCond.getBoardStatus()))
+        .fetch().get(0);
+    return new PageImpl<>(responses, pageDto.toPageable(), count);
   }
 
   //  좋아요 순서 질문글 조회(카테고리,상태 검색)

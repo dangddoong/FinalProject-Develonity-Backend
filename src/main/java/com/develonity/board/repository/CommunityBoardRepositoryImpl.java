@@ -94,7 +94,69 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
         .fetch().get(0);
     return new PageImpl<>(responses, pageDto.toPageable(), count);
   }
+  @Override
+  public Page<CommunityBoardResponse> searchMyCommunityBoard(CommunityBoardSearchCond cond, PageDto pageDto, Long userId) {
+    List<CommunityBoardResponse> responses = jpaQueryFactory
+        .select(
+            Projections.constructor(
+                CommunityBoardResponse.class,
+                communityBoard.id,
+                user.nickname,
+                communityBoard.communityCategory,
+                communityBoard.title,
+                communityBoard.content,
+                communityBoard.createdDate,
+                communityBoard.lastModifiedDate,
+                JPAExpressions
+                    .select(
+                        comment.countDistinct()
+                    )
+                    .from(comment)
+                    .where(
+                        comment.boardId.eq(
+                            communityBoard.id)
+                    ),
+                JPAExpressions
+                    .select(replyComment.countDistinct())
+                    .from(replyComment)
+                    .where(replyComment.comment.boardId.eq(communityBoard.id)),
+                JPAExpressions
+                    .select(Wildcard.count/*boardLike.countDistinct()*/)
+                    .from(boardLike)
+                    .where(boardLike.boardId.eq(communityBoard.id))
+            ))
+        .from(communityBoard)
+        .leftJoin(user).on(communityBoard.userId.eq(user.id))
+        .leftJoin(boardLike).on(boardLike.boardId.eq(communityBoard.id))
+        .leftJoin(comment).on(comment.boardId.eq(communityBoard.id))
+//        .leftJoin(replyComment).on(replyComment.comment.boardId.eq(communityBoard.id))
 
+        .where(
+            communityBoard.userId.eq(userId),
+            searchByTitle(cond.getTitle()),
+            searchByContent(cond.getContent()),
+            searchByCategoryEqual(cond.getCommunityCategory()))
+        .groupBy(communityBoard.id)
+        .orderBy(orderByCond(cond.getBoardSort(), cond.getSortDirection()),
+            communityBoard.createdDate.desc())
+        .offset(pageDto.toPageable().getOffset())
+        .limit(pageDto.toPageable().getPageSize())
+        .fetch();
+
+    Long count = jpaQueryFactory //where from절 맞추기..조인도..
+        .select(Wildcard.count)
+        .from(communityBoard)
+//        .leftJoin(user).on(communityBoard.userId.eq(user.id))
+        .where(
+//            user.id.eq(communityBoard.userId),
+            communityBoard.userId.eq(userId),
+            searchByTitle(cond.getTitle()),
+            searchByContent(cond.getContent()),
+            searchByCategoryEqual(cond.getCommunityCategory()))
+
+        .fetch().get(0);
+    return new PageImpl<>(responses, pageDto.toPageable(), count);
+  }
   private BoardSort getSort(BoardSort sort) {
     if (Objects.isNull(sort)) {
       sort = BoardSort.EMPTY;

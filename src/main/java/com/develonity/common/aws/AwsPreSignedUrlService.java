@@ -77,7 +77,7 @@ public class AwsPreSignedUrlService {
   public String findByName(String path) { //경로
 //        if (!amazonS3.doesObjectExist(bucket,editPath+ useOnlyOneFileName))
 //            return "File does not exist";
-    log.info("Generating signed URL for file name {}", uniqueFileName);
+//    log.info("Generating signed URL for file name {}", uniqueFileName);
 //        return  amazonS3.getUrl(bucket,editPath+useOnlyOneFileName).toString();
     return "https://"+bucket+".s3."+location+".amazonaws.com/"+path+"/"+uniqueFileName;
   }
