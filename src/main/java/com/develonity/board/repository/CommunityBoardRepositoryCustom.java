@@ -11,5 +11,5 @@ public interface CommunityBoardRepositoryCustom {
   Page<CommunityBoardResponse> searchCommunityBoard(CommunityBoardSearchCond cond,
       PageDto pageDto);
 
-
+  Page<CommunityBoardResponse> searchMyCommunityBoard(CommunityBoardSearchCond cond, PageDto pageDto, Long userId);
 }

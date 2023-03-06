@@ -63,4 +63,7 @@ public interface CommunityBoardService {
 
   Page<CommunityBoardResponse> searchCommunityBoardByCond(CommunityBoardSearchCond cond,
       PageDto pageDto);
+
+  Page<CommunityBoardResponse>searchMyCommunityBoardByCond(CommunityBoardSearchCond cond,
+      PageDto pageDto, Long userId);
 }
