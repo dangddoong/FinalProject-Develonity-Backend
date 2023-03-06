@@ -1,5 +1,8 @@
 package com.develonity.user.controller;
 
+import com.amazonaws.services.xray.model.Http;
+import com.develonity.board.dto.ImageNameRequest;
+import com.develonity.common.aws.AwsPreSignedUrlService;
 import com.develonity.common.jwt.JwtUtil;
 import com.develonity.common.security.users.UserDetailsImpl;
 import com.develonity.user.dto.LoginRequest;
@@ -34,6 +37,33 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
   private final UserService userService;
+
+  private final AwsPreSignedUrlService awsPreSignedUrlService;
+
+  //preSignedURL 받아오기
+  @PostMapping("/users/preSigned")
+  public String createPreSigned(
+      @RequestBody ImageNameRequest imageNameRequest,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+    String path = "user";
+    String imageName = imageNameRequest.getImageName();
+    return awsPreSignedUrlService.getPreSignedUrl(path, imageName);
+
+  }
+ //preSignedURL 프로필 수정
+  @PutMapping("/users/preSignedProfile")
+  public ResponseEntity<String> updatePreSignedURLProfile(
+      @RequestBody ProfileRequest request,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    String path = "user";
+    if (userService.existsByUserId(userDetails.getUser().getId())) {
+      userService.deleteProfileImage(userDetails.getUser().getId());
+    }
+    String imagePath = awsPreSignedUrlService.findByName(path);
+    userService.updatePreSignedURLProfile(request, imagePath, userDetails.getUser());
+    return new ResponseEntity<>("프로필이 수정되었습니다.", HttpStatus.OK);
+  }
 
   @PostMapping("/register") //회원가입
   public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest) {

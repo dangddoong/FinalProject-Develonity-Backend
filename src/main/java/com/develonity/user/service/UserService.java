@@ -41,6 +41,9 @@ public interface UserService {
   void updateProfile(ProfileRequest request,
       MultipartFile multipartFile, User user) throws IOException;
 
+  //preSignedUrl 방식
+  void updatePreSignedURLProfile(ProfileRequest request, String imagePath, User user);
+
   //이미지 업로드
   void uploadOne(MultipartFile multipartFile, Long userId) throws IOException;
 

@@ -12,6 +12,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -29,15 +30,9 @@ public class InitData implements ApplicationRunner {
     adminRepository.save(admin);
     User user = new User("test12", passwordEncoder.encode("aaAAaa1!"), "당뚱", "test12@naver.com");
     User user1 = new User("test123", passwordEncoder.encode("aaAAaa1!"), "성현", "test12@naver.co");
+
     userRepository.save(user);
     userRepository.save(user1);
 
-    CommunityBoard communityBoard1 = new CommunityBoard(user.getId(), "더미제목", "더미내용",
-        CommunityCategory.GRADE);
-    communityBoardRepository.save(communityBoard1);
-
-    CommunityBoard communityBoard2 = new CommunityBoard(user.getId(), "더미제목2", "더미내용2",
-        CommunityCategory.NOTICE);
-    communityBoardRepository.save(communityBoard2);
   }
 }

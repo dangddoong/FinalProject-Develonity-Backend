@@ -5,6 +5,9 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +19,8 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("QuestionBoard")
 public class QuestionBoard extends Board {
 
+  @Max(value = 1000)
+  @Min(value = 0)
   @Column
   private int prizePoint = 0;
   @Column

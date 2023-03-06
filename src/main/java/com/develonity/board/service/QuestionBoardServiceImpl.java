@@ -5,6 +5,7 @@ import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.dto.QuestionBoardSearchCond;
 import com.develonity.board.dto.QuestionBoardUpdateRequest;
 import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.QuestionBoard;
@@ -158,15 +159,16 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   //querydsl 검색+정렬 전체 조회
   @Override
-  public Page<QuestionBoardResponse> searchQuestionBoardByCond(BoardSearchCond cond,
+  public Page<QuestionBoardResponse> searchQuestionBoardByCond(
+      QuestionBoardSearchCond questionBoardSearchCond,
       PageDto pageDto) {
 
-    return questionBoardRepository.searchQuestionBoard(cond, pageDto);
+    return questionBoardRepository.searchQuestionBoard(questionBoardSearchCond, pageDto);
   }
 
   //좋아요순 3개 조회, 구분(카테고리, 채택여부)
   @Override
-  public List<QuestionBoardResponse> questionBoardOrderBy(BoardSearchCond cond) {
+  public List<QuestionBoardResponse> questionBoardOrderBy(QuestionBoardSearchCond cond) {
     return questionBoardRepository.QuestionBoardOrderByLikes(cond);
   }
 
