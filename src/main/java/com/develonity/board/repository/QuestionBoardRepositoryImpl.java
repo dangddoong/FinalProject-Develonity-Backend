@@ -5,10 +5,12 @@ import static com.develonity.board.entity.QQuestionBoard.questionBoard;
 import static com.develonity.comment.entity.QComment.comment;
 import static com.develonity.user.entity.QUser.user;
 import static com.querydsl.jpa.JPAExpressions.select;
+import static com.querydsl.jpa.JPAExpressions.selectFrom;
 
 import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.dto.QuestionBoardSearchCond;
 import com.develonity.board.entity.BoardSort;
 import com.develonity.board.entity.BoardStatus;
 import com.develonity.board.entity.QuestionCategory;
@@ -19,6 +21,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +37,7 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
   private final JPAQueryFactory jpaQueryFactory;
 
   @Override
-  public Page<QuestionBoardResponse> searchQuestionBoard(BoardSearchCond cond, PageDto pageDto) {
+  public Page<QuestionBoardResponse> searchQuestionBoard(QuestionBoardSearchCond questionBoardSearchCond, PageDto pageDto) {
     List<QuestionBoardResponse> responses = jpaQueryFactory
         .select(
             Projections.constructor(
@@ -64,14 +69,14 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
         .leftJoin(boardLike).on(boardLike.boardId.eq(questionBoard.id))
         .leftJoin(comment).on(comment.boardId.eq(questionBoard.id))
         .where(
-            searchByTitle(cond.getTitle()),
-            searchByContent(cond.getContent()),
-            searchByCategory(cond.getQuestionCategory()),
-            searchByNickname(cond.getNickname()),
-            searchByStatus(cond.getBoardStatus()))
+            searchByTitle(questionBoardSearchCond.getTitle()),
+            searchByContent(questionBoardSearchCond.getContent()),
+            searchByCategoryEqual(questionBoardSearchCond.getQuestionCategory()),
+            searchByNickname(questionBoardSearchCond.getNickname()),
+            searchByBoardStatusEqual(questionBoardSearchCond.getBoardStatus()))
 
         .groupBy(questionBoard.id)
-        .orderBy(orderByCond(cond.getBoardSort(), cond.getSortDirection()),
+        .orderBy(orderByCond(questionBoardSearchCond.getBoardSort(), questionBoardSearchCond.getSortDirection()),
             questionBoard.createdDate.desc())
         .offset(pageDto.toPageable().getOffset())
         .limit(pageDto.toPageable().getPageSize())
@@ -81,10 +86,10 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
         .select(Wildcard.count)
         .from(questionBoard)
         .where(
-            searchByTitle(cond.getTitle()),
-            searchByContent(cond.getContent()),
-            searchByCategory(cond.getQuestionCategory()),
-            searchByStatus(cond.getBoardStatus()))
+            searchByTitle(questionBoardSearchCond.getTitle()),
+            searchByContent(questionBoardSearchCond.getContent()),
+            searchByCategoryEqual(questionBoardSearchCond.getQuestionCategory()),
+            searchByBoardStatusEqual(questionBoardSearchCond.getBoardStatus()))
         .fetch().get(0);
     return new PageImpl<>(responses, pageDto.toPageable(), count);
 //    JPAQuery<QuestionBoard> countQuery = jpaQueryFactory
@@ -101,7 +106,7 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
   }
 
   //  좋아요 순서 질문글 조회(카테고리,상태 검색)
-  public List<QuestionBoardResponse> QuestionBoardOrderByLikes(BoardSearchCond cond) {
+  public List<QuestionBoardResponse> QuestionBoardOrderByLikes(QuestionBoardSearchCond cond) {
     List<QuestionBoardResponse> responses = jpaQueryFactory
         .select(
             Projections.constructor(
@@ -130,9 +135,9 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
         .leftJoin(user).on(questionBoard.userId.eq(user.id))
         .leftJoin(boardLike).on(boardLike.boardId.eq(questionBoard.id))
         .where(
-            searchByCategory(cond.getQuestionCategory()),
-            searchByStatus(cond.getBoardStatus()))
-
+            questionBoard.createdDate.dayOfMonth().eq(LocalDateTime.now().getDayOfMonth()),
+            searchByCategoryEqual(cond.getQuestionCategory()),
+            searchByBoardStatusEqual(cond.getBoardStatus()))
         .groupBy(questionBoard.id)
         .orderBy(boardLike.countDistinct().desc(), questionBoard.createdDate.desc())
         .limit(3)
@@ -215,7 +220,7 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
     return Objects.nonNull(content) ? questionBoard.content.contains(content) : null;
   }
 
-  private BooleanExpression searchByCategory(QuestionCategory questionCategory) {
+  private BooleanExpression searchByCategoryEqual(QuestionCategory questionCategory) {
     return Objects.nonNull(questionCategory) ? questionBoard.questionCategory.eq(questionCategory)
         : null;
   }
@@ -224,7 +229,7 @@ public class QuestionBoardRepositoryImpl implements QuestionBoardRepositoryCusto
     return Objects.nonNull(nickname) ? user.nickname.contains(nickname) : null;
   }
 
-  private BooleanExpression searchByStatus(BoardStatus boardStatus) {
+  private BooleanExpression searchByBoardStatusEqual(BoardStatus boardStatus) {
     return Objects.nonNull(boardStatus) ? questionBoard.status.eq(boardStatus)
         : null;
   }

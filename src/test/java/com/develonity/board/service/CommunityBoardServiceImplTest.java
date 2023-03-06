@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.CommunityBoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.entity.CommunityCategory;
 import com.develonity.board.repository.BoardImageRepository;
+import com.develonity.board.repository.BoardLikeRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
@@ -17,6 +19,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +50,18 @@ class CommunityBoardServiceImplTest {
   @Autowired
   private BoardImageRepository boardImageRepository;
 
+  @Autowired
+  private BoardLikeRepository boardLikeRepository;
+  @BeforeEach
+  void AllDeleteBefore() {
+    communityBoardRepository.deleteAll();
+  }
+  @AfterEach
+  void AllDeleteAfter() {
+    communityBoardRepository.deleteAll();
+    boardLikeRepository.deleteAll();
+    boardImageRepository.deleteAll();
+  }
 
   @Test
   @DisplayName("잡담게시글 생성(이미지) & 단건 조회")
@@ -90,7 +107,7 @@ class CommunityBoardServiceImplTest {
     assertThat(communityBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(communityBoardResponse.isHasLike()).isEqualTo(true);
 
-    communityBoardRepository.delete(createCommunityBoard);
+//    communityBoardRepository.delete(createCommunityBoard);
   }
 
   @Test
@@ -133,7 +150,7 @@ class CommunityBoardServiceImplTest {
     assertThat(communityBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(communityBoardResponse.isHasLike()).isEqualTo(true);
 
-    communityBoardRepository.delete(createCommunityBoard);
+//    communityBoardRepository.delete(createCommunityBoard);
   }
 
   @Test
@@ -182,7 +199,7 @@ class CommunityBoardServiceImplTest {
         communityBoardRequest.getCommunityCategory());
     assertThat(originImagePaths).isEqualTo(imagePaths);
 
-    communityBoardRepository.delete(updateCommunityBoard);
+//    communityBoardRepository.delete(updateCommunityBoard);
   }
 
   @Test
@@ -234,7 +251,7 @@ class CommunityBoardServiceImplTest {
         communityBoardRequest.getCommunityCategory());
     assertThat(originImagePaths).isNotEqualTo(imagePaths);
 
-    communityBoardRepository.delete(updateCommunityBoard);
+//    communityBoardRepository.delete(updateCommunityBoard);
   }
 
   @Test
@@ -275,15 +292,15 @@ class CommunityBoardServiceImplTest {
         .build();
 
     communityBoardRepository.save(c2);
-    BoardSearchCond cond = BoardSearchCond.builder().build();
+    CommunityBoardSearchCond cond = CommunityBoardSearchCond.builder().build();
 
-    //전체 조회(더미데이터 게시글(2개) 포함 4개)
+    //전체 조회(2개, 더미데이터는 BeforeEach로 지움)
     Page<CommunityBoardResponse> responsesAll = communityBoardService.searchCommunityBoardByCond(
         cond, pageDto);
-    assertThat(responsesAll.getTotalElements()).isEqualTo(4);
+    assertThat(responsesAll.getTotalElements()).isEqualTo(2);
 
 //제목 검색
-    BoardSearchCond condTitle = BoardSearchCond.builder()
+    CommunityBoardSearchCond condTitle = CommunityBoardSearchCond.builder()
         .communityCategory(CommunityCategory.GRADE)
         .title("안녕")
 //        .content("하세요")
@@ -298,7 +315,7 @@ class CommunityBoardServiceImplTest {
     assertThat(responsesTitle.getTotalElements()).isEqualTo(1);
 
     //내용 검색
-    BoardSearchCond condContent = BoardSearchCond.builder()
+    CommunityBoardSearchCond condContent = CommunityBoardSearchCond.builder()
         .content("하세요")
         .build();
 
@@ -308,17 +325,17 @@ class CommunityBoardServiceImplTest {
     assertThat(responsesContent.getTotalElements()).isEqualTo(1);
 
     //닉네임 검색(더미데이터 게시글도 같은 유저가 써서 3개)
-    BoardSearchCond condNickname = BoardSearchCond.builder()
+    CommunityBoardSearchCond condNickname = CommunityBoardSearchCond.builder()
         .nickname("당")
         .build();
 
     Page<CommunityBoardResponse> responsesNickname = communityBoardService.searchCommunityBoardByCond(
         condNickname, pageDto);
 
-    assertThat(responsesNickname.getTotalElements()).isEqualTo(3);
+    assertThat(responsesNickname.getTotalElements()).isEqualTo(1);
 
     //카테고리 검색
-    BoardSearchCond condCategory = BoardSearchCond.builder()
+    CommunityBoardSearchCond condCategory = CommunityBoardSearchCond.builder()
         .communityCategory(CommunityCategory.NORMAL).build();
     Page<CommunityBoardResponse> responsesCategory = communityBoardService.searchCommunityBoardByCond(
         condCategory, pageDto);

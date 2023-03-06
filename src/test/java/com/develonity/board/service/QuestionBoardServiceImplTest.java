@@ -6,11 +6,13 @@ import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.dto.QuestionBoardSearchCond;
 import com.develonity.board.dto.QuestionBoardUpdateRequest;
 import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.entity.QuestionCategory;
 import com.develonity.board.repository.BoardImageRepository;
+import com.develonity.board.repository.BoardLikeRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
@@ -18,6 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +49,19 @@ class QuestionBoardServiceImplTest {
 
   @Autowired
   private BoardImageRepository boardImageRepository;
+  @Autowired
+  private BoardLikeRepository boardLikeRepository;
+
+  @BeforeEach
+  void AllDeleteBefore() {
+    questionBoardRepository.deleteAll();
+  }
+  @AfterEach
+  void AllDeleteAfter() {
+    questionBoardRepository.deleteAll();
+    boardLikeRepository.deleteAll();
+    boardImageRepository.deleteAll();
+  }
 
   @Test
   @DisplayName("질문게시글 생성(이미지) & 단건 조회")
@@ -89,7 +107,7 @@ class QuestionBoardServiceImplTest {
     assertThat(questionBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(questionBoardResponse.getHasLike()).isEqualTo(true);
 
-    questionBoardRepository.delete(createQuestionBoard);
+//    questionBoardRepository.delete(createQuestionBoard);
   }
 
   @Test
@@ -133,7 +151,7 @@ class QuestionBoardServiceImplTest {
     assertThat(questionBoardResponse.getBoardLike()).isEqualTo(1);
     assertThat(questionBoardResponse.getHasLike()).isEqualTo(true);
 
-    questionBoardRepository.delete(createQuestionBoard);
+//    questionBoardRepository.delete(createQuestionBoard);
   }
 
   @Test
@@ -183,7 +201,7 @@ class QuestionBoardServiceImplTest {
         questionBoardRequest.getQuestionCategory());
     assertThat(originImagePaths).isEqualTo(imagePaths);
 
-    questionBoardRepository.delete(updateQuestionBoard);
+//    questionBoardRepository.delete(updateQuestionBoard);
   }
 
   @Test
@@ -239,7 +257,7 @@ class QuestionBoardServiceImplTest {
         questionBoardUpdateRequest.getQuestionCategory());
     assertThat(originImagePaths).isNotEqualTo(imagePaths);
 
-    questionBoardRepository.delete(updateQuestionBoard);
+//    questionBoardRepository.delete(updateQuestionBoard);
 
   }
 
@@ -282,7 +300,8 @@ class QuestionBoardServiceImplTest {
 
     questionBoardRepository.save(q2);
 
-    BoardSearchCond cond = BoardSearchCond.builder().build();
+    QuestionBoardSearchCond cond = QuestionBoardSearchCond.builder().build();
+//    BoardSearchCond cond = BoardSearchCond.builder().build();
 
     //전체 조회(2개)
     Page<QuestionBoardResponse> responsesAll = questionBoardService.searchQuestionBoardByCond(
@@ -290,7 +309,7 @@ class QuestionBoardServiceImplTest {
     assertThat(responsesAll.getTotalElements()).isEqualTo(2);
 
 //제목 검색
-    BoardSearchCond condTitle = BoardSearchCond.builder()
+    QuestionBoardSearchCond condTitle = QuestionBoardSearchCond.builder()
         .questionCategory(QuestionCategory.AI)
         .title("안녕")
 //        .content("하세요")
@@ -305,7 +324,7 @@ class QuestionBoardServiceImplTest {
     assertThat(responsesTitle.getTotalElements()).isEqualTo(1);
 
     //내용 검색
-    BoardSearchCond condContent = BoardSearchCond.builder()
+    QuestionBoardSearchCond condContent = QuestionBoardSearchCond.builder()
         .content("하세요")
         .build();
 
@@ -315,7 +334,7 @@ class QuestionBoardServiceImplTest {
     assertThat(responsesContent.getTotalElements()).isEqualTo(1);
 
     //닉네임 검색
-    BoardSearchCond condNickname = BoardSearchCond.builder()
+    QuestionBoardSearchCond condNickname = QuestionBoardSearchCond.builder()
         .nickname("당")
         .build();
 
@@ -325,7 +344,7 @@ class QuestionBoardServiceImplTest {
     assertThat(responsesNickname.getTotalElements()).isEqualTo(1);
 
     //카테고리 검색
-    BoardSearchCond condCategory = BoardSearchCond.builder()
+    QuestionBoardSearchCond condCategory = QuestionBoardSearchCond.builder()
         .questionCategory(QuestionCategory.AI).build();
     Page<QuestionBoardResponse> responsesCategory = questionBoardService.searchQuestionBoardByCond(
         condCategory, pageDto);

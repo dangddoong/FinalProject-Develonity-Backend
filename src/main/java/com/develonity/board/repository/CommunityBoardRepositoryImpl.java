@@ -8,6 +8,7 @@ import static com.develonity.user.entity.QUser.user;
 
 import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.CommunityBoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.entity.BoardSort;
 import com.develonity.board.entity.CommunityCategory;
@@ -31,7 +32,7 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
 
 
   @Override
-  public Page<CommunityBoardResponse> searchCommunityBoard(BoardSearchCond cond, PageDto pageDto) {
+  public Page<CommunityBoardResponse> searchCommunityBoard(CommunityBoardSearchCond cond, PageDto pageDto) {
     List<CommunityBoardResponse> responses = jpaQueryFactory
         .select(
             Projections.constructor(
@@ -70,7 +71,7 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
         .where(
             searchByTitle(cond.getTitle()),
             searchByContent(cond.getContent()),
-            searchByCategory(cond.getCommunityCategory()),
+            searchByCategoryEqual(cond.getCommunityCategory()),
             searchByNickname(cond.getNickname()))
 
         .groupBy(communityBoard.id)
@@ -87,7 +88,7 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
         .where(
             searchByTitle(cond.getTitle()),
             searchByContent(cond.getContent()),
-            searchByCategory(cond.getCommunityCategory()),
+            searchByCategoryEqual(cond.getCommunityCategory()),
             searchByNickname(cond.getNickname()))
 
         .fetch().get(0);
@@ -124,10 +125,8 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
         SortDirection.ASC)) {
       return boardLike.countDistinct().asc();
 
-    }/*else if (getSort(sort).equals(BoardSort.EMPTY) && getSortDirection(sortDirection).equals(
-        SortDirection.DESC)) {
-      return communityBoard.createdDate.desc();
-    }*/ else if (getSort(sort).equals(BoardSort.EMPTY) && getSortDirection(sortDirection).equals(
+    }
+    else if (getSort(sort).equals(BoardSort.EMPTY) && getSortDirection(sortDirection).equals(
         SortDirection.ASC)) {
       return communityBoard.createdDate.asc();
     } else if (getSort(sort).equals(BoardSort.COMMENT) && getSortDirection(sortDirection).equals(
@@ -148,7 +147,7 @@ public class CommunityBoardRepositoryImpl implements CommunityBoardRepositoryCus
     return Objects.nonNull(content) ? communityBoard.content.contains(content) : null;
   }
 
-  private BooleanExpression searchByCategory(CommunityCategory communityCategory) {
+  private BooleanExpression searchByCategoryEqual(CommunityCategory communityCategory) {
     return Objects.nonNull(communityCategory) ? communityBoard.communityCategory.eq(
         communityCategory) : null;
   }

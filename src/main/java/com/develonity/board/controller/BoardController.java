@@ -2,12 +2,14 @@ package com.develonity.board.controller;
 
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.BoardResponse;
-import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.CommunityBoardSearchCond;
+import com.develonity.board.dto.ImageNameRequest;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.dto.QuestionBoardSearchCond;
 import com.develonity.board.dto.QuestionBoardUpdateRequest;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.board.repository.CommunityBoardRepositoryImpl;
@@ -16,11 +18,13 @@ import com.develonity.board.service.BoardService;
 import com.develonity.board.service.CommunityBoardService;
 import com.develonity.board.service.QuestionBoardService;
 import com.develonity.board.service.ScrapService;
+import com.develonity.common.aws.AwsPreSignedUrlService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.security.users.UserDetailsImpl;
 import java.io.IOException;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -31,6 +35,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -53,11 +58,25 @@ public class BoardController {
   private final CommunityBoardRepositoryImpl communityBoardRepository;
   private final ScrapService scrapService;
 
+  private final AwsPreSignedUrlService awsPreSignedUrlService;
+
+  //preSignedURL 받아오기
+  @PostMapping("/preSigned")
+  public String createPreSigned(
+      @RequestBody ImageNameRequest imageNameRequest,
+      @AuthenticationPrincipal UserDetailsImpl userDetails)
+   {
+
+      String path = "board";
+      String imageName = imageNameRequest.getImageName();
+      return awsPreSignedUrlService.getPreSignedUrl(path, imageName);
+
+  }
 
   //QueryDsl 잡담글 전체조회
   @GetMapping("/community-boards")
   public Page<CommunityBoardResponse> getCommunityBoardsPage(
-      BoardSearchCond cond, PageDto pageDto
+      CommunityBoardSearchCond cond, PageDto pageDto
   ) {
     return communityBoardService.searchCommunityBoardByCond(cond, pageDto);
   }
@@ -65,16 +84,16 @@ public class BoardController {
   //QueryDsl 질문글 전체조회
   @GetMapping("/question-boards")
   public Page<QuestionBoardResponse> getQuestionBoardsPage(
-      BoardSearchCond cond,
+      QuestionBoardSearchCond questionBoardSearchCond,
       PageDto pageDto
   ) {
-    return questionBoardService.searchQuestionBoardByCond(cond, pageDto);
+    return questionBoardService.searchQuestionBoardByCond(questionBoardSearchCond, pageDto);
   }
 
   //  질문글 좋아요순 3개
   @GetMapping("/test/like")
   public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
-      BoardSearchCond cond
+      QuestionBoardSearchCond cond
   ) {
 //    return questionBoardService.questionBoardOrderBy(cond);
     return questionBoardService.questionBoardOrderBy(cond);
@@ -85,7 +104,7 @@ public class BoardController {
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<String> createQuestionBoard(
       @RequestPart(required = false, name = "images") List<MultipartFile> multipartFiles,
-      @RequestPart("request") QuestionBoardRequest request,
+      @RequestPart("request") @Valid QuestionBoardRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
     if (request.getQuestionCategory() == null) {

@@ -4,6 +4,7 @@ import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.CommunityBoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.entity.BoardImage;
 import com.develonity.board.entity.CommunityBoard;
@@ -129,7 +130,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   //전체조회+검색+좋아요 조회
 
   @Override
-  public Page<CommunityBoardResponse> searchCommunityBoardByCond(BoardSearchCond cond,
+  public Page<CommunityBoardResponse> searchCommunityBoardByCond(CommunityBoardSearchCond cond,
       PageDto pageDto) {
 
     return communityBoardRepository.searchCommunityBoard(cond, pageDto);

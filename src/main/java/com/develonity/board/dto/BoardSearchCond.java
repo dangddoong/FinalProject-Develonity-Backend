@@ -10,24 +10,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class BoardSearchCond {
-
   private String title;
   private String content;
-  private CommunityCategory communityCategory;
-  private BoardStatus boardStatus;
   private String nickname;
-
-  private QuestionCategory questionCategory;
-
 //  private String sort; // sort=like , sort=new ==>
-
   private BoardSort boardSort;
 
   private SortDirection sortDirection;
