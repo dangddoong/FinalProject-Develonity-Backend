@@ -1,7 +1,5 @@
 package com.develonity.board.controller;
 
-import com.develonity.board.dto.BoardPage;
-import com.develonity.board.dto.BoardResponse;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
 import com.develonity.board.dto.CommunityBoardSearchCond;
@@ -64,12 +62,11 @@ public class BoardController {
   @PostMapping("/preSigned")
   public String createPreSigned(
       @RequestBody ImageNameRequest imageNameRequest,
-      @AuthenticationPrincipal UserDetailsImpl userDetails)
-   {
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-      String path = "board";
-      String imageName = imageNameRequest.getImageName();
-      return awsPreSignedUrlService.getPreSignedUrl(path, imageName);
+    String path = "board";
+    String imageName = imageNameRequest.getImageName();
+    return awsPreSignedUrlService.getPreSignedUrl(path, imageName);
 
   }
 
@@ -96,24 +93,6 @@ public class BoardController {
       QuestionBoardSearchCond cond
   ) {
     return questionBoardService.questionBoardOrderBy(cond);
-  }
-
-  //내가 쓴 잡담글 조회 (정렬,검색기능 동일)
-  @GetMapping("/community-boards/me")
-  public Page<CommunityBoardResponse> getMyCommunityBoardPage(
-      CommunityBoardSearchCond cond, PageDto pageDto,
-      @AuthenticationPrincipal UserDetailsImpl userDetails
-  ) {
-    return communityBoardService.searchMyCommunityBoardByCond(cond, pageDto, userDetails.getUser().getId());
-  }
-
-  //내가 쓴 질문글 조회 (정렬,검색기능 동일)
-  @GetMapping("/question-boards/me")
-  public Page<QuestionBoardResponse> getMyQuestionBoardPage(
-      QuestionBoardSearchCond cond, PageDto pageDto,
-      @AuthenticationPrincipal UserDetailsImpl userDetails
-  ) {
-    return questionBoardService.searchMyQuestionBoardByCond(cond, pageDto, userDetails.getUser().getId());
   }
 
   //  질문게시글 생성
@@ -200,46 +179,6 @@ public class BoardController {
   }
 
 
-  //질문게시글 전체 조회(querydsl 이전방식)
-  @GetMapping("/question-boards/before")
-  public Page<QuestionBoardResponse> getQuestionBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardPage questionBoardPage
-  ) {
-    return questionBoardService.getQuestionBoardPage(userDetails.getUser(), questionBoardPage);
-  }
-
-
-  //잡담게시글 전체 조회(querydsl 이전방식)
-  @GetMapping("/community-boards/before")
-  public Page<CommunityBoardResponse> getCommunityBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardPage communityBoardPage
-  ) {
-    return communityBoardService.getCommunityBoardPage(userDetails.getUser(), communityBoardPage);
-  }
-
-
-  //질문게시글 전체 조회(테스트용)
-  @GetMapping("/question-boards/test")
-  public Page<QuestionBoardResponse> getTestQuestionBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardPage questionBoardPage
-  ) {
-    return questionBoardService.getTestQuestionBoardPage(userDetails.getUser(), questionBoardPage);
-  }
-
-  //잡담게시글 전체 조회(테스트용)
-  @GetMapping("/community-boards/test")
-  public Page<CommunityBoardResponse> getTestCommunityBoardsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardPage communityBoardPage
-  ) {
-    return communityBoardService.getTestCommunityBoardPage(userDetails.getUser(),
-        communityBoardPage);
-  }
-
-
   //질문 게시글 좋아요
   @PostMapping("/question-boards/{boardId}/likes")
   public ResponseEntity<String> addQuestionBoardLike(@PathVariable Long boardId,
@@ -311,15 +250,43 @@ public class BoardController {
     return new ResponseEntity<>("스크랩 취소!", HttpStatus.OK);
   }
 
-
-  //유저 스크랩 게시물 전체 조회
-  @GetMapping("/boards/scrap")
-  public Page<BoardResponse> getScrapsPage(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      BoardPage boardPage
-  ) {
-    return boardService.getScrapBoardPage(userDetails.getUser(), boardPage);
-  }
-
+//  //질문게시글 전체 조회(querydsl 이전방식)
+//  @GetMapping("/question-boards/before")
+//  public Page<QuestionBoardResponse> getQuestionBoardsPage(
+//      @AuthenticationPrincipal UserDetailsImpl userDetails,
+//      BoardPage questionBoardPage
+//  ) {
+//    return questionBoardService.getQuestionBoardPage(userDetails.getUser(), questionBoardPage);
+//  }
+//
+//
+//  //잡담게시글 전체 조회(querydsl 이전방식)
+//  @GetMapping("/community-boards/before")
+//  public Page<CommunityBoardResponse> getCommunityBoardsPage(
+//      @AuthenticationPrincipal UserDetailsImpl userDetails,
+//      BoardPage communityBoardPage
+//  ) {
+//    return communityBoardService.getCommunityBoardPage(userDetails.getUser(), communityBoardPage);
+//  }
+//
+//
+//  //질문게시글 전체 조회(테스트용)
+//  @GetMapping("/question-boards/test")
+//  public Page<QuestionBoardResponse> getTestQuestionBoardsPage(
+//      @AuthenticationPrincipal UserDetailsImpl userDetails,
+//      BoardPage questionBoardPage
+//  ) {
+//    return questionBoardService.getTestQuestionBoardPage(userDetails.getUser(), questionBoardPage);
+//  }
+//
+//  //잡담게시글 전체 조회(테스트용)
+//  @GetMapping("/community-boards/test")
+//  public Page<CommunityBoardResponse> getTestCommunityBoardsPage(
+//      @AuthenticationPrincipal UserDetailsImpl userDetails,
+//      BoardPage communityBoardPage
+//  ) {
+//    return communityBoardService.getTestCommunityBoardPage(userDetails.getUser(),
+//        communityBoardPage);
+//  }
 
 }

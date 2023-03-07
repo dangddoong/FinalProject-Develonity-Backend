@@ -1,7 +1,7 @@
 package com.develonity.user.service;
 
-import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.aws.AwsPreSignedUrlService;
+import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.jwt.JwtUtil;
@@ -152,6 +152,7 @@ public class UserServiceImpl implements UserService {
     user.updateProfile(request.getNickname());
     userRepository.save(user);
   }
+
   //프로필 수정 preSignedUrl 방식
   @Transactional
   public void updatePreSignedURLProfile(ProfileRequest request, String imagePath, User user) {
@@ -160,9 +161,9 @@ public class UserServiceImpl implements UserService {
     user.updateProfile(request.getNickname());
     userRepository.save(user);
   }
+
   //이미지 단일 파일 업로드
   @Override
-  @Transactional
   public void uploadOne(MultipartFile multipartFile, Long userId) throws IOException {
 
     String uploadImagePath;
@@ -175,7 +176,6 @@ public class UserServiceImpl implements UserService {
 
   //이미지 파일 삭제
   @Override
-  @Transactional
   public void deleteProfileImage(Long userId) {
 
     ProfileImage profileImage = profileImageRepository.findByUserId(userId)
