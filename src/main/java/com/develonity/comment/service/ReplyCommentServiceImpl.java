@@ -49,19 +49,21 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
   // 대댓글 작성
   @Override
   @Transactional
-  public void createReplyComment(Long commentId, ReplyCommentRequest request, User user) {
+  public ReplyComment createReplyComment(Long commentId, ReplyCommentRequest request, User user) {
     // 댓글이 있는지 확인
     Comment comment = getComment(commentId);
 
     // 대댓글 작성
     ReplyComment replyComment = new ReplyComment(user, request, comment);
     replyCommentRepository.save(replyComment);
+    return replyComment;
   }
 
   // 대댓글 수정
   @Override
   @Transactional
-  public void updateReplyComment(Long commentId, Long replyCommentId, ReplyCommentRequest request,
+  public ReplyComment updateReplyComment(Long commentId, Long replyCommentId,
+      ReplyCommentRequest request,
       User user) {
     // 댓글이 있는지 확인
     Comment comment = getComment(commentId);
@@ -72,6 +74,7 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
     // 댓글 수정
     replyComment.updateReplyComment(request.getContent());
     replyCommentRepository.save(replyComment);
+    return replyComment;
   }
 
   // 대댓글 삭제
