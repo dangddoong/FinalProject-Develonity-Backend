@@ -1,7 +1,5 @@
 package com.develonity.board.service;
 
-import com.develonity.board.dto.BoardPage;
-import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
@@ -126,39 +124,9 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   }
 
 
-  //질문 게시글 전체 조회
-  @Override
-  @Transactional(readOnly = true)
-  public Page<QuestionBoardResponse> getQuestionBoardPage(User user,
-      BoardPage questionBoardPage) {
-
-    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByQuestionCategoryAndTitleContainingOrContentContaining(
-        questionBoardPage.getQuestionCategory(), questionBoardPage.getTitle(),
-        questionBoardPage.getContent(),
-        questionBoardPage.toPageable());
-
-    return questionBoardPages.map(
-        questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
-            getNicknameByQuestionBoard(questionBoard), countComments(questionBoard.getId())));
-
-  }
-
-  //테스트용전체조회
-  @Override
-  public Page<QuestionBoardResponse> getTestQuestionBoardPage(User user,
-      BoardPage questionBoardPage) {
-
-    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByQuestionCategory(
-        questionBoardPage.getQuestionCategory(),
-        questionBoardPage.toPageable());
-
-    return questionBoardPages.map(
-        questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
-            getNicknameByQuestionBoard(questionBoard), countComments(questionBoard.getId())));
-  }
-
   //querydsl 검색+정렬 전체 조회
   @Override
+  @Transactional(readOnly = true)
   public Page<QuestionBoardResponse> searchQuestionBoardByCond(
       QuestionBoardSearchCond questionBoardSearchCond,
       PageDto pageDto) {
@@ -168,6 +136,8 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   //내가 쓴 질문글 조회
   @Override
+  @Transactional(readOnly = true)
+
   public Page<QuestionBoardResponse> searchMyQuestionBoardByCond(QuestionBoardSearchCond cond,
       PageDto pageDto, Long userId) {
     return questionBoardRepository.searchMyQuestionBoard(cond, pageDto, userId);
@@ -175,6 +145,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   //좋아요순 3개 조회, 구분(카테고리, 채택여부)
   @Override
+  @Transactional(readOnly = true)
   public List<QuestionBoardResponse> questionBoardOrderBy(QuestionBoardSearchCond cond) {
     return questionBoardRepository.QuestionBoardOrderByLikes(cond);
   }
@@ -220,7 +191,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   }
 
   @Override
-  @Transactional
   public void upload(List<MultipartFile> multipartFiles, QuestionBoard questionBoard)
       throws IOException {
 
@@ -244,7 +214,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
 
   @Override
-  @Transactional
   public void deleteBoardImages(Long boardId) {
     List<BoardImage> boardImages = boardImageRepository.findAllByBoardId(boardId);
 
@@ -264,6 +233,39 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
   public long countComments(Long boardId) {
     return commentService.countComments(boardId);
   }
+
+//
+//
+//  //질문 게시글 전체 조회(querydsl 이전방식)
+//  @Override
+//  @Transactional(readOnly = true)
+//  public Page<QuestionBoardResponse> getQuestionBoardPage(User user,
+//      BoardPage questionBoardPage) {
+//
+//    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByQuestionCategoryAndTitleContainingOrContentContaining(
+//        questionBoardPage.getQuestionCategory(), questionBoardPage.getTitle(),
+//        questionBoardPage.getContent(),
+//        questionBoardPage.toPageable());
+//
+//    return questionBoardPages.map(
+//        questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
+//            getNicknameByQuestionBoard(questionBoard), countComments(questionBoard.getId())));
+//
+//  }
+//
+//  //테스트용전체조회
+//  @Override
+//  public Page<QuestionBoardResponse> getTestQuestionBoardPage(User user,
+//      BoardPage questionBoardPage) {
+//
+//    Page<QuestionBoard> questionBoardPages = questionBoardRepository.findByQuestionCategory(
+//        questionBoardPage.getQuestionCategory(),
+//        questionBoardPage.toPageable());
+//
+//    return questionBoardPages.map(
+//        questionBoard -> QuestionBoardResponse.toQuestionBoardResponse(questionBoard,
+//            getNicknameByQuestionBoard(questionBoard), countComments(questionBoard.getId())));
+//  }
 }
 
 

@@ -1,9 +1,5 @@
 package com.develonity.board.service;
 
-import com.develonity.board.dto.BoardPage;
-import com.develonity.board.dto.BoardSearchCond;
-import com.develonity.board.dto.CommunityBoardResponse;
-import com.develonity.board.dto.CommunityBoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
@@ -29,12 +25,6 @@ public interface QuestionBoardService {
 
   void deleteQuestionBoard(Long boardId, User user);
 
-  Page<QuestionBoardResponse> getQuestionBoardPage(User user,
-      BoardPage questionBoardPage);
-
-  //test
-  Page<QuestionBoardResponse> getTestQuestionBoardPage(User user,
-      BoardPage questionBoardPage);
 
   QuestionBoardResponse getQuestionBoard(Long boardId, User user);
 
@@ -62,8 +52,16 @@ public interface QuestionBoardService {
   Page<QuestionBoardResponse> searchQuestionBoardByCond(
       QuestionBoardSearchCond questionBoardSearchCond,
       PageDto pageDto);
-  Page<QuestionBoardResponse>searchMyQuestionBoardByCond(QuestionBoardSearchCond cond,
+
+  Page<QuestionBoardResponse> searchMyQuestionBoardByCond(QuestionBoardSearchCond cond,
       PageDto pageDto, Long userId);
 
   List<QuestionBoardResponse> questionBoardOrderBy(QuestionBoardSearchCond cond);
+
+//  Page<QuestionBoardResponse> getQuestionBoardPage(User user,
+//      BoardPage questionBoardPage);
+//
+//  //test
+//  Page<QuestionBoardResponse> getTestQuestionBoardPage(User user,
+//      BoardPage questionBoardPage);
 }

@@ -63,8 +63,7 @@ public class GiftCardServiceImpl implements GiftCardService {
     Page<GiftCard> giftCardList;
     if (category.equals(GiftCardCategory.ALL)) {
       giftCardList = giftCardRepository.findAll(pageDTO.toPageable());
-    }
-    else {
+    } else {
       giftCardList = giftCardRepository.findAllByCategory(category, pageable);
 
       if (giftCardList.isEmpty()) {
@@ -126,7 +125,6 @@ public class GiftCardServiceImpl implements GiftCardService {
 
   //이미지 단일 파일 업로드
   @Override
-  @Transactional
   public String uploadImage(MultipartFile multipartFile, Long giftCardId) throws IOException {
 
     String uploadImagePath;
@@ -140,7 +138,6 @@ public class GiftCardServiceImpl implements GiftCardService {
 
   //이미지 경로 반환
   @Override
-  @Transactional
   public String getImagePath(Long giftCardId) {
     GiftCardImage giftCardImage = giftCardImageRepository.findByGiftCardId(giftCardId)
         .orElse(new GiftCardImage(
@@ -152,7 +149,6 @@ public class GiftCardServiceImpl implements GiftCardService {
 
   //이미지 파일 삭제
   @Override
-  @Transactional
   public void deleteGiftCardImage(Long id) {
     String imagePath = getImagePath(id);
     if (!imagePath.equals(
