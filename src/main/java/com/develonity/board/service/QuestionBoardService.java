@@ -2,9 +2,12 @@ package com.develonity.board.service;
 
 import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.BoardSearchCond;
+import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.CommunityBoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
+import com.develonity.board.dto.QuestionBoardSearchCond;
 import com.develonity.board.dto.QuestionBoardUpdateRequest;
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.user.entity.User;
@@ -56,9 +59,11 @@ public interface QuestionBoardService {
   //댓글만 카운트
   long countComments(Long boardId);
 
-  Page<QuestionBoardResponse> searchQuestionBoardByCond(BoardSearchCond cond,
+  Page<QuestionBoardResponse> searchQuestionBoardByCond(
+      QuestionBoardSearchCond questionBoardSearchCond,
       PageDto pageDto);
+  Page<QuestionBoardResponse>searchMyQuestionBoardByCond(QuestionBoardSearchCond cond,
+      PageDto pageDto, Long userId);
 
-
-  List<QuestionBoardResponse> questionBoardOrderBy(BoardSearchCond cond);
+  List<QuestionBoardResponse> questionBoardOrderBy(QuestionBoardSearchCond cond);
 }

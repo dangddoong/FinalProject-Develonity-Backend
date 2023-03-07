@@ -23,7 +23,7 @@ public interface CommentService {
 
   void createCommunityComment(Long communityBoardId, CommentRequest request, User user);
 
-  void updateCommunityComment(Long communityBoardId, Long commentId, CommentRequest request,
+  void updateCommunityComment(Long commentId, CommentRequest request,
       User user);
 
   void deleteCommunity(Long commentId, User user);

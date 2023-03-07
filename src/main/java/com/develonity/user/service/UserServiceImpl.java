@@ -1,6 +1,7 @@
 package com.develonity.user.service;
 
 import com.develonity.common.aws.AwsS3Service;
+import com.develonity.common.aws.AwsPreSignedUrlService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.jwt.JwtUtil;
@@ -36,6 +37,8 @@ public class UserServiceImpl implements UserService {
   private final JwtUtil jwtUtil;
 
   private final AwsS3Service awsS3Service;
+
+  private final AwsPreSignedUrlService awsPreSignedUrlService;
 
   @Override
   @Transactional
@@ -149,7 +152,14 @@ public class UserServiceImpl implements UserService {
     user.updateProfile(request.getNickname());
     userRepository.save(user);
   }
-
+  //프로필 수정 preSignedUrl 방식
+  @Transactional
+  public void updatePreSignedURLProfile(ProfileRequest request, String imagePath, User user) {
+    ProfileImage profileImage = new ProfileImage(imagePath, user.getId());
+    profileImageRepository.save(profileImage);
+    user.updateProfile(request.getNickname());
+    userRepository.save(user);
+  }
   //이미지 단일 파일 업로드
   @Override
   @Transactional

@@ -189,7 +189,7 @@ public class CommentServiceImpl implements CommentService {
   // 잡담 댓글 수정
   @Override
   @Transactional
-  public void updateCommunityComment(Long communityBoardId, Long commentId, CommentRequest request,
+  public void updateCommunityComment(Long commentId, CommentRequest request,
       User user) {
     // 게시글이 있는지 확인
     // Board board = boardService.getBoard(boardId);

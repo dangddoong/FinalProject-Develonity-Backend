@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Max;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class User extends TimeStamp {
   @Column(nullable = false, unique = true)
   private String email;
   private boolean withdrawal = false;
+  @Max(value = 500000000)
   private int giftPoint = 300;
   private int respectPoint = 0;
 
@@ -59,7 +61,11 @@ public class User extends TimeStamp {
     if (this.giftPoint < giftPoint) {
       throw new CustomException(ExceptionStatus.POINTS_IS_LACKING);
     }
+    if((this.giftPoint - giftPoint) >= 100000000){ //최대 1억포인트
+      this.giftPoint = 100000000;
+    }
     this.giftPoint = this.giftPoint - giftPoint;
+
   }
 
   public void addGiftPoint(int giftPoint) {

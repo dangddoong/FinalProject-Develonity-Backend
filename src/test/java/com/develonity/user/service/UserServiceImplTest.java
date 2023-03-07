@@ -69,6 +69,8 @@ class UserServiceImplTest {
 //    assertThat(user.get().getPassword()).isEqualTo((encodingPassword));
     assertThat(user.getNickname()).isEqualTo(request.getNickname());
     assertThat(user.getEmail()).isEqualTo(request.getEmail());
+
+    userRepository.delete(user);
   }
 
   @Test

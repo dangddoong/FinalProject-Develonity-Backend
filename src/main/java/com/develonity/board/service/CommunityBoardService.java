@@ -4,6 +4,7 @@ import com.develonity.board.dto.BoardPage;
 import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
+import com.develonity.board.dto.CommunityBoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.entity.CommunityBoard;
 import com.develonity.user.entity.User;
@@ -60,6 +61,9 @@ public interface CommunityBoardService {
   //댓글 + 대댓글 카운트
   long countAllComments(Long boardId);
 
-  Page<CommunityBoardResponse> searchCommunityBoardByCond(BoardSearchCond cond,
+  Page<CommunityBoardResponse> searchCommunityBoardByCond(CommunityBoardSearchCond cond,
       PageDto pageDto);
+
+  Page<CommunityBoardResponse>searchMyCommunityBoardByCond(CommunityBoardSearchCond cond,
+      PageDto pageDto, Long userId);
 }

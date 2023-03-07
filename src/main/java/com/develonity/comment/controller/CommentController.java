@@ -130,10 +130,9 @@ public class CommentController {
   // 잡담게시글 댓글 수정
   @PutMapping("/api/community-comments/{commentId}")
   public ResponseEntity<String> updateCommunityComment(
-      @RequestParam Long communityBoardId,
       @PathVariable Long commentId, @RequestBody CommentRequest request,
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    commentService.updateCommunityComment(communityBoardId, commentId, request,
+    commentService.updateCommunityComment(commentId, request,
         userDetails.getUser());
     return new ResponseEntity<>("잡담 댓글 수정 완료!", HttpStatus.OK);
   }
