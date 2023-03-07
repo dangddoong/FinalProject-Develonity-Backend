@@ -114,7 +114,7 @@ public class CommentServiceImpl implements CommentService {
   // 질문게시글 답변 작성
   @Override
   @Transactional
-  public void createQuestionComment(Long questionBoardId, CommentRequest requestDto,
+  public Comment createQuestionComment(Long questionBoardId, CommentRequest requestDto,
       User user) {
 //    if (existsCommentByBoardIdAndUserId(questionBoardId, user.getId())) {
 //      throw new CustomException(ExceptionStatus.COMMENT_IS_EXIST);
@@ -122,12 +122,13 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 생성
     Comment comment = new Comment(user, requestDto, questionBoardId);
     commentRepository.save(comment);
+    return comment;
   }
 
   // 질문 게시글 수정
   @Override
   @Transactional
-  public void updateQuestionComment(Long commentId,
+  public Comment updateQuestionComment(Long commentId,
       CommentRequest request,
       User user) {
     // 게시물이 있는지 확인
@@ -143,6 +144,7 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 작성자이면 댓글 수정
     comment.update(request.getContent());
     commentRepository.save(comment);
+    return comment;
   }
 
   // 질문 댓글 삭제 기능
@@ -177,19 +179,20 @@ public class CommentServiceImpl implements CommentService {
   // 잡담게시글 댓글 작성
   @Override
   @Transactional
-  public void createCommunityComment(Long communityBoardId, CommentRequest request, User user) {
+  public Comment createCommunityComment(Long communityBoardId, CommentRequest request, User user) {
     // 게시글이 있는지 확인
 //    Board board = boardService.getBoard(boardId);
 
     // 게시글이 있으면 댓글 작성
     Comment comment = new Comment(user, request, communityBoardId);
     commentRepository.save(comment);
+    return comment;
   }
 
   // 잡담 댓글 수정
   @Override
   @Transactional
-  public void updateCommunityComment(Long commentId, CommentRequest request,
+  public Comment updateCommunityComment(Long commentId, CommentRequest request,
       User user) {
     // 게시글이 있는지 확인
     // Board board = boardService.getBoard(boardId);
@@ -203,6 +206,7 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 작성자인 경우 댓글 수정
     comment.update(request.getContent());
     commentRepository.save(comment);
+    return comment;
   }
 
   // 잡담 댓글 삭제 기능
