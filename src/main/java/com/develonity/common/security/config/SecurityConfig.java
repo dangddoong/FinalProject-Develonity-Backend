@@ -6,14 +6,12 @@ import com.develonity.common.jwt.UserAuthFilter;
 import com.develonity.common.security.exceptionHandler.CustomAccessDeniedHandler;
 import com.develonity.common.security.exceptionHandler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,6 +58,14 @@ public class SecurityConfig implements WebMvcConfigurer {
         .antMatchers("/api/admins/login").permitAll()
         .antMatchers("/api/reissue").permitAll()
         .antMatchers("/api/gift-cards/**").permitAll()
+//        .antMatchers("/v3/**").permitAll()
+//        .antMatchers("/swagger*/**").permitAll()
+//        .antMatchers("/swagger-ui/**").permitAll()
+        .antMatchers("/v2/**").permitAll()
+        .antMatchers("/webjars/**").permitAll()
+        .antMatchers("/swagger**").permitAll()
+        .antMatchers("/swagger-resources/**").permitAll()
+
 //        .antMatchers("/api/users/signout").permitAll()
 //        .antMatchers("/api/users/**").hasRole("CUSTOMER")
 //        .antMatchers("/api/sellers/**").hasRole("SELLER")
