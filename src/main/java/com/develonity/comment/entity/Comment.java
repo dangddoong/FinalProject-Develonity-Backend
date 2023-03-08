@@ -13,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,11 +35,11 @@ public class Comment extends TimeStamp {
   private String content;
 
   //  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "USER_ID")
+  @Column(name = "USER_ID")
   private Long userId;
 
   //  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "BOARD_ID")
+  @Column(name = "BOARD_ID")
   private Long boardId;
 
   @Column(nullable = false)
