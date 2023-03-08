@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +36,7 @@ public abstract class Board extends TimeStamp {
 //  @JoinColumn(name = "USER_ID", nullable = false, fetch = FetchType.LAZY)
 //  private User user;
 
-  @JoinColumn(name = "USER_ID")
+  @Column(name = "USER_ID")
   private Long userId;
 
   public Board(Long userId, String title, String content) {
