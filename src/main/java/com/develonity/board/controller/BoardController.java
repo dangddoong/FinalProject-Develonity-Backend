@@ -1,5 +1,7 @@
 package com.develonity.board.controller;
 
+import com.develonity.board.dto.BoardPage;
+import com.develonity.board.dto.BoardResponse;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
 import com.develonity.board.dto.CommunityBoardSearchCond;
@@ -248,6 +250,35 @@ public class BoardController {
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     scrapService.cancelScrap(userDetails.getUser().getId(), boardId);
     return new ResponseEntity<>("스크랩 취소!", HttpStatus.OK);
+  }
+
+  //내가 저장한 스크랩 게시물 전체 조회
+  @GetMapping("/user/me/scraps")
+  public Page<BoardResponse> getScrapsPage(
+      @AuthenticationPrincipal UserDetailsImpl userDetails,
+      BoardPage boardPage
+  ) {
+    return boardService.getScrapBoardPage(userDetails.getUser(), boardPage);
+  }
+
+  //내가 쓴 잡담글 조회 (정렬,검색기능 동일)
+  @GetMapping("/user/me/communityBoards")
+  public Page<CommunityBoardResponse> getMyCommunityBoardPage(
+      CommunityBoardSearchCond cond, PageDto pageDto,
+      @AuthenticationPrincipal UserDetailsImpl userDetails
+  ) {
+    return communityBoardService.searchMyCommunityBoardByCond(cond, pageDto,
+        userDetails.getUser().getId());
+  }
+
+  //내가 쓴 질문글 조회 (정렬,검색기능 동일)
+  @GetMapping("/user/me/questionBoards")
+  public Page<QuestionBoardResponse> getMyQuestionBoardPage(
+      QuestionBoardSearchCond cond, PageDto pageDto,
+      @AuthenticationPrincipal UserDetailsImpl userDetails
+  ) {
+    return questionBoardService.searchMyQuestionBoardByCond(cond, pageDto,
+        userDetails.getUser().getId());
   }
 
 //  //질문게시글 전체 조회(querydsl 이전방식)

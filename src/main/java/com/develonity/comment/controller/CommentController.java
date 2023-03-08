@@ -47,7 +47,7 @@ public class CommentController {
 
   //게시글별 댓글 대댓글 전체 조회
   @GetMapping("/api/comments")
-  public Page<CommentResponse> getScrapsPage(
+  public Page<CommentResponse> getCommentsByBoard(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
       @RequestParam Long boardId
   ) {
