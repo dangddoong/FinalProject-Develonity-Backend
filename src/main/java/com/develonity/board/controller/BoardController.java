@@ -5,7 +5,6 @@ import com.develonity.board.dto.BoardResponse;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
 import com.develonity.board.dto.CommunityBoardSearchCond;
-import com.develonity.board.dto.ImageNameRequest;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -60,17 +58,17 @@ public class BoardController {
 
   private final AwsPreSignedUrlService awsPreSignedUrlService;
 
-  //preSignedURL 받아오기
-  @PostMapping("/preSigned")
-  public String createPreSigned(
-      @RequestBody ImageNameRequest imageNameRequest,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-    String path = "board";
-    String imageName = imageNameRequest.getImageName();
-    return awsPreSignedUrlService.getPreSignedUrl(path, imageName);
-
-  }
+//  //preSignedURL 받아오기
+//  @PostMapping("/preSigned")
+//  public String createPreSigned(
+//      @RequestBody ImageNameRequest imageNameRequest,
+//      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//
+//    String path = "board";
+//    String imageName = imageNameRequest.getImageName();
+//    return awsPreSignedUrlService.getPreSignedUrl(path, imageName);
+//
+//  }
 
   //QueryDsl 잡담글 전체조회
   @GetMapping("/community-boards")
