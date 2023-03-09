@@ -57,6 +57,34 @@ public class GiftCardServiceImpl implements GiftCardService {
   }
 
   @Override
+  @Transactional
+  public Long registerGiftCardByPreSignedUrl(GiftCardRegister giftCardRegister, String imagePath) {
+
+    // 기프트카드 중복 확인
+    if (giftCardRepository.existsByName(giftCardRegister.getName())) {
+      throw new CustomException(ExceptionStatus.GIFT_CARD_IS_EXIST);
+    }
+
+    GiftCard giftCard = GiftCard.builder()
+        .category(giftCardRegister.getCategory())
+        .name(giftCardRegister.getName())
+        .details(giftCardRegister.getDetails())
+        .price(giftCardRegister.getPrice())
+        .stockQuantity(giftCardRegister.getStockQuantity())
+        .build();
+
+    giftCardRepository.save(giftCard);
+    if (!imagePath.equals("https://taewoong-test.s3.ap-northeast-2.amazonaws.com/null")) {
+      GiftCardImage giftCardImage = new GiftCardImage(imagePath, giftCard.getId());
+      giftCardImageRepository.save(giftCardImage);
+      giftCard.addImagePath(imagePath);
+    }
+
+    return giftCard.getId();
+
+  }
+
+  @Override
   @Transactional(readOnly = true)
   public Page<GiftCardResponse> getGiftCardList(GiftCardCategory category, PageDTO pageDTO) {
     Pageable pageable = pageDTO.toPageable();
@@ -108,6 +136,33 @@ public class GiftCardServiceImpl implements GiftCardService {
 
   }
 
+  //preSignedUrl 업데이트
+  @Override
+  @Transactional
+  public void updateGiftCardByPreSignedUrl(Long id, GiftCardRegister giftCardRegister,
+      String imagePath) {
+    GiftCard foundGiftCard = giftCardRepository.findById(id)
+        .orElseThrow(() -> new CustomException(ExceptionStatus.GIFT_CARD_IS_NOT_EXIST));
+
+    if (!foundGiftCard.getName().equals(giftCardRegister.getName())) {
+      if (giftCardRepository.existsByName(giftCardRegister.getName())) {
+        throw new CustomException(ExceptionStatus.GIFT_CARD_IS_EXIST);
+      }
+    }
+
+    foundGiftCard.update(giftCardRegister.getCategory(), giftCardRegister.getName(),
+        giftCardRegister.getDetails(), giftCardRegister.getPrice(),
+        giftCardRegister.getStockQuantity());
+
+    if (giftCardImageRepository.existsByGiftCardId(id)) {
+      deleteGiftCardImage(id);
+    }
+    GiftCardImage giftCardImage = new GiftCardImage(imagePath, id);
+    giftCardImageRepository.save(giftCardImage);
+    foundGiftCard.addImagePath(imagePath);
+
+  }
+
   //기프트카드 삭제
   @Override
   @Transactional
@@ -151,6 +206,7 @@ public class GiftCardServiceImpl implements GiftCardService {
   @Override
   @Transactional
   public void deleteGiftCardImage(Long id) {
+    giftCardImageRepository.existsByGiftCardId(id);
     String imagePath = getImagePath(id);
     if (!imagePath.equals(
         "https://pbs.twimg.com/profile_images/1121253455333474304/SzW8OOtq_400x400.jpg")) {

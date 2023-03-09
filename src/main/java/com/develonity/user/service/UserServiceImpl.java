@@ -155,7 +155,8 @@ public class UserServiceImpl implements UserService {
 
   //프로필 수정 preSignedUrl 방식
   @Transactional
-  public void updatePreSignedURLProfile(ProfileRequest request, String imagePath, User user) {
+  @Override
+  public void updateProfileByPreSignedUrl(ProfileRequest request, String imagePath, User user) {
     ProfileImage profileImage = new ProfileImage(imagePath, user.getId());
     profileImageRepository.save(profileImage);
     user.updateProfile(request.getNickname());

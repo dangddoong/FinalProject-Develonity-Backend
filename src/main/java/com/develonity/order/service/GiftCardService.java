@@ -3,9 +3,8 @@ package com.develonity.order.service;
 import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
 import com.develonity.order.dto.PageDTO;
-import java.io.IOException;
-
 import com.develonity.order.entity.GiftCardCategory;
+import java.io.IOException;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,5 +36,7 @@ public interface GiftCardService {
 
   String getImagePath(Long giftCardId);
 
+  void updateGiftCardByPreSignedUrl(Long id, GiftCardRegister giftCardRegister, String imagePath);
 
+  Long registerGiftCardByPreSignedUrl(GiftCardRegister giftCardRegister, String imagePath);
 }
