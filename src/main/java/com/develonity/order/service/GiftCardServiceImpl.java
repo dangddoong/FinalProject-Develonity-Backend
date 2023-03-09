@@ -149,6 +149,7 @@ public class GiftCardServiceImpl implements GiftCardService {
 
   //이미지 파일 삭제
   @Override
+  @Transactional
   public void deleteGiftCardImage(Long id) {
     String imagePath = getImagePath(id);
     if (!imagePath.equals(

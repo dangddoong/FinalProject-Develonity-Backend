@@ -176,6 +176,7 @@ public class UserServiceImpl implements UserService {
 
   //이미지 파일 삭제
   @Override
+  @Transactional
   public void deleteProfileImage(Long userId) {
 
     ProfileImage profileImage = profileImageRepository.findByUserId(userId)

@@ -234,6 +234,7 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
 
   @Override
+  @Transactional
   public void deleteBoardImages(Long boardId) {
     List<BoardImage> boardImages = boardImageRepository.findAllByBoardId(boardId);
 
