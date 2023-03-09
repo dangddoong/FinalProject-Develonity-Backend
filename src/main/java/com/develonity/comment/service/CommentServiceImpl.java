@@ -1,8 +1,9 @@
 package com.develonity.comment.service;
 
-import com.develonity.comment.dto.CommentList;
+import com.develonity.comment.dto.CommentPageDto;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
+import com.develonity.comment.dto.CommentSearchCond;
 import com.develonity.comment.dto.ReplyCommentResponse;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.repository.CommentRepository;
@@ -48,32 +49,38 @@ public class CommentServiceImpl implements CommentService {
     }
   }
 
-//  // 전체 댓글 조회
-//  @Override
-//  @Transactional(readOnly = true)
-//  public Page<CommentResponse> getAllComment(User user, CommentList commentList) {
-//    // 페이징 처리
-//    Page<Comment> commentPages = commentRepository.findBy(commentList.toPageable());
-//    return commentPages.map(
-//        comment -> new CommentResponse(comment, getNicknameByComment(comment),
-//            countLike(comment.getId())));
-//
-//  }
-
-  // 내가 쓴 댓글 전체 조회 (페이징 처리)
+  // Querydsl 전체 댓글 조회
   @Override
   @Transactional(readOnly = true)
-  public Page<CommentResponse> getMyComments(CommentList commentList, Long userId, User user) {
+  public Page<CommentResponse> getAllComment(CommentPageDto commentPageDto,
+      CommentSearchCond commentSearchCond) {
 
-    if (!userId.equals(user.getId())) {
-      throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
-    }
+    return commentRepository.searchComment(commentPageDto, commentSearchCond);
+  }
 
-    Page<Comment> myCommentList = commentRepository.findAllByUserId(commentList.toPageable(),
-        user.getId());
-    return myCommentList.map(
-        comment -> new CommentResponse(comment, getNicknameByComment(comment),
-            countLike(comment.getId())));
+  // 내가 쓴 댓글 전체 조회 (페이징 처리) Querydsl 사용 X
+//  @Override
+//  @Transactional(readOnly = true)
+//  public Page<CommentResponse> getMyComments(CommentList commentList, Long userId, User user) {
+//
+//    if (!userId.equals(user.getId())) {
+//      throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
+//    }
+//
+//    Page<Comment> myCommentList = commentRepository.findAllByUserId(commentList.toPageable(),
+//        user.getId());
+//    return myCommentList.map(
+//        comment -> new CommentResponse(comment, getNicknameByComment(comment),
+//            countLike(comment.getId())));
+//  }
+
+  // Querydsl 내가 쓴 댓글 전체 조회 (페이징 처리)
+  @Override
+  @Transactional(readOnly = true)
+  public Page<CommentResponse> getMyComments(CommentPageDto commentPageDto,
+      CommentSearchCond commentSearchCond, Long userId) {
+
+    return commentRepository.searchMyComment(commentPageDto, commentSearchCond, userId);
   }
 
   //게시글에 달린 댓글,대댓글 조회

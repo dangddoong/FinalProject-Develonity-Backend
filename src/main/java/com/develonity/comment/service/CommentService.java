@@ -1,18 +1,24 @@
 package com.develonity.comment.service;
 
-import com.develonity.comment.dto.CommentList;
+import com.develonity.comment.dto.CommentPageDto;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
+import com.develonity.comment.dto.CommentSearchCond;
 import com.develonity.comment.entity.Comment;
 import com.develonity.user.entity.User;
 import org.springframework.data.domain.Page;
 
 public interface CommentService {
 
-//  Page<CommentResponse> getAllComment(User user, CommentList commentList);
+  Page<CommentResponse> getAllComment(CommentPageDto commentPageDto,
+      CommentSearchCond commentSearchCond);
 
-  Page<CommentResponse> getMyComments(CommentList commentList, Long userId,
-      User user);
+  // Querydsl 사용 X
+//  Page<CommentResponse> getMyComments(CommentList commentList, Long userId,
+//      User user);
+
+  Page<CommentResponse> getMyComments(CommentPageDto commentPageDto,
+      CommentSearchCond commentSearchCond, Long userId);
 
   Comment createQuestionComment(Long questionBoardId, CommentRequest requestDto, User user);
 

@@ -10,23 +10,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-@AllArgsConstructor
+
 @Getter
 @Builder
+@AllArgsConstructor
 public class CommentResponse {
 
   private final Long id;
-
   private final String nickname;
   private final String content;
-  private final long commentLike;
   private final LocalDateTime createdAt;
-
   private final LocalDateTime lastModifiedAt;
-
   private Boolean hasLike;
-
   private final CommentStatus commentStatus;
+  private final long commentLike;
   private List<ReplyCommentResponse> replyCommentList;
 
 
@@ -59,17 +56,25 @@ public class CommentResponse {
     this.replyCommentList = replyCommentResponses;
   }
 
-//  public static CommentResponse toCommentResponseDto(Comment comment, String nickname,
-//      int commentLike) {
-//    return CommentResponse.builder()
-//        .id(comment.getId())
-//        .nickname(nickname)
-//        .content(comment.getContent())
-//        .commentLike(commentLike)
-//        .point(comment.getPoint())
-//        .createdAt(comment.getCreatedDate())
-//        .lastModifiedAt(comment.getLastModifiedDate())
-//        .build();
-//  }
+  // Querydsl 전용
+  public CommentResponse(
+      Long id,
+      String nickname,
+      String content,
+      LocalDateTime createdAt,
+      LocalDateTime lastModifiedAt,
+      CommentStatus commentStatus,
+      long commentLike
+//      List<ReplyCommentResponse> replyCommentList
+  ) {
 
+    this.id = id;
+    this.nickname = nickname;
+    this.content = content;
+    this.createdAt = createdAt;
+    this.lastModifiedAt = lastModifiedAt;
+    this.commentStatus = commentStatus;
+    this.commentLike = commentLike;
+//    this.replyCommentList = replyCommentList;
+  }
 }

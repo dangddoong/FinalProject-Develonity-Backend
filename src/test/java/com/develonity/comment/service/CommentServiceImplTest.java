@@ -13,7 +13,6 @@ import com.develonity.board.entity.QuestionCategory;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.service.CommunityBoardServiceImpl;
 import com.develonity.board.service.QuestionBoardServiceImpl;
-import com.develonity.comment.dto.CommentList;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
 import com.develonity.comment.entity.Comment;
@@ -92,18 +91,18 @@ class CommentServiceImplTest {
 //    verify(commentRepository).findBy(commentList.toPageable());
 //  }
 
-  @Test
-  @DisplayName("내가 쓴 댓글 조회")
-  void getMyComments() {
-    // given
-    CommentList commentList = new CommentList();
-    Optional<User> findUser = userRepository.findById(1L);
-    Optional<Comment> findComment = commentRepository.findById(1L);
-    // when
-    commentService.getMyComments(commentList, findUser.get().getId(), findUser.get());
-    // then
-    assertThat(commentList.toPageable()).isNotNull();
-  }
+//  @Test
+//  @DisplayName("내가 쓴 댓글 조회")
+//  void getMyComments() {
+//    // given
+//    CommentList commentList = new CommentList();
+//    Optional<User> findUser = userRepository.findById(1L);
+//    Optional<Comment> findComment = commentRepository.findById(1L);
+//    // when
+//    commentService.getMyComments(commentList, findUser.get().getId(), findUser.get());
+//    // then
+//    assertThat(commentList.toPageable()).isNotNull();
+//  }
 
 //  @Test
 //  @DisplayName("게시글에 달린 댓글,대댓글 조회")
