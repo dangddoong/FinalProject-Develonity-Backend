@@ -17,8 +17,6 @@ public class AwsPreSignedUrlController {
 
   private final AwsPreSignedUrlService awsPreSignedUrlService;
 
-  private final TempImageRepository tempImageRepository;
-
   //preSignedURL 받아오기
   @PostMapping("/users/preSigned")
   public String createPreSigned(
