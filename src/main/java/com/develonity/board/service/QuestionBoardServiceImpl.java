@@ -214,6 +214,7 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
 
   @Override
+  @Transactional
   public void deleteBoardImages(Long boardId) {
     List<BoardImage> boardImages = boardImageRepository.findAllByBoardId(boardId);
 
