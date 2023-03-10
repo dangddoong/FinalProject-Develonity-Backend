@@ -32,10 +32,10 @@ public class AwsPreSignedUrlService {
 
     String uniqueFileName = getUniqueFileName(fileName);
 
-    saveFileName = uniqueFileName;
     if (!prefix.equals("")) { //버킷 내 디렉토리 없으면 빈 문자니까
       uniqueFileName = prefix + "/" + uniqueFileName;
     }
+    saveFileName = uniqueFileName;
     GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket,
         uniqueFileName);
     URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
@@ -69,13 +69,10 @@ public class AwsPreSignedUrlService {
   }
 
 
-  public String findByName(String path) { //경로
-//        if (!amazonS3.doesObjectExist(bucket,editPath+ useOnlyOneFileName))
-//            return "File does not exist";
-//    log.info("Generating signed URL for file name {}", uniqueFileName);
-//        return  amazonS3.getUrl(bucket,editPath+useOnlyOneFileName).toString();
-    return "https://" + bucket + ".s3." + location + ".amazonaws.com/" + path + "/"
-        + saveFileName;
+  public String findByName() { //경로
+
+    return "https://" + bucket + ".s3." + location + ".amazonaws.com/"/* + path + "/"
+     */ + saveFileName;
   }
 }
 

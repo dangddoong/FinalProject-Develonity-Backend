@@ -1,5 +1,6 @@
 package com.develonity.order.controller;
 
+import com.develonity.common.aws.AwsPreSignedUrlService;
 import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
 import com.develonity.order.dto.PageDTO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -28,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class GiftCardController {
 
   private final GiftCardServiceImpl giftCardService;
+
+  private final AwsPreSignedUrlService awsPreSignedUrlService;
 
   //기프트 카드 등록
   @PostMapping("/gift-cards")
@@ -45,7 +49,7 @@ public class GiftCardController {
   //카테고리 별 기프트 카드 조회(페이징)
   @GetMapping("/gift-cards/category")
   public Page<GiftCardResponse> getGiftCardList(@RequestParam GiftCardCategory category,
-                                                           PageDTO pageDTO) {
+      PageDTO pageDTO) {
     return giftCardService.getGiftCardList(category, pageDTO);
   }
 
@@ -63,6 +67,28 @@ public class GiftCardController {
   ) throws IOException {
     giftCardService.updateGiftCard(giftCardId, giftCardRegister, multipartFile);
     return new ResponseEntity<>("기프트 카드가 수정되었습니다.", HttpStatus.OK);
+  }
+
+  //preSignedURL 기프트카드 수정
+  @PutMapping("/gift-cards/{giftCardId}/preSignedGiftCard/")
+  public ResponseEntity<String> updateGiftCardByPreSignedUrl(@PathVariable Long giftCardId,
+      @RequestBody GiftCardRegister giftCardRegister
+  ) throws IOException {
+
+    String imagePath = awsPreSignedUrlService.findByName();
+    giftCardService.updateGiftCardByPreSignedUrl(giftCardId, giftCardRegister, imagePath);
+    return new ResponseEntity<>("기프트 카드가 수정되었습니다.", HttpStatus.OK);
+  }
+
+  //preSignedURL 기프트카드 생성
+  @PostMapping("/gift-cards/preSignedGiftCard")
+  public ResponseEntity<String> registerGiftCardByPreSignedUrl(
+      @RequestBody GiftCardRegister giftCardRegister
+  ) throws IOException {
+
+    String imagePath = awsPreSignedUrlService.findByName();
+    giftCardService.registerGiftCardByPreSignedUrl(giftCardRegister, imagePath);
+    return new ResponseEntity<>("기프트 카드가 생성되었습니다.", HttpStatus.OK);
   }
 
   //기프트 카드 삭제
