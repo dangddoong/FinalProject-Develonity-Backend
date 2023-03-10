@@ -2,9 +2,10 @@ package com.develonity.comment.controller;
 
 import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.service.QuestionBoardService;
-import com.develonity.comment.dto.CommentList;
+import com.develonity.comment.dto.CommentPageDto;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
+import com.develonity.comment.dto.CommentSearchCond;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.service.CommentService;
 import com.develonity.common.exception.CustomException;
@@ -37,31 +38,39 @@ public class CommentController {
 
   private final UserService userService;
 
-  // 댓글 전체 조회
-//  @GetMapping("/api/comments/all")
-//  public Page<CommentResponse> getAllComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
-//      CommentList commentList) {
-//    return commentService.getAllComment(userDetails.getUser(), commentList);
-//
-//  }
+  //  Querydsl 댓글 전체 조회
+  @GetMapping("/api/comments/all")
+  public Page<CommentResponse> getAllComment(CommentPageDto commentPageDto,
+      CommentSearchCond commentSearchCond) {
+    return commentService.getAllComment(commentPageDto, commentSearchCond);
+
+  }
 
   //게시글별 댓글 대댓글 전체 조회
   @GetMapping("/api/comments")
-  public Page<CommentResponse> getCommentsByBoard(
+  public Page<CommentResponse> getScrapsPage(
       @AuthenticationPrincipal UserDetailsImpl userDetails,
       @RequestParam Long boardId
   ) {
     return commentService.getCommentsByBoard(boardId, userDetails.getUser());
   }
 
-  // 내가 쓴 댓글 전체 조회
+//   내가 쓴 댓글 전체 조회 (Querydsl X)
+//  @GetMapping("/api/user/me/comments")
+//  public Page<CommentResponse> getMyComments(
+//      CommentList commentList,
+//      @AuthenticationPrincipal UserDetailsImpl userDetails
+//  ) {
+//    return commentService.getMyComments(commentList, userDetails.getUser().getId(),
+//        userDetails.getUser());
+//  }
+
+  // Querydsl 내가 쓴 댓글 전체 조회
   @GetMapping("/api/user/me/comments")
-  public Page<CommentResponse> getMyComments(
-      CommentList commentList,
-      @AuthenticationPrincipal UserDetailsImpl userDetails
-  ) {
-    return commentService.getMyComments(commentList, userDetails.getUser().getId(),
-        userDetails.getUser());
+  public Page<CommentResponse> getMyComments(CommentPageDto commentPageDto,
+      CommentSearchCond commentSearchCond, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    return commentService.getMyComments(commentPageDto, commentSearchCond,
+        userDetails.getUser().getId());
   }
 
   // 질문게시글 답변 작성
