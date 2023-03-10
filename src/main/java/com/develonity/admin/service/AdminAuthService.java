@@ -2,7 +2,7 @@ package com.develonity.admin.service;
 
 import com.develonity.admin.entity.Admin;
 import com.develonity.admin.repository.AdminRepository;
-import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.auth.JwtUtil;
 import com.develonity.user.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -3,7 +3,7 @@ package com.develonity.user.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.develonity.common.aws.AwsS3Service;
-import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.auth.JwtUtil;
 import com.develonity.common.redis.RedisDao;
 import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.ProfileRequest;
@@ -15,8 +15,6 @@ import com.develonity.user.entity.User;
 import com.develonity.user.repository.ProfileImageRepository;
 import com.develonity.user.repository.UserRepository;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 
 @SpringBootTest

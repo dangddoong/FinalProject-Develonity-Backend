@@ -1,7 +1,7 @@
 package com.develonity.admin.controller;
 
 import com.develonity.admin.service.AdminAuthService;
-import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.auth.JwtUtil;
 import com.develonity.user.dto.LoginRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

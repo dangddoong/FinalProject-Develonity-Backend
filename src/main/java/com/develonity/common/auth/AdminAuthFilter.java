@@ -1,4 +1,4 @@
-package com.develonity.common.jwt;
+package com.develonity.common.auth;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -23,7 +23,7 @@ public class AdminAuthFilter extends OncePerRequestFilter {
       if (adminToken != null) {
         String loginId = jwtUtil.getLoginIdFromTokenIfValid(adminToken);
         Authentication authentication = jwtUtil.createAuthentication(loginId,
-            "adminDetailsService");
+            UserDetailsServiceType.ADMIN);
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception e) {

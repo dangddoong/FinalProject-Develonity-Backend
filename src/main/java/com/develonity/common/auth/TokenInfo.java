@@ -1,4 +1,4 @@
-package com.develonity.common.jwt;
+package com.develonity.common.auth;
 
 import com.develonity.user.entity.UserRole;
 import lombok.AllArgsConstructor;
