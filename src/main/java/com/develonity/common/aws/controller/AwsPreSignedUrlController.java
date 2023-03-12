@@ -1,7 +1,6 @@
 package com.develonity.common.aws.controller;
 
 import com.develonity.board.dto.ImageNameRequest;
-import com.develonity.common.aws.TempImageRepository;
 import com.develonity.common.aws.dto.PreSignedUrlResponse;
 import com.develonity.common.aws.service.AwsPreSignedUrlService;
 import com.develonity.common.security.users.UserDetailsImpl;
@@ -20,9 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AwsPreSignedUrlController {
 
   private final AwsPreSignedUrlService awsPreSignedUrlService;
-
-  private final TempImageRepository tempImageRepository;
-
+  
   //업로드용 preSignedURL
   @PostMapping("/preSignedUrl/upload")
   public PreSignedUrlResponse createPutPreSignedUrl(
