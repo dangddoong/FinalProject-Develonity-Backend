@@ -1,8 +1,8 @@
 package com.develonity.common.security.config;
 
-import com.develonity.common.jwt.AdminAuthFilter;
-import com.develonity.common.jwt.JwtUtil;
-import com.develonity.common.jwt.UserAuthFilter;
+import com.develonity.common.auth.AdminAuthFilter;
+import com.develonity.common.auth.JwtUtil;
+import com.develonity.common.auth.UserAuthFilter;
 import com.develonity.common.security.exceptionHandler.CustomAccessDeniedHandler;
 import com.develonity.common.security.exceptionHandler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,11 @@ public class SecurityConfig implements WebMvcConfigurer {
     http.httpBasic().disable()
         .csrf().disable()
         .formLogin().disable();
-
+    http
+        .headers()
+        .xssProtection()
+        .and()
+        .contentSecurityPolicy("script-src 'self'");
     http.sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 세션이 필요하면 생성하도록 셋팅
 
@@ -58,17 +62,6 @@ public class SecurityConfig implements WebMvcConfigurer {
         .antMatchers("/api/admins/login").permitAll()
         .antMatchers("/api/reissue").permitAll()
         .antMatchers("/api/gift-cards/**").permitAll()
-//        .antMatchers("/v3/**").permitAll()
-//        .antMatchers("/swagger*/**").permitAll()
-//        .antMatchers("/swagger-ui/**").permitAll()
-        .antMatchers("/v2/**").permitAll()
-        .antMatchers("/webjars/**").permitAll()
-        .antMatchers("/swagger**").permitAll()
-        .antMatchers("/swagger-resources/**").permitAll()
-
-//        .antMatchers("/api/users/signout").permitAll()
-//        .antMatchers("/api/users/**").hasRole("CUSTOMER")
-//        .antMatchers("/api/sellers/**").hasRole("SELLER")
         .anyRequest().authenticated()
         .and()
         .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())

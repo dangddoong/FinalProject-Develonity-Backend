@@ -4,7 +4,7 @@ import com.develonity.common.aws.AwsPreSignedUrlService;
 import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
-import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.auth.JwtUtil;
 import com.develonity.common.redis.RedisDao;
 import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.ProfileRequest;

@@ -1,7 +1,7 @@
 package com.develonity.user.controller;
 
 import com.develonity.common.aws.AwsPreSignedUrlService;
-import com.develonity.common.jwt.JwtUtil;
+import com.develonity.common.auth.JwtUtil;
 import com.develonity.common.security.users.UserDetailsImpl;
 import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.ProfileRequest;
