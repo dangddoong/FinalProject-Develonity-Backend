@@ -5,7 +5,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import lombok.AccessLevel;
@@ -50,6 +49,6 @@ public class QuestionBoard extends Board {
 
 
   public boolean isAlreadyAdopted() {
-    return this.getStatus().equals(BoardStatus.ADOPTED);
+    return this.status.equals(BoardStatus.ADOPTED);
   }
 }

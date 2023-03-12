@@ -1,6 +1,6 @@
 package com.develonity.order.service;
 
-import com.develonity.common.aws.AwsS3Service;
+import com.develonity.common.aws.service.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.order.dto.GiftCardRegister;

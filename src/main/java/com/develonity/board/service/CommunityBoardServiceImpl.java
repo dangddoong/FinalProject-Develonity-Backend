@@ -10,7 +10,7 @@ import com.develonity.board.entity.CommunityCategory;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.CommunityBoardRepository;
 import com.develonity.comment.service.CommentService;
-import com.develonity.common.aws.AwsS3Service;
+import com.develonity.common.aws.service.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
@@ -97,18 +97,14 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
   //전체조회+검색+좋아요 조회
 
   @Override
-  @Transactional(readOnly = true)
   public Page<CommunityBoardResponse> searchCommunityBoardByCond(CommunityBoardSearchCond cond,
       PageDto pageDto) {
-
     return communityBoardRepository.searchCommunityBoard(cond, pageDto);
   }
 
   //내가 쓴 잡담글 조회
 
   @Override
-  @Transactional(readOnly = true)
-
   public Page<CommunityBoardResponse> searchMyCommunityBoardByCond(CommunityBoardSearchCond cond,
       PageDto pageDto, Long userId) {
 
@@ -119,7 +115,6 @@ public class CommunityBoardServiceImpl implements CommunityBoardService {
 
   //잡담 게시글 선택 조회
   @Override
-  @Transactional(readOnly = true)
   public CommunityBoardResponse getCommunityBoard(Long boardId, User user) {
     CommunityBoard communityBoard = getCommunityBoardAndCheck(boardId);
     boolean hasLike = boardLikeService.existsLikesBoardIdAndUserId(boardId, user.getId());

@@ -17,7 +17,7 @@ import com.develonity.board.service.BoardService;
 import com.develonity.board.service.CommunityBoardService;
 import com.develonity.board.service.QuestionBoardService;
 import com.develonity.board.service.ScrapService;
-import com.develonity.common.aws.AwsPreSignedUrlService;
+import com.develonity.common.aws.service.AwsPreSignedUrlService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.security.users.UserDetailsImpl;
@@ -58,17 +58,6 @@ public class BoardController {
 
   private final AwsPreSignedUrlService awsPreSignedUrlService;
 
-//  //preSignedURL 받아오기
-//  @PostMapping("/preSigned")
-//  public String createPreSigned(
-//      @RequestBody ImageNameRequest imageNameRequest,
-//      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//
-//    String path = "board";
-//    String imageName = imageNameRequest.getImageName();
-//    return awsPreSignedUrlService.getPreSignedUrl(path, imageName);
-//
-//  }
 
   //QueryDsl 잡담글 전체조회
   @GetMapping("/community-boards")
@@ -78,22 +67,6 @@ public class BoardController {
     return communityBoardService.searchCommunityBoardByCond(cond, pageDto);
   }
 
-  //QueryDsl 질문글 전체조회
-  @GetMapping("/question-boards")
-  public Page<QuestionBoardResponse> getQuestionBoardsPage(
-      QuestionBoardSearchCond questionBoardSearchCond,
-      PageDto pageDto
-  ) {
-    return questionBoardService.searchQuestionBoardByCond(questionBoardSearchCond, pageDto);
-  }
-
-  //  질문글 좋아요순 3개(당일 게시글 기준, 카테고리나 채택 상태별 필터 가능)
-  @GetMapping("/test/like")
-  public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
-      QuestionBoardSearchCond cond
-  ) {
-    return questionBoardService.questionBoardOrderBy(cond);
-  }
 
   //  질문게시글 생성
   @PostMapping("/question-boards")
@@ -162,6 +135,23 @@ public class BoardController {
       @AuthenticationPrincipal UserDetailsImpl userDetails) {
     communityBoardService.deleteCommunityBoard(boardId, userDetails.getUser());
     return new ResponseEntity<>("잡담 게시글이 삭제되었습니다.", HttpStatus.OK);
+  }
+
+  //QueryDsl 질문글 전체조회
+  @GetMapping("/question-boards")
+  public Page<QuestionBoardResponse> getQuestionBoardsPage(
+      QuestionBoardSearchCond questionBoardSearchCond,
+      PageDto pageDto
+  ) {
+    return questionBoardService.searchQuestionBoardByCond(questionBoardSearchCond, pageDto);
+  }
+
+  //  질문글 좋아요순 3개(당일 게시글 기준, 카테고리나 채택 상태별 필터 가능)
+  @GetMapping("/question-boards/todayBest")
+  public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
+      QuestionBoardSearchCond cond
+  ) {
+    return questionBoardService.questionBoardOrderBy(cond);
   }
 
   //질문게시글 선택 조회

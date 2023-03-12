@@ -2,7 +2,6 @@ package com.develonity.board.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.CommunityBoardResponse;
 import com.develonity.board.dto.CommunityBoardSearchCond;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,12 +50,14 @@ class CommunityBoardServiceImplTest {
 
   @Autowired
   private BoardLikeRepository boardLikeRepository;
+
   @BeforeEach
-  void AllDeleteBefore() {
+  void allDeleteBefore() {
     communityBoardRepository.deleteAll();
   }
+
   @AfterEach
-  void AllDeleteAfter() {
+  void allDeleteAfter() {
     communityBoardRepository.deleteAll();
     boardLikeRepository.deleteAll();
     boardImageRepository.deleteAll();
