@@ -1,6 +1,6 @@
 package com.develonity.order.controller;
 
-import com.develonity.common.aws.AwsPreSignedUrlService;
+import com.develonity.common.aws.service.AwsPreSignedUrlService;
 import com.develonity.order.dto.GiftCardRegister;
 import com.develonity.order.dto.GiftCardResponse;
 import com.develonity.order.dto.PageDTO;

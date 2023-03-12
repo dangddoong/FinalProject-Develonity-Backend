@@ -2,8 +2,8 @@ package com.develonity.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.develonity.common.aws.AwsS3Service;
 import com.develonity.common.auth.JwtUtil;
+import com.develonity.common.aws.service.AwsS3Service;
 import com.develonity.common.redis.RedisDao;
 import com.develonity.user.dto.LoginRequest;
 import com.develonity.user.dto.ProfileRequest;
@@ -58,7 +58,6 @@ class UserServiceImplTest {
     //when
     User user = userService.register(request);
 
-
     //then 주로 assert문, 결과값 비교
 
     assertThat(user.getLoginId()).isEqualTo(request.getLoginId());
@@ -101,7 +100,8 @@ class UserServiceImplTest {
 
     ProfileResponse profileResponse = userService.getProfile(savedUser.getId());
     //기본 프로필 이미지
-    assertThat(profileResponse.getProfileImageUrl()).isEqualTo("https://dthezntil550i.cloudfront.net/p6/latest/p62007150224230440002288000/ed8e25a2-d8dd-43ac-8d18-77712b287dc6.png");
+    assertThat(profileResponse.getProfileImageUrl()).isEqualTo(
+        "https://dthezntil550i.cloudfront.net/p6/latest/p62007150224230440002288000/ed8e25a2-d8dd-43ac-8d18-77712b287dc6.png");
     assertThat(profileResponse.getNickname()).isEqualTo(request.getNickname());
 
     //프로필 수정
@@ -115,8 +115,10 @@ class UserServiceImplTest {
 
     // 수정 후 프로필 조회
     ProfileResponse updatedProfileResponse = userService.getProfile(savedUser.getId());
-    assertThat(updatedProfileResponse.getProfileImageUrl()).isNotEqualTo("https://dthezntil550i.cloudfront.net/p6/latest/p62007150224230440002288000/ed8e25a2-d8dd-43ac-8d18-77712b287dc6.png");
-    assertThat(updatedProfileResponse.getProfileImageUrl()).isEqualTo(updatedProfileImage.get().getImagePath());
+    assertThat(updatedProfileResponse.getProfileImageUrl()).isNotEqualTo(
+        "https://dthezntil550i.cloudfront.net/p6/latest/p62007150224230440002288000/ed8e25a2-d8dd-43ac-8d18-77712b287dc6.png");
+    assertThat(updatedProfileResponse.getProfileImageUrl()).isEqualTo(
+        updatedProfileImage.get().getImagePath());
     assertThat(updatedProfileResponse.getNickname()).isEqualTo(profileRequest.getNickname());
 
   }

@@ -52,12 +52,12 @@ class ReplyCommentServiceImplTest {
   private BoardImageRepository boardImageRepository;
 
   @BeforeEach
-  void AllDeleteBefore() {
+  void allDeleteBefore() {
     replyCommentRepository.deleteAll();
   }
 
   @AfterEach
-  void AllDeleteAfter() {
+  void allDeleteAfter() {
     commentRepository.deleteAll();
   }
 

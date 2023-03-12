@@ -2,7 +2,6 @@ package com.develonity.board.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.develonity.board.dto.BoardSearchCond;
 import com.develonity.board.dto.PageDto;
 import com.develonity.board.dto.QuestionBoardRequest;
 import com.develonity.board.dto.QuestionBoardResponse;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,11 +51,12 @@ class QuestionBoardServiceImplTest {
   private BoardLikeRepository boardLikeRepository;
 
   @BeforeEach
-  void AllDeleteBefore() {
+  void allDeleteBefore() {
     questionBoardRepository.deleteAll();
   }
+
   @AfterEach
-  void AllDeleteAfter() {
+  void allDeleteAfter() {
     questionBoardRepository.deleteAll();
     boardLikeRepository.deleteAll();
     boardImageRepository.deleteAll();

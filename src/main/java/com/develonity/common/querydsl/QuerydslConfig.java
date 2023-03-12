@@ -1,4 +1,4 @@
-package com.develonity.common;
+package com.develonity.common.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.persistence.EntityManager;

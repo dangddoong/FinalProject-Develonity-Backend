@@ -37,12 +37,14 @@ class BoardControllerTest {
 
   @Autowired
   private UserService userService;
+
   @BeforeEach
-  void AllDeleteBefore() {
+  void allDeleteBefore() {
     communityBoardRepository.deleteAll();
   }
+
   @AfterEach
-  void AllDeleteAfter() {
+  void allDeleteAfter() {
     communityBoardRepository.deleteAll();
   }
 
@@ -58,7 +60,6 @@ class BoardControllerTest {
     List<MultipartFile> multipartFiles = new ArrayList<>();
     CommunityBoard createCommunityBoard = communityBoardService.createCommunityBoard(request,
         multipartFiles, findUser.get());
-
 
     assertThat(findUser.get().getUserRole().equals(UserRole.AMATEUR)).isTrue();
 

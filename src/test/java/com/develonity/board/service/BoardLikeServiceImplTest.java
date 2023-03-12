@@ -38,15 +38,18 @@ class BoardLikeServiceImplTest {
 
   @Autowired
   private CommunityBoardService communityBoardService;
+
   @BeforeEach
-  void AllDeleteBefore() {
+  void allDeleteBefore() {
     communityBoardRepository.deleteAll();
   }
+
   @AfterEach
-  void AllDeleteAfter() {
+  void allDeleteAfter() {
     communityBoardRepository.deleteAll();
     boardLikeRepository.deleteAll();
   }
+
   @Test
   @DisplayName("좋아요 추가 & 삭제 & 예외")
   void addBoardLikeAndCancel() throws IOException {
@@ -56,8 +59,6 @@ class BoardLikeServiceImplTest {
     List<MultipartFile> multipartFiles = new ArrayList<>();
     CommunityBoard createCommunityBoard = communityBoardService.createCommunityBoard(request,
         multipartFiles, findUser.get());
-
-
 
     boardLikeService.addBoardLike(findUser.get().getId(), createCommunityBoard.getId());
 
@@ -69,8 +70,8 @@ class BoardLikeServiceImplTest {
         () -> boardLikeService.addBoardLike(findUser.get().getId(),
             createCommunityBoard.getId()));
     boardLikeService.cancelBoardLike
-        (findUser.get().getId(),createCommunityBoard.getId()
-            );
+        (findUser.get().getId(), createCommunityBoard.getId()
+        );
 
     assertThat(boardLikeRepository.findByBoardIdAndUserId(createCommunityBoard.getId(),
         findUser.get().getId())).isNull();
@@ -79,7 +80,6 @@ class BoardLikeServiceImplTest {
     assertThrows(Exception.class,
         () -> boardLikeService.cancelBoardLike(createCommunityBoard.getId(),
             findUser.get().getId()));
-
 
   }
 }

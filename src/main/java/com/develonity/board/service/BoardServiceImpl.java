@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +21,6 @@ public class BoardServiceImpl implements BoardService {
   private final UserService userService;
 
   @Override
-  @Transactional(readOnly = true)
   public Page<BoardResponse> getScrapBoardPage(User user,
       BoardPage boardPage) {
 

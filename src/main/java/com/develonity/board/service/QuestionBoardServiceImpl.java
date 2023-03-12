@@ -10,7 +10,7 @@ import com.develonity.board.entity.QuestionBoard;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.repository.QuestionBoardRepository;
 import com.develonity.comment.service.CommentService;
-import com.develonity.common.aws.AwsS3Service;
+import com.develonity.common.aws.service.AwsS3Service;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.user.entity.User;
@@ -104,7 +104,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   // 질문 게시글 선택 조회
   @Override
-  @Transactional(readOnly = true)
   public QuestionBoardResponse getQuestionBoard(Long boardId, User user) {
 
     QuestionBoard questionBoard = getQuestionBoardAndCheck(boardId);
@@ -126,7 +125,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   //querydsl 검색+정렬 전체 조회
   @Override
-  @Transactional(readOnly = true)
   public Page<QuestionBoardResponse> searchQuestionBoardByCond(
       QuestionBoardSearchCond questionBoardSearchCond,
       PageDto pageDto) {
@@ -136,8 +134,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   //내가 쓴 질문글 조회
   @Override
-  @Transactional(readOnly = true)
-
   public Page<QuestionBoardResponse> searchMyQuestionBoardByCond(QuestionBoardSearchCond cond,
       PageDto pageDto, Long userId) {
     return questionBoardRepository.searchMyQuestionBoard(cond, pageDto, userId);
@@ -145,7 +141,6 @@ public class QuestionBoardServiceImpl implements QuestionBoardService {
 
   //좋아요순 3개 조회, 구분(카테고리, 채택여부)
   @Override
-  @Transactional(readOnly = true)
   public List<QuestionBoardResponse> questionBoardOrderBy(QuestionBoardSearchCond cond) {
     return questionBoardRepository.QuestionBoardOrderByLikes(cond);
   }

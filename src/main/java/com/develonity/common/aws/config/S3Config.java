@@ -1,4 +1,4 @@
-package com.develonity.common.aws;
+package com.develonity.common.aws.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

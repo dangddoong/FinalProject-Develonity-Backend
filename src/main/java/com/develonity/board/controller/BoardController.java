@@ -17,7 +17,7 @@ import com.develonity.board.service.BoardService;
 import com.develonity.board.service.CommunityBoardService;
 import com.develonity.board.service.QuestionBoardService;
 import com.develonity.board.service.ScrapService;
-import com.develonity.common.aws.AwsPreSignedUrlService;
+import com.develonity.common.aws.service.AwsPreSignedUrlService;
 import com.develonity.common.exception.CustomException;
 import com.develonity.common.exception.ExceptionStatus;
 import com.develonity.common.security.users.UserDetailsImpl;
@@ -88,7 +88,7 @@ public class BoardController {
   }
 
   //  질문글 좋아요순 3개(당일 게시글 기준, 카테고리나 채택 상태별 필터 가능)
-  @GetMapping("/test/like")
+  @GetMapping("/question-boards/todayBest")
   public List<QuestionBoardResponse> getQuestionBoardOrderByLikes(
       QuestionBoardSearchCond cond
   ) {

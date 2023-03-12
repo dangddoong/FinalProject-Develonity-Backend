@@ -1,4 +1,4 @@
-package com.develonity.common.aws;
+package com.develonity.common.aws.service;
 
 
 import com.amazonaws.AmazonServiceException;
@@ -35,7 +35,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
   @Value("${cloud.aws.region.static}")
   private String region;
-  
+
   //다중파일 업로드
   public List<String> upload(List<MultipartFile> multipartFiles, String dir) throws IOException {
     List<String> imgPaths = new ArrayList<>();

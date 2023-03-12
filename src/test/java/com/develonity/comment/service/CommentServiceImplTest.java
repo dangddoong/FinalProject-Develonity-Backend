@@ -61,12 +61,12 @@ class CommentServiceImplTest {
   private ReplyCommentRepository replyCommentRepository;
 
   @BeforeEach
-  void AllDeleteBefore() {
+  void allDeleteBefore() {
     commentRepository.deleteAll();
   }
 
   @AfterEach
-  void AllDeleteAfter() {
+  void allDeleteAfter() {
     commentRepository.deleteAll();
     commentLikeRepository.deleteAll();
     replyCommentRepository.deleteAll();
