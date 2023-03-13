@@ -3,9 +3,11 @@
 >
 - **입문 & 주니어 & 시니어 개발자 모두에게 가치 있는 커뮤니티를 만들고자 했습니다.**
 - Q&A 게시판 활동(답변)을 통해 `Gift Point` 를 쌓고, 포인트로 `Gift Card` 를 살 수 있습니다.
-- [미구현] Q&A 게시판 활동(답변)을 통해 단순히 `Gift Point` 뿐만 아니라 `Respect Point` 가 쌓이게 되고, `Respect Point` 를 기반으로 `외주, 과외 등의 서비스` 를 제공하고자 했습니다.
+- [미구현] Q&A 게시판 활동(답변)을 통해 단순히 `Gift Point` 뿐만 아니라 `Respect Point` 가 쌓이게 되고, `Respect Point` 를 기반으로 <br>`외주, 과외 등의 서비스` 를 제공하고자 했습니다.
 
 ![브로셔메인페이지](https://user-images.githubusercontent.com/116135174/224562613-25b15240-4157-4a6c-a908-69a7a942bf95.PNG)
+
+<br>
 
 팀원 소개 👨‍👩‍👧‍👦
 ---
@@ -20,12 +22,14 @@
 
 
 
+<br>
 
 서비스 아키텍쳐📖
 ---
 
 ![서비스아키텍처](https://user-images.githubusercontent.com/116135174/224563517-e0caea58-799d-481c-958c-0c505306c922.png)
 
+<br>
 
 기술 스택 💻
 ---
@@ -68,9 +72,13 @@ Etc
 ![68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4e6f74696f6e2d3030303030303f7374796c653d666c6174266c6f676f3d6e6f74696f6e266c6f676f436f6c6f723d7768697465](https://user-images.githubusercontent.com/116135174/224564022-db759b69-a20d-4ec6-9bdb-7fa96bf36d69.svg)
 <img src="https://img.shields.io/badge/Jira-0052CC?style=flat&logo=Jira&logoColor=white">
 
+<br>
+
 API 문서(Postman Publish Documentation)📋
 ---
 [API 문서](https://documenter.getpostman.com/view/24836890/2s93JqRjo6#284b7458-f36f-4878-a3ce-378b21d70cbe)
+
+<br>
 
 기술적 의사결정 👓
 ---
@@ -87,6 +95,8 @@ API 문서(Postman Publish Documentation)📋
 >**문제점** <br>
 >- 보안 이슈 발생
 ><br>
+
+<br>
 
 >**해결책**
 >- refresh token을 도입하여 access token의 유효기간을 짧게 가져감
@@ -133,11 +143,16 @@ API 문서(Postman Publish Documentation)📋
 <details>
 <summary>Admin과 User 분리</summary><br>
 
+<br>
 
 **기존 방식**
 
+<br>
+
 - 동일한 User Entity에서 `Role Enum` 으로 Admin과 User를 구분
 - 동일한 security filter와  Authentication Service를 사용
+
+<br>
 
 >**문제점**
 ><br>
@@ -145,6 +160,8 @@ API 문서(Postman Publish Documentation)📋
 >- User와 Admin의 역할과 그에 따른 기능들이 다름
 >- User와 Admin의 인증과정을 분리할 수 없음.
 ><br>
+
+<br>
 
 >**해결**
 ><br>
@@ -173,10 +190,14 @@ API 문서(Postman Publish Documentation)📋
 
 📌 **단일 테이블의 단점**
 
+<br>
+
 - 하위 엔티티의 필드값은 모두 Null을 허용
 - 하나의 테이블에 칼럼이 많아져 복잡<br><br>
 
 📌 **단일 테이블 전략을** **선택한 이유**
+
+<br>
 
 >- 현재 게시글의 필드값을 최대한 적게 가져가는 방식을 사용 중이기 때문에
 ><br>테이블 칼럼 수가 적기 때문에 단일 테이블 전략을 사용하더라도 복잡해지지 않음<br>
@@ -185,6 +206,7 @@ API 문서(Postman Publish Documentation)📋
 >
 >- 만약 단일 테이블 전략이 아니라 각자 테이블을 가지는 조인 전략과 같은 방식을 사용했다면
 ><br>Null값은 들어가지 않지만 조회 쿼리가 복잡해지고 INSERT QUERY를 2번 실행해야 하기 때문에
+><br>
 ><br>단일 테이블 전략을 사용하기로 결정
 <br>
 </details>
@@ -203,14 +225,19 @@ API 문서(Postman Publish Documentation)📋
 <br>
 
 📌 **직접 참조 방식의 단점**
+
+<br>
+
 - 의존 관계 형성
-- 연관 관계 맺은 객체를 편하게 탐색할 수 있고 바뀌길 원하지 않는 참조 객체의 값이 손쉽게 바뀔 가능성 존재(직접 참조는 편한만큼 위험)
+- 연관 관계 맺은 객체를 편하게 탐색할 수 있고 바뀌길 원하지 않는 참조 객체의 값이 손쉽게 바뀔 가능성 존재 (직접 참조는 편한만큼 위험)
    - 예를 들어 Board Entity안에 user라는 변수가 있다면 Board를 다룰 때 User를 변경할 수 있는 가능성과 여러 실수의 가능성이 존재
    - 즉 User 라는 Entity 자체를 날것으로 가져오게 되면, Entity 가 오염이 될 수 도 있음
    <br> -> setter 를 통해서든, 도메인 서비스를 통해서든 어떤 일이 벌어질 수 있는 가능성을 열어둔 것
 <br>
 
 📌**결론**
+
+<br>
 
 >User Entity도 안전하게 보호가 되고, Board Entity에만 집중할 수 있는 방법으로 **간접 참조** 방식을 이용하는 것이 나을 것이라고 판단,
 >
@@ -223,19 +250,27 @@ API 문서(Postman Publish Documentation)📋
 <details>
 <summary>이미지 서버로 AWS S3 선정한 이유</summary><br>
 
+<br>
+
 
 📌 **이미지 서버의 필요성**
+
+<br>
+
 
 >만약 스프링 서버의 멀티파트 파일로 이미지를 받아서 DB에 저장하는 방식을 이용 한다면<br>
 >서버 여러대 사용 시, 특정 서버에만 이미지가 존재하게 될 수 있음<br>
 >따라서 별도의 이미지 서버를 둘 필요성을 느낌
 
+<br>
 
 
-📌 **S3를 이미지 서버로 선유한 이유**
+📌 **S3를 이미지 서버로 선택한 이유**
+
+<br>
 
 >커뮤니티 사이트처럼 서버에 많은 미디어 파일을 저장해야 하는 경우<br> 
->EC2와 EBS만을 사용해서 저장을 하게 되면 용량에 따른 과금도 부담되고 (비용적인 문제, S3는 사용한 만큼만 비용 지불)<br>
+>EC2와 EBS만을 사용해서 저장을 하게 되면 용량에 따른 과금 부담 존재 (비용적인 문제, S3는 사용한 만큼만 비용 지불)<br>
 >저장소를 구축해서 관리하는 것에도 문제 존재(성능 문제)
 >
 >하지만 S3를 사용하면 S3 한 곳에 모든 미디어 파일을 저장할 수 있고<br>  
@@ -243,10 +278,10 @@ API 문서(Postman Publish Documentation)📋
 >구축 후 확장이나 축소와 같은 DB를 관리하는 것에도 용이하다는 장점이 있어 사용
 >
 >
->> 📖 S3와 EBS 중 S3를 선택한 이유
+>> 📖 S3와 EBS 비교
 >>
 >>- S3가 더 저렴함
->>- EBS는반드시 하나의 인스턴스에서만 접근 할 수 있음
+>>- EBS는 반드시 하나의 인스턴스에서만 접근 할 수 있음
 >>-> 여러 Application이 하나의 EBS에 담겨있는 데이터에 동시 접근 불가능
 >>- 생성 전에 반드시 그 크기를 지정해주어야 함
 >>- 신청한 용량 중, 쓰지 않는 부분에 불필요한 cost를 내야함
@@ -259,16 +294,18 @@ API 문서(Postman Publish Documentation)📋
 </details>
 </details>
 
+<br>
+
 트러블 슈팅 🎈
 ---
 <details>
 <summary>4조가 트러블 슈팅 or 성능개선을 하는 방식</summary>
 
-1. 안건제시
+1. 안건 제시
 
-2. 문제분석
+2. 문제 분석
 
-3. 개선계획수립
+3. 개선 계획 수립
 
 4. 코드 수정
 
@@ -278,12 +315,21 @@ API 문서(Postman Publish Documentation)📋
    - 실제 예시 링크([23.02.22 보드,코멘트 관련 비상회의록](https://www.notion.so/23-02-22-6ddb6bb392c841828c161472d9e86fb0))
 </details>
 <details>
-<summary>CI - sub module & profile & embedded redis 기반의 배포, 테스트 환경 분리</summary><br>
+<summary>CI - sub module & profile & embedded redis 기반의 배포, 테스트 환경 분리</summary>
+
+<br>
+
+
 </details>
 <details>
 <summary>Pre-signed URL 방식을 택한 이유</summary><br>
 
-클라이언트에서 S3에 파일을 업로드 하는 방법은 크게 3가지 존재
+<br>
+
+클라이언트에서 S3에 파일을 업로드 하는 방법은 크게 **3가지 존재**
+
+<br>
+
 
 >**1. AWS SDK를 이용해 직접 업로드**
 >
@@ -297,6 +343,8 @@ API 문서(Postman Publish Documentation)📋
 
 📌 **1, 2번 방식의 단점**<br>
 
+<br>
+
 - 1번 방법
    - 서버를 거치지 않지만, AWS SDK를 써서 S3이용이 가능해야 하기 때문에 클라이언트에서 AWS SDK를 사용하는 시점에는<br> 
 결국  AWS Access Key와 Secret Key 정보를 알고 있어야 함
@@ -309,12 +357,22 @@ API 문서(Postman Publish Documentation)📋
    - 이는 저장하지도 않을 파일들이 서버를 통해가면서 불필요한 서버의 리소스를 사용하게 됨<br>
    - 또한 과도한 업로드 작업이 생기면 서버에 과부하가 걸리게 되고 서버를 거쳐가는 지연시간이 생기게 됨<br>
 
+<br>
 
 **위 방법들의 `단점을 보완`하기 위해 `Pre-signed URL 기능`을 사용하여 성능을 개선**
 
+<br>
+
+
+
 ![presigned url](https://user-images.githubusercontent.com/116135174/224603186-fc380104-5cf3-4b43-9541-df2b09a2770a.png)
 
+<br>
+
+
 📋 하나의 파일을 S3에 업로드하기 위한 Pre-signed URL 과정은 다음과 같음
+
+<br>
 
 >1.  클라이언트에서 서버에 pre-signed URL를 받기 위한 API 호출 (POST 요청)<br>
 >2. 서버에서 AWS S3에 pre-signed URL요청 3. AWS에서 pre-signed URL을 서버에 반환<br>
@@ -322,11 +380,16 @@ API 문서(Postman Publish Documentation)📋
 >5. 클라이언트에서 AWS pre-signed URL로 이미지 upload (S3에 직접 업로드) (PUT 요청)<br>
 >6. 서버에게 해당 요청이 종료 되었음을 알림<br>
 
+<br>
+
+
 **서버의 역할이 파일 업로드를 처리하는 것에서 문자열을 주고받는 식으로 바뀌었기 때문에<br> 
 프로세스가 훨씬 가벼워지고 브라우저에서 Key를 직접 만지지도 않아 보안성이 우수해짐** <br>
 </details>
 <details>
 <summary>QueryDSL</summary><br>
+
+<br>
 
 📌 **QueryDSL을 적용한 이유 (개선 전)**
 <br>
@@ -339,12 +402,20 @@ API 문서(Postman Publish Documentation)📋
 >
 >**비효율적**이었음<br>
 
+<br>
+
 📌**QueryDSL을 적용한 이유 (개선 후)**
+
+<br>
 
 >![수정방식](https://user-images.githubusercontent.com/116135174/224602950-0c88be12-a095-46d2-b477-00a294116478.png)
 >![화면_캡처_2023-03-10_191553](https://user-images.githubusercontent.com/116135174/224602959-1c019c2f-e8da-4412-b294-6fec64ba0b6f.png)
 
+<br>
+
 하지만 `QueryDSL`을 활용, `동적 쿼리`를 작성해서 편하게 구현이 가능해짐
+
+<br>
 
 >### 동적 쿼리란 ?
 >
@@ -353,15 +424,27 @@ API 문서(Postman Publish Documentation)📋
 >예를 들면 DB에서 값을 조회할 때 조회 조건이 위와 같이 동적으로 바뀌어야 하는 경우가 많음<br> 
 >이런 상황을 Querydsl을 사용해서 손쉽게 해결
 
+<br>
+
 >`Querydsl`은 아래 2가지 기능을 제공
 >
 >- `where()`에 `null`이 들어오면 무시
 >- `where()`에 **`,**` 을 `and` 조건으로 사용
 
+<br>
+
 🔓 `BooleanExpression`**을 사용해서 `삼항 연산자`를 통해 위 기능을 활용 했고, 한개의 메소드로 여러 **검색 조건**을 활용할 수 있게 하였음
 </details>
 </details>
 
+<br>
+
 ERD 🕸️
 ---
+<details>
+<summary></summary>
 
+[링크](https://www.erdcloud.com/d/FpthoporY5ZbhZcEY)
+
+![화면 캡처 2023-03-13 180015](https://user-images.githubusercontent.com/116135174/224654270-e00b57e3-5f7a-458b-b4dc-7a46df949b0a.png)
+</details>
