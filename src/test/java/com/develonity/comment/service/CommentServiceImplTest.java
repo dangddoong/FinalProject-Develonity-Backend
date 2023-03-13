@@ -2,6 +2,7 @@ package com.develonity.comment.service;
 
 import static com.develonity.comment.entity.CommentStatus.ADOPTED;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.develonity.board.dto.CommunityBoardRequest;
 import com.develonity.board.dto.QuestionBoardRequest;
@@ -13,12 +14,15 @@ import com.develonity.board.entity.QuestionCategory;
 import com.develonity.board.repository.BoardImageRepository;
 import com.develonity.board.service.CommunityBoardServiceImpl;
 import com.develonity.board.service.QuestionBoardServiceImpl;
+import com.develonity.comment.dto.CommentPageDto;
 import com.develonity.comment.dto.CommentRequest;
 import com.develonity.comment.dto.CommentResponse;
+import com.develonity.comment.dto.CommentSearchCond;
 import com.develonity.comment.entity.Comment;
 import com.develonity.comment.repository.CommentLikeRepository;
 import com.develonity.comment.repository.CommentRepository;
 import com.develonity.comment.repository.ReplyCommentRepository;
+import com.develonity.common.exception.CustomException;
 import com.develonity.user.entity.User;
 import com.develonity.user.repository.UserRepository;
 import java.io.IOException;
@@ -33,6 +37,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,37 +77,145 @@ class CommentServiceImplTest {
     replyCommentRepository.deleteAll();
   }
 
-  // 댓글 전체 조회
-//  @Test
-//  void getAllComment() {
-//    // given
-//    User user = new User();
-//    CommentList commentList = new CommentList();
-//    // thenReturn(Page.empty()) 로 빈페이지를 리턴시킨다.
-//    when(commentRepository.findBy(commentList.toPageable())).thenReturn(Page.empty());
-//    // when
-//    Page<CommentResponse> responses = commentService.getAllComment(user, commentList);
-//
-//    // then
-//    assertThat(responses).isEmpty();
-//
-//    // verify
-//    // findBy가 실제로 호출되는지 확인
-//    verify(commentRepository).findBy(commentList.toPageable());
-//  }
+  //  댓글 전체 조회
+  @Test
+  @DisplayName("댓글 전체 조회")
+  void getAllComment() {
+    // given
+    CommentPageDto commentPageDto = CommentPageDto.builder().page(1).size(5).build();
 
-//  @Test
-//  @DisplayName("내가 쓴 댓글 조회")
-//  void getMyComments() {
-//    // given
-//    CommentList commentList = new CommentList();
-//    Optional<User> findUser = userRepository.findById(1L);
-//    Optional<Comment> findComment = commentRepository.findById(1L);
-//    // when
-//    commentService.getMyComments(commentList, findUser.get().getId(), findUser.get());
-//    // then
-//    assertThat(commentList.toPageable()).isNotNull();
-//  }
+    // 댓글 작성
+    Comment comment = Comment.builder()
+        .userId(1L)
+        .content("댓글")
+        .questionBoardId(1L)
+        .build();
+
+    // 댓글 저장
+    commentRepository.save(comment);
+
+    // 댓글 작성
+    Comment comment1 = Comment.builder()
+        .userId(2L)
+        .content("디벨로니티 화이팅")
+        .questionBoardId(1L)
+        .build();
+
+    // 댓글 저장
+    commentRepository.save(comment1);
+    CommentSearchCond commentSearchCond = CommentSearchCond.builder().build();
+
+    // 내용으로 검색
+    CommentSearchCond searchContentCond = CommentSearchCond.builder()
+        .content("댓글")
+        .build();
+
+    // 이름으로 검색
+    CommentSearchCond searchNicknameCond = CommentSearchCond.builder()
+        .nickname("당")
+        .build();
+
+    // when
+
+    // 댓글의 수 확인
+    Page<CommentResponse> getAllComment = commentService.getAllComment(commentPageDto,
+        commentSearchCond);
+
+    // 댓글 내용으로 검색
+    Page<CommentResponse> searchComment = commentService.getAllComment(commentPageDto,
+        searchContentCond);
+
+    // 이름으로 검색
+    Page<CommentResponse> searchNickname = commentService.getAllComment(commentPageDto,
+        searchNicknameCond);
+
+    // then
+
+    // 댓글의 수가 두개인지 확인
+    assertThat(getAllComment.getTotalElements()).isEqualTo(2);
+
+    // 검색 결과 댓글의 내용이 "댓글"인 댓글이 1개인지 확인
+    assertThat(searchComment.getTotalElements()).isEqualTo(1);
+
+    // 닉네임이 "당"인 사람의 검색결과가 1개인지 확인
+    assertThat(searchNickname.getTotalElements()).isEqualTo(1);
+
+
+  }
+
+  @Test
+  @DisplayName("내가 쓴 댓글 조회")
+  void getMyComments() {
+    // given
+    CommentPageDto commentPageDto = CommentPageDto.builder().page(1).size(5).build();
+
+    // 댓글 작성
+    Comment comment = Comment.builder()
+        .userId(1L)
+        .content("안녕하세요")
+        .questionBoardId(1L)
+        .build();
+
+    // 댓글 저장
+    commentRepository.save(comment);
+
+    // 댓글 작성
+    Comment comment1 = Comment.builder()
+        .userId(2L)
+        .content("반갑습니다")
+        .questionBoardId(1L)
+        .build();
+
+    // 댓글 저장
+    commentRepository.save(comment1);
+
+    // 댓글 작성
+    Comment comment2 = Comment.builder()
+        .userId(1L)
+        .content("감사해요")
+        .questionBoardId(1L)
+        .build();
+
+    // 댓글 저장
+    commentRepository.save(comment2);
+    CommentSearchCond commentSearchCond = CommentSearchCond.builder().build();
+
+    // 댓글 내용이 "안녕"인 댓글 검색
+    CommentSearchCond searchMyContentCond = CommentSearchCond.builder()
+        .content("안녕")
+        .build();
+
+    // 댓글 작성자의 닉네임이 "성"이 들어간 닉네임 검색
+    CommentSearchCond searchMyNicknameCond = CommentSearchCond.builder()
+        .nickname("성")
+        .build();
+
+    // when
+
+    // 내가 쓴 댓글 전체 조회
+    Page<CommentResponse> myAllComments = commentService.getMyComments(commentPageDto,
+        commentSearchCond, 1L);
+
+    // 댓글 내용이 "안녕"인 댓글 검색
+    Page<CommentResponse> searchMyContent = commentService.getMyComments(commentPageDto,
+        searchMyContentCond, 1L);
+
+    // 댓글 작성자의 닉네임이 "성"이 들어간 닉네임 검색
+    Page<CommentResponse> searchMyNickname = commentService.getMyComments(commentPageDto,
+        searchMyNicknameCond, 2L);
+
+    // then
+
+    // 내가 쓴 댓글의 총 갯수가 두개인지 확인
+    assertThat(myAllComments.getTotalElements()).isEqualTo(2);
+
+    // 내가 쓴 댓글 중 댓글 내용 중 "안녕"이 들어간 댓글이 1개인지 확인
+    assertThat(searchMyContent.getTotalElements()).isEqualTo(1);
+
+    // 내가 쓴 댓글 중 닉네임이 "성"이 들어간 댓글이 1개인지 확인
+    assertThat(searchMyNickname.getTotalElements()).isEqualTo(1);
+
+  }
 
 //  @Test
 //  @DisplayName("게시글에 달린 댓글,대댓글 조회")
@@ -152,8 +265,8 @@ class CommentServiceImplTest {
     // then
     assertThat(comment.getContent()).isEqualTo(request.getContent());
     // 자신이 만든 질문 게시글에 댓글을 달면 나오는 익셉션 테스트, 서비스에서 주석 풀면 정상 작동
-//    assertThrows(CustomException.class,
-//        () -> commentService.createQuestionComment(1L, request, findUser.get()));
+    assertThrows(CustomException.class,
+        () -> commentService.createQuestionComment(comment.getBoardId(), request, findUser.get()));
   }
 
   @Test

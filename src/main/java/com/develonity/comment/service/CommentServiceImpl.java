@@ -58,22 +58,6 @@ public class CommentServiceImpl implements CommentService {
     return commentRepository.searchComment(commentPageDto, commentSearchCond);
   }
 
-  // 내가 쓴 댓글 전체 조회 (페이징 처리) Querydsl 사용 X
-//  @Override
-//  @Transactional(readOnly = true)
-//  public Page<CommentResponse> getMyComments(CommentList commentList, Long userId, User user) {
-//
-//    if (!userId.equals(user.getId())) {
-//      throw new CustomException(ExceptionStatus.COMMENT_USER_NOT_MATCH);
-//    }
-//
-//    Page<Comment> myCommentList = commentRepository.findAllByUserId(commentList.toPageable(),
-//        user.getId());
-//    return myCommentList.map(
-//        comment -> new CommentResponse(comment, getNicknameByComment(comment),
-//            countLike(comment.getId())));
-//  }
-
   // Querydsl 내가 쓴 댓글 전체 조회 (페이징 처리)
   @Override
   @Transactional(readOnly = true)
@@ -123,11 +107,11 @@ public class CommentServiceImpl implements CommentService {
   @Transactional
   public Comment createQuestionComment(Long questionBoardId, CommentRequest requestDto,
       User user) {
-//    if (existsCommentByBoardIdAndUserId(questionBoardId, user.getId())) {
-//      throw new CustomException(ExceptionStatus.COMMENT_IS_EXIST);
-//    }
+    if (existsCommentByBoardIdAndUserId(questionBoardId, user.getId())) {
+      throw new CustomException(ExceptionStatus.COMMENT_IS_EXIST);
+    }
     // 댓글 생성
-    Comment comment = new Comment(user, requestDto, questionBoardId);
+    Comment comment = new Comment(user.getId(), requestDto.getContent(), questionBoardId);
     commentRepository.save(comment);
     return comment;
   }
@@ -191,7 +175,7 @@ public class CommentServiceImpl implements CommentService {
 //    Board board = boardService.getBoard(boardId);
 
     // 게시글이 있으면 댓글 작성
-    Comment comment = new Comment(user, request, communityBoardId);
+    Comment comment = new Comment(user.getId(), request.getContent(), communityBoardId);
     commentRepository.save(comment);
     return comment;
   }
@@ -210,6 +194,7 @@ public class CommentServiceImpl implements CommentService {
     // 권한 확인
     // 댓글 작성자와 수정하려는 유저 닉네임이 같지 않거나, 어드민이 아니면 익셉션 출력
     checkUser(user, comment);
+
     // 댓글 작성자인 경우 댓글 수정
     comment.update(request.getContent());
     commentRepository.save(comment);

@@ -55,15 +55,6 @@ public class CommentController {
     return commentService.getCommentsByBoard(boardId, userDetails.getUser());
   }
 
-//   내가 쓴 댓글 전체 조회 (Querydsl X)
-//  @GetMapping("/api/user/me/comments")
-//  public Page<CommentResponse> getMyComments(
-//      CommentList commentList,
-//      @AuthenticationPrincipal UserDetailsImpl userDetails
-//  ) {
-//    return commentService.getMyComments(commentList, userDetails.getUser().getId(),
-//        userDetails.getUser());
-//  }
 
   // Querydsl 내가 쓴 댓글 전체 조회
   @GetMapping("/api/user/me/comments")
@@ -80,10 +71,10 @@ public class CommentController {
       @RequestParam Long questionBoardId,
       @RequestBody
       CommentRequest requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//    if (questionBoardService.getQuestionBoardAndCheckSameUser(questionBoardId,
-//        userDetails.getUserId())) {
-//      throw new CustomException(ExceptionStatus.NOT_ALLOWED);
-//    }
+    if (questionBoardService.getQuestionBoardAndCheckSameUser(questionBoardId,
+        userDetails.getUserId())) {
+      throw new CustomException(ExceptionStatus.NOT_ALLOWED);
+    }
     commentService.createQuestionComment(questionBoardId, requestDto, userDetails.getUser());
     return new ResponseEntity<>("답변 작성 완료!", HttpStatus.CREATED);
   }
