@@ -1,5 +1,6 @@
-# Develonity
+# Develonity([Notion 링크✔️](https://gilded-fibula-776.notion.site/Develonity-23422bae15a04a9d8107d43d742264c6))
 > `Developer` + `Community` = `Develonity` 
+>
 - **입문 & 주니어 & 시니어 개발자 모두에게 가치 있는 커뮤니티를 만들고자 했습니다.**
 - Q&A 게시판 활동(답변)을 통해 `Gift Point` 를 쌓고, 포인트로 `Gift Card` 를 살 수 있습니다.
 - [미구현] Q&A 게시판 활동(답변)을 통해 단순히 `Gift Point` 뿐만 아니라 `Respect Point` 가 쌓이게 되고, `Respect Point` 를 기반으로 `외주, 과외 등의 서비스` 를 제공하고자 했습니다.
@@ -12,10 +13,10 @@
 
 
 | [조성현](https://github.com/dangddoong) | [이솔](https://github.com/LEESOLL) | [김태웅](https://github.com/ultramancode) | [배지호](https://github.com/2Luda) | [송성원](https://github.com/SungWonSong) |
-| --- | --- | --- | --- | --- |
-| 1 | 2 | 3 | 4 | 5 |
-| 6 | 7 | 8 | 9 | 10 |
-| 11 | 12 | 13 | 14 | 15 | 
+| :---:| :---: | :---: | :---: | :---: |
+| <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_163501658.jpg" width="135" height="160"> | <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_163720357.jpg" width="135" height="160">  | <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_164601238_01.jpg" width="135" height="160"> | <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_164603334.jpg" width="135" height="160"> | <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_163841527.jpg" width="135" height="160"> |
+|리더|부리더|팀원|팀원|팀원|
+| [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/dangddoong) | [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/LEESOLL) | [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/ultramancode) | [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/2Luda) | [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/SungWonSong) | 
 
 
 
@@ -59,7 +60,7 @@ Server
 ![68747470733a2f2f696d672e736869656c64732e696f2f62616467652f416d617a6f6e5f5244532d3532374646463f7374796c653d666c6174266c6f676f3d616d617a6f6e726473266c6f676f436f6c6f723d7768697465](https://user-images.githubusercontent.com/116135174/224565820-02995aae-65b8-4bdb-ad84-06500f32741d.svg)
 
 
-Etc ⛓️
+Etc
 
 ![68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4769746875622d3138313731373f7374796c653d666c6174266c6f676f3d676974687562266c6f676f436f6c6f723d7768697465](https://user-images.githubusercontent.com/116135174/224564009-4100e123-0818-44f8-acba-bc5d0540d66c.svg)
 <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=flat&logo=GitHub Actions&logoColor=white">
@@ -67,55 +68,66 @@ Etc ⛓️
 ![68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4e6f74696f6e2d3030303030303f7374796c653d666c6174266c6f676f3d6e6f74696f6e266c6f676f436f6c6f723d7768697465](https://user-images.githubusercontent.com/116135174/224564022-db759b69-a20d-4ec6-9bdb-7fa96bf36d69.svg)
 <img src="https://img.shields.io/badge/Jira-0052CC?style=flat&logo=Jira&logoColor=white">
 
-기술적 의사결정 📋
+API 문서(Postman Publish Documentation)📋
+---
+[API 문서](https://documenter.getpostman.com/view/24836890/2s93JqRjo6#284b7458-f36f-4878-a3ce-378b21d70cbe)
+
+기술적 의사결정 👓
 ---
 <details>
-<summary>Session vs Token(JWT)</summary><br>
-
-Session vs Token(JWT)<br><br>
+<summary>Session vs Token(JWT)</summary>
+<br>
 
 - 보안 vs 효율&확장성
 - 서비스의 특성상(커뮤니티) 보안적으로 매우 민감한 주제는 아니라고 판단<br>
 - HTTP의 비상태성(Stateless)를 그대로 활용할 수 있고, 따라서 높은 확장성을 가질 수 있는 Token방식을 채택
-<br>
-
-> 그럼에도 보안을 챙기긴 해야한다.
 
 <br>
 
-- refresh token을 도입하여 access token의 유효기간을 짧게 가져가고,
-- RTR(refresh token rotation)을 도입하여 refresh token 탈취 시 문제점도 어느정도 보완,
-- 계정정보 or 회원탈퇴 등 중요한 기능들은 ‘비밀번호 검증＇을 1회 더 하는 방식으로 보안을 조금 더 강화.
+>**문제점** <br>
+>- 보안 이슈 발생
+><br>
 
-<br> 
+>**해결책**
+>- refresh token을 도입하여 access token의 유효기간을 짧게 가져감
+>- RTR(refresh token rotation)을 도입하여 refresh token 탈취 시 문제점 완
+>- 계정정보 or 회원탈퇴 등 중요한 기능들은 ‘비밀번호 검증＇을 1회 더 하는 방식으로 보안 강화
 
-> access token과 refresh token이 모두 탈취 당했을 경우에 대한 고민
+<details><summary>➕access token과 refresh token이 모두 탈취 당했을 경우에 대한 고민🤷</summary>
+<br>
 
-[네이버 토큰 갱신방법[grant_type, client id를 같이 보내는 방식]](https://developers.naver.com/docs/login/devguide/devguide.md#5-1-2-%EA%B0%B1%EC%8B%A0-%ED%86%A0%ED%81%B0%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC:~:text=Authorization%3A%20Bearer%20ACCESS_TOKEN-,5.1.2%20%EA%B0%B1%EC%8B%A0%20%ED%86%A0%ED%81%B0%EC%97%90%20%EB%8C%80%ED%95%98%EC%97%AC,-%EC%A0%91%EA%B7%BC%20%ED%86%A0%ED%81%B0%EC%9D%80%20%EC%A0%91%EA%B7%BC)
+📋 참고자료
+- [네이버 토큰 갱신 방법[grant_type, client id를 같이 보내는 방식]](https://developers.naver.com/docs/login/devguide/devguide.md#5-1-2-%EA%B0%B1%EC%8B%A0-%ED%86%A0%ED%81%B0%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC:~:text=Authorization%3A%20Bearer%20ACCESS_TOKEN-,5.1.2%20%EA%B0%B1%EC%8B%A0%20%ED%86%A0%ED%81%B0%EC%97%90%20%EB%8C%80%ED%95%98%EC%97%AC,-%EC%A0%91%EA%B7%BC%20%ED%86%A0%ED%81%B0%EC%9D%80%20%EC%A0%91%EA%B7%BC)
 
-[카카오 토큰 갱신방법[네이버와 유사]](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#refresh-token:~:text=%3A1234%0A%7D-,%ED%86%A0%ED%81%B0%20%EA%B0%B1%EC%8B%A0%ED%95%98%EA%B8%B0,-%EA%B8%B0%EB%B3%B8%20%EC%A0%95%EB%B3%B4)
+- [카카오 토큰 갱신 방법](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#refresh-%20%20%20%20%20%20%20%20%20token:~:text=%3A1234%0A%7D-,%ED%86%A0%ED%81%B0%20%EA%B0%B1%EC%8B%A0%ED%95%98%EA%B8%B0,-%EA%B8%B0%EB%B3%B8%20%EC%A0%95%EB%B3%B4)
 
-**현재 프로젝트에서 대응 가능한 방법들**
+<br>
 
-1. **사용자가 서비스를 지속적으로 이용중인 상황**
-- RTR(refresh token rotation)을 적용하고 access token의 유효시간을 30분으로 짧게 설정해두어, `[reissue 실패 → 재로그인 → 탈취된 refresh token 무효화]`가 가능하다.
-1. **토큰이 지속적으로 탈취되는 상황**
-- 해당 회원을 일단 `탈퇴처리` 하여 해커의 `나쁜 행동을 막고`  개인적으로 네트워크와 컴퓨터를 리셋(포맷)한 이후에 다시 `계정을 복구` 하는 방법이 있다. (회원 탈퇴는 soft delete 방식으로 구현되어 가능하다.)
-1. **특정 상황이 발생하여 회원 다수의 token이 탈취된 경우** 
+**📌 현재 프로젝트에서 대응 가능한 방법들**<br>
+- 사용자가 서비스를 지속적으로 이용중인 상황<br>
+   - RTR(refresh token rotation)을 적용하고 access token의 유효시간을 30분으로 짧게 설정<br>
+   - `[reissue 실패 → 재로그인 → 탈취된 refresh token 무효화]` 가능<br>
+   
+- 토큰이 지속적으로 탈취되는 상황
+   - 해당 회원을 일단 `탈퇴처리`, 해커의 나쁜 행동을 막고, 
+   - 개인적으로 네트워크와 컴퓨터를 리셋(포맷)한 이후 다시 `계정 복구`(soft delete 방식으로 회원 탈퇴 기능 구현)<br>
+  
+- 특정 상황이 발생하여 회원 다수의 token이 탈취된 경우
+   - 30분여 서비스 점검 실시(access token 유효기간 만료를 위함) 및 
+    `redis(refresh token 저장소)를 재가동` 하는 방법 고려. (서비스 점검기간동안 보안적인 대처도 병행)<br>
+   
+- 현재 계정정보 접근, 회원탈퇴 등 민감한 서비스들에는 `패스워드 재검증 로직`을 포함하고 있으므로 개인정보 유출, 금전적 피해가 발생 가능한 경우는 예방하고 있다.
+</details>
 
-`30분여 서비스 점검 실시(access token 유효기간 만료를 위함) 및` 
-`redis(refresh token 저장소)를 재가동` 하는 방법도 고려할 수 있다. (서비스 점검기간동안 보안적인 대처도 병행)
-- +현재 계정정보 접근, 회원탈퇴 등 민감한 서비스들에는 `패스워드 재검증 로직`을 포함하고 있으므로 `개인정보 유출, 금전적 피해` 가 발생 가능한 경우는 예방하고 있다.</details>
-
+</details><br>
 <details>
-<summary>Redis - Token 저장소로 Redis를 선정한 이유</summary><br>
+<summary>Redis - Token 저장소로 Redis를 선정한 이유</summary><br><br>
 
-
-- 
-1. ~~Key(LoginId)-Value(Refresh Token) 외의 다른 필드가 필요하지 않다.~~
-2.  I/O가 빈번하게 발생하는 환경
-3. 저장된 데이터의 개수와 무관하게 `O(1)` 의 수행시간을 가진다. 
-4. 저장된 모든 token을 조회하는 등의 싱글 스레드의 단점이 부각 될 상황이 없다.
+>-  Key(LoginId)-Value(Refresh Token) 외의 다른 필드가 필요하지 않음
+>-  I/O가 빈번하게 발생하는 환경
+>- 저장된 데이터의 개수와 무관하게 `O(1)` 의 수행시간을 가짐
+>- 저장된 모든 token을 조회하는 등의 싱글 스레드의 단점이 부각 될 상황이 없음
+<br><br>
 </details>
 
 <details>
@@ -124,84 +136,232 @@ Session vs Token(JWT)<br><br>
 
 **기존 방식**
 
-- 동일한 User Entity에서 `Role Enum` 으로 Admin과 User를 구분하였음
-- 동일한 security filter와  Authentication Service를 사용하였음.
+- 동일한 User Entity에서 `Role Enum` 으로 Admin과 User를 구분
+- 동일한 security filter와  Authentication Service를 사용
 
-**문제점**
+>**문제점**
+><br>
+>- 근본적으로 User와 Admin의 생명주기가 다름
+>- User와 Admin의 역할과 그에 따른 기능들이 다름
+>- User와 Admin의 인증과정을 분리할 수 없음.
+><br>
 
-- 근본적으로 User와 Admin의 생명주기가 다르고,
-- User와 Admin의 역할과 그에 따른 기능들이 다르다.
-- User와 Admin의 인증과정을 분리할 수 없음.
-
-**해결**
-
-- Entity 및 Package 분리
-- security filter와  Authentication Service 분리
-- Authentication Service에 `팩토리 패턴` 적용하여 OCP 원칙을 지키고자 노력
+>**해결**
+><br>
+>- Entity 및 Package 분리
+>- security filter와  Authentication Service 분리
+>- Authentication Service에 `팩토리 패턴` 적용하여 OCP 원칙을 지키고자 노력
 </details>
 
 <details>
 <summary>게시글 JPA 상속 관계 매핑(단일 테이블 전략)</summary><br>
 
+<br>
 
+>**JPA는 DB와 객체를 매핑해주는 자바 진영의 ORM 기술 표준이지만 객체의 상속 관계와 정확하게 일치하는 DB모델링은 존재하지 않음**
+>
+>**따라서 차선책으로 상속 관계와 비교적 유사한 **슈퍼타입-서브타입** 모델링 기법으로 DB를 상속 객체에 매핑**
+>
+>**슈퍼타입-서브타입 논리모델을 실제 DB 물리모델로 구현하는 방법으로 3가지 전략 중 ➕단일 테이블 전략➕을 사용**
+>
+<br>
 
-JPA는 테이터베이스와 객체를 매핑해주는 자바 진영의 ORM 기술 표준이지만 객체의 상속 관계와 정확하게 일치하는 데이터베이스 모델링은 존재하지 않는다.
+📌 **단일 테이블 전략의 장점**
 
-따라서 차선책으로 상속 관계와 비교적 유사한 **슈퍼타입-서브타입** 모델링 기법으로 데이터베이스를 상속 객체에 매핑 해야 한다.
+- 조인이 필요 없으므로 조회 성능이 빠름
+- 조회 쿼리가 단순<br><br>
 
-슈퍼타입-서브타입 논리모델을 실제 데이터베이스 물리모델로 구현하는 방법으로 3가지 전략이 있는데 그 중 단일 테이블 전략을 사용했다.
+📌 **단일 테이블의 단점**
 
-단일 테이블 전략의 **장점**은 아래와 같다.
+- 하위 엔티티의 필드값은 모두 Null을 허용
+- 하나의 테이블에 칼럼이 많아져 복잡<br><br>
 
-- 조인이 필요 없으므로 조회 성능이 빠르다.
-- 조회 쿼리가 단순하다.
+📌 **단일 테이블 전략을** **선택한 이유**
 
-단일 테이블의 **단점**은 아래와 같다.
-
-- 하위 엔티티의 필드값은 모두 Null을 허용한다.
-- 하나의 테이블에 칼럼이 많아져 복잡하다.
-
-단점이 있음에도 **단일 테이블 전략을** **선택한 이유**는 아래와 같다.
-
-- 지금 진행 중인 프로젝트는 게시글의 필드값을 최대한 적게 가져가는 방식을 사용하고 있어서 테이블 칼럼 수가 적고 가볍기 때문에 단일 테이블 전략을 사용하더라도 복잡해지지 않는다.
-- 비록 데이터베이스에는 Null값을 허용하더라도 실제 객체가 Null값을 가지고 있는 것은 아니다.
-
-만약 단일 테이블 전략이 아니라 각자 테이블을 가지는 조인 전략과 같은 방식을 사용했다면 Null값은 들어가지 않지만 조회 쿼리가 복잡해지고 INSERT QUERY를 2번 실행해야 하기 때문에 
-
-단일 테이블 전략을 사용하기로 결정했다. 
+>- 현재 게시글의 필드값을 최대한 적게 가져가는 방식을 사용 중이기 때문에
+><br>테이블 칼럼 수가 적기 때문에 단일 테이블 전략을 사용하더라도 복잡해지지 않음<br>
+>
+>- 비록 데이터베이스에는 Null값을 허용하더라도 실제 객체가 Null값을 가지고 있는 것은 아님<br>
+>
+>- 만약 단일 테이블 전략이 아니라 각자 테이블을 가지는 조인 전략과 같은 방식을 사용했다면
+><br>Null값은 들어가지 않지만 조회 쿼리가 복잡해지고 INSERT QUERY를 2번 실행해야 하기 때문에
+><br>단일 테이블 전략을 사용하기로 결정
+<br>
 </details>
 
 <details>
-<summary>id를 활용한 간접참조 방식 설계</summary><br>
+<summary>ID를 활용한 간접참조 방식 설계</summary><br>
 
-- **직접 참조** : Entity 클래스를 설계할 때 @OneToOne, @OneToMany ... 와 같은 어노테이션을 써서 Entity 간에 연관 매핑하는 것
-- **간접 참조** : 객체를 직접 참조하지 않고, 식별값을 이용하는 것
 
-- **직접 참조 방식의 단점**
+>
+>
+>- **직접 참조** : Entity 클래스를 설계할 때 @OneToOne, @OneToMany와 같은 어노테이션을 써서 Entity 간에 연관 매핑하는 것
+>
+>- **간접 참조** : 객체를 직접 참조하지 않고, 식별값을 이용하는 것
+>
+>
+<br>
+
+📌 **직접 참조 방식의 단점**
 - 의존 관계 형성
-- 편한 탐색 오용 방지
-- 직접 참조를 한다면 연관 관계 맺은 객체를 편하게 탐색할 수 있고 바뀌길 원하지 않는 참조 객체의 값이 손쉽게 바뀔 가능성이 있다. 직접 참조는 편한만큼 위험한 것이다.
-- 예를 들어 Board Entity안에 user라는 변수가 있다면 Board를 다룰 때 User를 변경할 수 있는 가능성과 여러 실수의 가능성이 존재하게 됨
-- 즉 User 라는 Entity 자체를 날것으로 가져오게 되면, Entity 가 오염이 될 수 도 있음, setter 를 통해서든, 도메인 서비스를 통해서든 어떤 일이 벌어질 수 있는 가능성을 열어둔 것
-- **결론**
+- 연관 관계 맺은 객체를 편하게 탐색할 수 있고 바뀌길 원하지 않는 참조 객체의 값이 손쉽게 바뀔 가능성 존재(직접 참조는 편한만큼 위험)
+   - 예를 들어 Board Entity안에 user라는 변수가 있다면 Board를 다룰 때 User를 변경할 수 있는 가능성과 여러 실수의 가능성이 존재
+   - 즉 User 라는 Entity 자체를 날것으로 가져오게 되면, Entity 가 오염이 될 수 도 있음
+   <br> -> setter 를 통해서든, 도메인 서비스를 통해서든 어떤 일이 벌어질 수 있는 가능성을 열어둔 것
+<br>
 
-User Entity도 안전하게 보호가 되고, Board Entity에만 집중할 수 있는 방법으로 **간접 참조** 방식을 ****이용하는 것이 나을 것이라고 판단했고,
+📌**결론**
 
-간접 참조를 하면 의존 관계가 형성되지 않아서 추후 시스템을 확장할 때도 유리하기 때문에 
-
-**간접 참조 방식을 이용해서 설계를 하게 됐다.**
+>User Entity도 안전하게 보호가 되고, Board Entity에만 집중할 수 있는 방법으로 **간접 참조** 방식을 이용하는 것이 나을 것이라고 판단,
+>
+>간접 참조를 하면 의존 관계가 형성되지 않아서 추후 시스템을 확장할 때도 유리하기 때문에 
+>
+>**간접 참조 방식을 이용해서 설계**
+<br>
 </details>
 
 <details>
-<summary>이미지 서버로 AWS S3 사용하게 된 이유</summary><br>
+<summary>이미지 서버로 AWS S3 선정한 이유</summary><br>
+
+
+📌 **이미지 서버의 필요성**
+
+>만약 스프링 서버의 멀티파트 파일로 이미지를 받아서 DB에 저장하는 방식을 이용 한다면<br>
+>서버 여러대 사용 시, 특정 서버에만 이미지가 존재하게 될 수 있음<br>
+>따라서 별도의 이미지 서버를 둘 필요성을 느낌
+
+
+
+📌 **S3를 이미지 서버로 선유한 이유**
+
+>커뮤니티 사이트처럼 서버에 많은 미디어 파일을 저장해야 하는 경우<br> 
+>EC2와 EBS만을 사용해서 저장을 하게 되면 용량에 따른 과금도 부담되고 (비용적인 문제, S3는 사용한 만큼만 비용 지불)<br>
+>저장소를 구축해서 관리하는 것에도 문제 존재(성능 문제)
+>
+>하지만 S3를 사용하면 S3 한 곳에 모든 미디어 파일을 저장할 수 있고<br>  
+>비용적인 문제도 EC2와 EBS만을 사용해서 구축하는 것보다 훨씬 저렴하며<br>
+>구축 후 확장이나 축소와 같은 DB를 관리하는 것에도 용이하다는 장점이 있어 사용
+>
+>
+>> 📖 S3와 EBS 중 S3를 선택한 이유
+>>
+>>- S3가 더 저렴함
+>>- EBS는반드시 하나의 인스턴스에서만 접근 할 수 있음
+>>-> 여러 Application이 하나의 EBS에 담겨있는 데이터에 동시 접근 불가능
+>>- 생성 전에 반드시 그 크기를 지정해주어야 함
+>>- 신청한 용량 중, 쓰지 않는 부분에 불필요한 cost를 내야함
+>>- 쌓이는 데이터가 신청한 용량을 넘어서게 되는 경우, 대용량에 새로운 volume을 신청하여 데이터를 옮기고, 기존에 volume을 반납해야하는 번거로움이 생김
+>>
+>>>**S3는 사용한 만큼만 비용을 지불하고, 무한대로 확장이 가능하며, EBS와는 다르게**
+>>>**여러개의 Application이 동시에 접근할 수 있다는 장점이 있으므로 S3을 선택함**
+
+<img width="1000" alt="스크린샷_2023-03-10_오후_8 19 32" src="https://user-images.githubusercontent.com/116135174/224602116-94870db8-6d7b-42aa-8860-4e5620d2945a.png">
+</details>
 </details>
 
-</details>
-
-
-
-
-트러블 슈팅 📌
+트러블 슈팅 🎈
 ---
-<details></details>
 <details>
+<summary>4조가 트러블 슈팅 or 성능개선을 하는 방식</summary>
+
+1. 안건제시
+
+2. 문제분석
+
+3. 개선계획수립
+
+4. 코드 수정
+
+5. PR을 통해 검토
+
+6. 반영
+   - 실제 예시 링크([23.02.22 보드,코멘트 관련 비상회의록](https://www.notion.so/23-02-22-6ddb6bb392c841828c161472d9e86fb0))
+</details>
+<details>
+<summary>CI - sub module & profile & embedded redis 기반의 배포, 테스트 환경 분리</summary><br>
+</details>
+<details>
+<summary>Pre-signed URL 방식을 택한 이유</summary><br>
+
+클라이언트에서 S3에 파일을 업로드 하는 방법은 크게 3가지 존재
+
+>**1. AWS SDK를 이용해 직접 업로드**
+>
+>**2. API 서버에 파일을 전달하고 API 서버에서 S3에 업로드(기존 적용 방법)**
+>
+>**3. PreSignedURL을 이용한 클라이언트 -> S3 업로드(트러블 슈팅 후 적용 방법)**
+>
+
+![images_kyy00n_post_a50e0237-a9eb-4ab2-8be9-ae0d2a2ea5cf_image](https://user-images.githubusercontent.com/116135174/224603164-93553af3-e4ed-40be-8608-9cd43ee8b056.png)
+
+
+📌 **1, 2번 방식의 단점**<br>
+
+- 1번 방법
+   - 서버를 거치지 않지만, AWS SDK를 써서 S3이용이 가능해야 하기 때문에 클라이언트에서 AWS SDK를 사용하는 시점에는<br> 
+결국  AWS Access Key와 Secret Key 정보를 알고 있어야 함
+
+   ->Key 정보 노출 위험성 존재<br>
+
+- 2번 방법 (기존 프로젝트 진행 방식)
+   - API서버에서 파일을 업로드하기 때문에 AWS Access Key와 Secret Key 정보를 서버가 가지고 있어 Key 정보가 노출되는 위험 없음<br> 
+   - 하지만 파일 업로드 시, 파일 전달 흐름이 클라이언트 -> 서버 -> S3 순으로 되게 되는데<br> 
+   - 이는 저장하지도 않을 파일들이 서버를 통해가면서 불필요한 서버의 리소스를 사용하게 됨<br>
+   - 또한 과도한 업로드 작업이 생기면 서버에 과부하가 걸리게 되고 서버를 거쳐가는 지연시간이 생기게 됨<br>
+
+
+**위 방법들의 `단점을 보완`하기 위해 `Pre-signed URL 기능`을 사용하여 성능을 개선**
+
+![presigned url](https://user-images.githubusercontent.com/116135174/224603186-fc380104-5cf3-4b43-9541-df2b09a2770a.png)
+
+📋 하나의 파일을 S3에 업로드하기 위한 Pre-signed URL 과정은 다음과 같음
+
+>1.  클라이언트에서 서버에 pre-signed URL를 받기 위한 API 호출 (POST 요청)<br>
+>2. 서버에서 AWS S3에 pre-signed URL요청 3. AWS에서 pre-signed URL을 서버에 반환<br>
+>4. 서버는 반환받은 pre-signed URL를 클라이언트에 전달<br>
+>5. 클라이언트에서 AWS pre-signed URL로 이미지 upload (S3에 직접 업로드) (PUT 요청)<br>
+>6. 서버에게 해당 요청이 종료 되었음을 알림<br>
+
+**서버의 역할이 파일 업로드를 처리하는 것에서 문자열을 주고받는 식으로 바뀌었기 때문에<br> 
+프로세스가 훨씬 가벼워지고 브라우저에서 Key를 직접 만지지도 않아 보안성이 우수해짐** <br>
+</details>
+<details>
+<summary>QueryDSL</summary><br>
+
+📌 **QueryDSL을 적용한 이유 (개선 전)**
+<br>
+>![기존검색방식](https://user-images.githubusercontent.com/116135174/224602932-fa25e3c5-067f-4135-aeee-fa01f4264fab.png)
+
+
+>위와 같이 `Spring Data Jpa`를 이용해서 조회 기능을 구현 하기에는 검색 조건 등 여러 부분에서 작동이 효율적으로 되지 않았고,
+>
+>여러 조건의 검색 방식을 구현하기 위해서는 비슷한 메소드들을 추가로 작성 해줘야 해서 
+>
+>**비효율적**이었음<br>
+
+📌**QueryDSL을 적용한 이유 (개선 후)**
+
+>![수정방식](https://user-images.githubusercontent.com/116135174/224602950-0c88be12-a095-46d2-b477-00a294116478.png)
+>![화면_캡처_2023-03-10_191553](https://user-images.githubusercontent.com/116135174/224602959-1c019c2f-e8da-4412-b294-6fec64ba0b6f.png)
+
+하지만 `QueryDSL`을 활용, `동적 쿼리`를 작성해서 편하게 구현이 가능해짐
+
+>### 동적 쿼리란 ?
+>
+>동적 쿼리란 **상황에 따라 다른 문법의 SQL을 적용**하는 것을 의미
+>
+>예를 들면 DB에서 값을 조회할 때 조회 조건이 위와 같이 동적으로 바뀌어야 하는 경우가 많음<br> 
+>이런 상황을 Querydsl을 사용해서 손쉽게 해결
+
+>`Querydsl`은 아래 2가지 기능을 제공
+>
+>- `where()`에 `null`이 들어오면 무시
+>- `where()`에 **`,**` 을 `and` 조건으로 사용
+
+🔓 `BooleanExpression`**을 사용해서 `삼항 연산자`를 통해 위 기능을 활용 했고, 한개의 메소드로 여러 **검색 조건**을 활용할 수 있게 하였음
+</details>
+</details>
+
+ERD 🕸️
+---
+
