@@ -1,8 +1,6 @@
 package com.develonity.comment.entity;
 
-import com.develonity.comment.dto.CommentRequest;
 import com.develonity.user.entity.TimeStamp;
-import com.develonity.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -15,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -50,11 +49,11 @@ public class Comment extends TimeStamp {
   @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
   public List<ReplyComment> getReplyCommentList = new ArrayList<>();
 
-
-  public Comment(User user, CommentRequest requestDto, Long questionBoardId) {
+  @Builder
+  public Comment(Long userId, String content, Long questionBoardId) {
 //    this.nickname = user.getNickName();
-    this.content = requestDto.getContent();
-    this.userId = user.getId();
+    this.content = content;
+    this.userId = userId;
     this.boardId = questionBoardId;
   }
 
