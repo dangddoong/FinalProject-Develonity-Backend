@@ -1,5 +1,6 @@
-# Develonity
+# Develonity([Notion 링크✔️](https://gilded-fibula-776.notion.site/Develonity-23422bae15a04a9d8107d43d742264c6))
 > `Developer` + `Community` = `Develonity` 
+>
 - **입문 & 주니어 & 시니어 개발자 모두에게 가치 있는 커뮤니티를 만들고자 했습니다.**
 - Q&A 게시판 활동(답변)을 통해 `Gift Point` 를 쌓고, 포인트로 `Gift Card` 를 살 수 있습니다.
 - [미구현] Q&A 게시판 활동(답변)을 통해 단순히 `Gift Point` 뿐만 아니라 `Respect Point` 가 쌓이게 되고, `Respect Point` 를 기반으로 `외주, 과외 등의 서비스` 를 제공하고자 했습니다.
@@ -12,10 +13,10 @@
 
 
 | [조성현](https://github.com/dangddoong) | [이솔](https://github.com/LEESOLL) | [김태웅](https://github.com/ultramancode) | [배지호](https://github.com/2Luda) | [송성원](https://github.com/SungWonSong) |
-| --- | --- | --- | --- | --- |
-| 1 | 2 | 3 | 4 | 5 |
-| 6 | 7 | 8 | 9 | 10 |
-| 11 | 12 | 13 | 14 | 15 | 
+| :---:| :---: | :---: | :---: | :---: |
+| <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_163501658.jpg" width="135" height="160"> | <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_163720357.jpg" width="135" height="160">  | <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_164601238_01.jpg" width="135" height="160"> | <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_164603334.jpg" width="135" height="160"> | <img src="https://taewoong-test.s3.ap-northeast-2.amazonaws.com/pp/KakaoTalk_20230313_163841527.jpg" width="135" height="160"> |
+|리더|부리더|팀원|팀원|팀원|
+| [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/dangddoong) | [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/LEESOLL) | [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/ultramancode) | [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/2Luda) | [<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">](https://github.com/SungWonSong) | 
 
 
 
